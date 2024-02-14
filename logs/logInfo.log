@@ -1,0 +1,27 @@
+[2024-02-13 17:24:32 [32mINFO [0;39m restartedMain] [com.green.hoteldog.ProjectTestApplication] [36mStarting ProjectTestApplication using Java 17.0.8.1 with PID 7292 (D:\testproject\project_test\build\classes\java\main started by Administrator in D:\testproject\project_test)[0;39m
+[2024-02-13 17:24:32 [32mINFO [0;39m restartedMain] [com.green.hoteldog.ProjectTestApplication] [36mNo active profile set, falling back to 1 default profile: "default"[0;39m
+[2024-02-13 17:24:32 [32mINFO [0;39m restartedMain] [org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor] [36mDevtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable[0;39m
+[2024-02-13 17:24:32 [32mINFO [0;39m restartedMain] [org.springframework.boot.devtools.env.DevToolsPropertyDefaultsPostProcessor] [36mFor additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'[0;39m
+[2024-02-13 17:24:33 [32mINFO [0;39m restartedMain] [org.springframework.data.repository.config.RepositoryConfigurationDelegate] [36mMultiple Spring Data modules found, entering strict repository configuration mode[0;39m
+[2024-02-13 17:24:33 [32mINFO [0;39m restartedMain] [org.springframework.data.repository.config.RepositoryConfigurationDelegate] [36mBootstrapping Spring Data Redis repositories in DEFAULT mode.[0;39m
+[2024-02-13 17:24:33 [32mINFO [0;39m restartedMain] [org.springframework.data.repository.config.RepositoryConfigurationDelegate] [36mFinished Spring Data repository scanning in 4 ms. Found 0 Redis repository interfaces.[0;39m
+[2024-02-13 17:24:33 [32mINFO [0;39m restartedMain] [org.springframework.data.repository.config.RepositoryConfigurationDelegate] [36mMultiple Spring Data modules found, entering strict repository configuration mode[0;39m
+[2024-02-13 17:24:33 [32mINFO [0;39m restartedMain] [org.springframework.data.repository.config.RepositoryConfigurationDelegate] [36mBootstrapping Spring Data Redis repositories in DEFAULT mode.[0;39m
+[2024-02-13 17:24:33 [32mINFO [0;39m restartedMain] [org.springframework.data.repository.config.RepositoryConfigurationDelegate] [36mFinished Spring Data repository scanning in 9 ms. Found 0 Redis repository interfaces.[0;39m
+[2024-02-13 17:24:34 [32mINFO [0;39m restartedMain] [org.springframework.boot.web.embedded.tomcat.TomcatWebServer] [36mTomcat initialized with port 8080 (http)[0;39m
+[2024-02-13 17:24:34 [32mINFO [0;39m restartedMain] [org.apache.coyote.http11.Http11NioProtocol] [36mInitializing ProtocolHandler ["http-nio-8080"][0;39m
+[2024-02-13 17:24:34 [32mINFO [0;39m restartedMain] [org.apache.catalina.core.StandardService] [36mStarting service [Tomcat][0;39m
+[2024-02-13 17:24:34 [32mINFO [0;39m restartedMain] [org.apache.catalina.core.StandardEngine] [36mStarting Servlet engine: [Apache Tomcat/10.1.18][0;39m
+[2024-02-13 17:24:34 [32mINFO [0;39m restartedMain] [org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]] [36mInitializing Spring embedded WebApplicationContext[0;39m
+[2024-02-13 17:24:34 [32mINFO [0;39m restartedMain] [org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext] [36mRoot WebApplicationContext: initialization completed in 1116 ms[0;39m
+[2024-02-13 17:24:34 [33mWARN [0;39m restartedMain] [org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration] [36m
+
+Using generated security password: 567d65f4-83bf-474b-9f9c-fcb7f8dcf38b
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+[0;39m
+[2024-02-13 17:24:34 [32mINFO [0;39m restartedMain] [org.springframework.security.web.DefaultSecurityFilterChain] [36mWill secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@10a02d2e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2629604d, org.springframework.security.web.context.SecurityContextHolderFilter@38f608b, org.springframework.security.web.header.HeaderWriterFilter@6c13897c, org.springframework.web.filter.CorsFilter@1b0077fc, org.springframework.security.web.authentication.logout.LogoutFilter@5f89b37, com.green.hoteldog.security.JwtAuthenticationFilter@8a05699, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@679138c6, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5e359a83, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@16fdc13c, org.springframework.security.web.session.SessionManagementFilter@2b68fd5b, org.springframework.security.web.access.ExceptionTranslationFilter@9f1c9ba, org.springframework.security.web.access.intercept.AuthorizationFilter@456f0f63][0;39m
+[2024-02-13 17:24:35 [32mINFO [0;39m restartedMain] [org.springframework.boot.devtools.autoconfigure.OptionalLiveReloadServer] [36mLiveReload server is running on port 35729[0;39m
+[2024-02-13 17:24:35 [32mINFO [0;39m restartedMain] [org.apache.coyote.http11.Http11NioProtocol] [36mStarting ProtocolHandler ["http-nio-8080"][0;39m
+[2024-02-13 17:24:35 [32mINFO [0;39m restartedMain] [org.springframework.boot.web.embedded.tomcat.TomcatWebServer] [36mTomcat started on port 8080 (http) with context path ''[0;39m
+[2024-02-13 17:24:35 [32mINFO [0;39m restartedMain] [com.green.hoteldog.ProjectTestApplication] [36mStarted ProjectTestApplication in 2.472 seconds (process running for 2.876)[0;39m
