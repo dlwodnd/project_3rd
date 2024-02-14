@@ -25,4 +25,5 @@ public class EventController {
         getHotelEvents=eventService.getEvent();
         return getHotelEvents;
     }
+    //slack 수정용
 }
