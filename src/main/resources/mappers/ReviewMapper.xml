@@ -78,7 +78,7 @@
     <select id="checkResStatus">
         SELECT res_status
         FROM t_reservation
-        WHERE user_pk = #{userPK} AND res_pk = #{resPk}
+        WHERE user_pk = #{userPk} AND res_pk = #{resPk}
     </select>
     <delete id="delReview">
         DELETE FROM t_review

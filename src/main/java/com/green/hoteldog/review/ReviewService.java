@@ -35,6 +35,7 @@ public class ReviewService {
         }
     }
     //-----------------------------------------------------리뷰 등록------------------------------------------------------
+    @Transactional
     public ResVo insReview(ReviewInsDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
         if(dto.getUserPk() == 0 ){
@@ -47,7 +48,7 @@ public class ReviewService {
         try {
             reviewRepository.insReview(dto);
         }catch (Exception e){
-            return new ResVo(0);
+            throw e;
         }
         if(dto.getPics() != null){
             List<String> pics = new ArrayList<>();
@@ -120,7 +121,6 @@ public class ReviewService {
         return new ResVo(2);
     }
     //--------------------------------------------------리뷰 삭제---------------------------------------------------
-    @Transactional(rollbackFor = Exception.class)
     public ResVo delReview(DelReviewDto dto){
         dto.setUserPk(facade.getLoginUserPk());
         log.info("DelReviewDto : {}",dto);

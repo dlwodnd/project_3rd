@@ -106,3 +106,35 @@ logging:
       audit: off
       resultset: off
       connection: off
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "jpa"
+  datasource:
+    url: jdbc:log4jdbc:mariadb://localhost:3306/project3_jpa_test?allowMultiQueries=true
+    username: root
+    password: green502
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+file:
+  dir: /home/download/
+server:
+  port: 8080
+
+logging:
+  level:
+    jdbc:
+      sqlonly: off
+      sqltiming: info
+      resultsettable: info
+      audit: off
+      resultset: off
+      connection: off
