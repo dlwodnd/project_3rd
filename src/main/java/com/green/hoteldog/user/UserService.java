@@ -55,36 +55,36 @@ public class UserService {
     //--------------------------------------------------유저 로그인-------------------------------------------------------
     public UserSigninVo userSignin(HttpServletResponse response, HttpServletRequest request, UserSigninDto dto){
         UserSigninVo vo = new UserSigninVo();
-        UserEntity userEntity = mapper.userEntityByUserEmail(dto.getUserEmail());
-        if(userEntity == null){
+        UserInfo userInfo = mapper.userEntityByUserEmail(dto.getUserEmail());
+        if(userInfo == null){
             throw new CustomException(UserErrorCode.UNKNOWN_EMAIL_ADDRESS);
         }
-        if(!passwordEncoder.matches(dto.getUpw(),userEntity.getUpw())){
+        if(!passwordEncoder.matches(dto.getUpw(), userInfo.getUpw())){
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
         }
-        Myprincipal myprincipal = new Myprincipal(userEntity.getUserPk());
+        Myprincipal myprincipal = new Myprincipal(userInfo.getUserPk());
         String at = tokenProvider.generateAccessToken(myprincipal);
         //엑서스 토큰 값 받아오기
         String rt = tokenProvider.generateRefreshToken(myprincipal);
         //리프레쉬 토큰 값 받아오기
-        /*List<Integer> dogSizeList = mapper.selUserDogSize(userEntity.getUserPk());*/
+        /*List<Integer> dogSizeList = mapper.selUserDogSize(userInfo.getUserPk());*/
 
         int rtCookieMaxAge = (int)appProperties.getJwt().getRefreshTokenExpiry() / 1000;
         cookie.deleteCookie(response,"rt");
         cookie.setCookie(response,"rt",rt,rtCookieMaxAge);
 
-        /*vo.setDepthName(mapper.selUserDepthName(userEntity.getUserPk()));
+        /*vo.setDepthName(mapper.selUserDepthName(userInfo.getUserPk()));
         vo.setSizePkList(dogSizeList);*/
-        vo.setUserPk(userEntity.getUserPk());
-        vo.setUserTypePk(userEntity.getUserTypePk());
+        vo.setUserPk(userInfo.getUserPk());
+        vo.setUserTypePk(userInfo.getUserTypePk());
         vo.setAccessToken(at);
-        vo.setNickname(userEntity.getNickname());
+        vo.setNickname(userInfo.getNickname());
         return vo;
     }
     //--------------------------------------------------유저 닉네임 체크--------------------------------------------------
     public ResVo checkNickname(String nickname){
-        List<UserEntity> userEntityList = mapper.selUserEntity();
-        for(UserEntity entity : userEntityList){
+        List<UserInfo> userInfoList = mapper.selUserEntity();
+        for(UserInfo entity : userInfoList){
             if(entity.getNickname().equals(nickname)){
                 throw new CustomException(UserErrorCode.ALREADY_USED_NICKNAME);
             }
@@ -102,7 +102,7 @@ public class UserService {
         if(dto.getUserPk() == 0){
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
-        UserEntity entity = mapper.userEntityByUserPk(dto.getUserPk());
+        UserInfo entity = mapper.userEntityByUserPk(dto.getUserPk());
         if(!passwordEncoder.matches(dto.getUpw(), entity.getUpw())){
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
         }

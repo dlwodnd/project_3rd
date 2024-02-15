@@ -275,13 +275,13 @@ public class HotelService {
 
     }
     //--------------------------------------------호텔 상세페이지----------------------------------------------------------
-    public HotelInfoEntity getHotelDetail(int hotelPk){
+    public HotelInfo getHotelDetail(int hotelPk){
         if(hotelPk > 0) {
             int userPk= authenticationFacade.getLoginUserPk();
             log.info("userPk : {}",userPk);
 
             //메인페이지 객체 생성
-            HotelInfoEntity hotelInfoEntity = new HotelInfoEntity();
+            HotelInfo hotelInfo = new HotelInfo();
             // 호텔 기본적인 정보.
             HotelInfoVo hotelInfoVo = mapper.getHotelDetail(hotelPk);
             //호텔 사진 넣어줌.
@@ -321,7 +321,7 @@ public class HotelService {
             hotelInfoVo.setRoomList(roomInfoVos);
 
 
-            hotelInfoEntity.setHotelInfoVo(hotelInfoVo);
+            hotelInfo.setHotelInfoVo(hotelInfoVo);
 
             List<LocalDate> twoMonthDate = getTwoMonth();
             //twoMonthDate : 두달동안 날짜 리스트(LocalDate 타입)
@@ -373,16 +373,16 @@ public class HotelService {
                 log.info("roomEas : {}", roomEas);
             });
 
-            hotelInfoEntity.setRoomEaByDates(eaByDates);
+            hotelInfo.setRoomEaByDates(eaByDates);
 
             if (userPk >= 1) {
                 List<MyDog> myDogList = mapper.getMyDogs(userPk);
                 if(myDogList.size()>0){
-                    hotelInfoEntity.setMyDogList(myDogList);
+                    hotelInfo.setMyDogList(myDogList);
                 }
-                log.info("myDogList : {}", hotelInfoEntity.getMyDogList());
+                log.info("myDogList : {}", hotelInfo.getMyDogList());
             }
-            return hotelInfoEntity;
+            return hotelInfo;
         }
         throw new CustomException(CommonErrorCode.RESOURCE_NOT_FOUND);
     }

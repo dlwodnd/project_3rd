@@ -1,7 +1,7 @@
 package com.green.hoteldog.user;
 
-import com.green.hoteldog.user.models.UserAddressEntity;
-import com.green.hoteldog.user.models.UserEntity;
+import com.green.hoteldog.user.models.UserAddressInfo;
+import com.green.hoteldog.user.models.UserInfo;
 import com.green.hoteldog.user.models.UserSignupDto;
 import com.green.hoteldog.user.models.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +18,13 @@ public class UserRepository implements UserRepositoryRef{
     public Integer userSignup(UserSignupDto dto) {
         return userMapper.userSignup(dto);
     }
-    public Integer insUserAddress(UserAddressEntity entity) {
+    public Integer insUserAddress(UserAddressInfo entity) {
         return userMapper.insUserAddress(entity);
     }
-    public UserEntity userEntityByUserEmail(String userEmail) {
+    public UserInfo userEntityByUserEmail(String userEmail) {
         return userMapper.userEntityByUserEmail(userEmail);
     }
-    public List<UserEntity> selUserEntity() {
+    public List<UserInfo> selUserEntity() {
         return userMapper.selUserEntity();
     }
     public List<Integer> selUserDogSize(int userPk) {
@@ -33,7 +33,7 @@ public class UserRepository implements UserRepositoryRef{
     public String selUserDepthName(int userPk) {
         return userMapper.selUserDepthName(userPk);
     }
-    public UserEntity userEntityByUserPk(int userPk) {
+    public UserInfo userEntityByUserPk(int userPk) {
         return userMapper.userEntityByUserPk(userPk);
     }
     public Integer updateUserInfo(UserUpdateDto dto) {

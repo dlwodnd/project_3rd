@@ -75,11 +75,11 @@ public class HotelController {
     //-------------------------------------------------호텔 상세페이지 출력------------------------------------------------
     @GetMapping
     @Operation(summary = "호텔 상세페이지 전체화면", description = "호텔 상세페이지 전체화면 부분")
-    public HotelInfoEntity getHotelDetail(@RequestParam("hotel_pk") int hotelPk){
+    public HotelInfo getHotelDetail(@RequestParam("hotel_pk") int hotelPk){
         HotelMainPageDto dto= new HotelMainPageDto();
         dto.setHotelPk(hotelPk);
 
-        HotelInfoEntity mainPage=service.getHotelDetail(hotelPk);
+        HotelInfo mainPage=service.getHotelDetail(hotelPk);
         return mainPage;
     }
     //------------------------------------------호텔 상세페이지에서 날짜 선택했을때------------------------------------------

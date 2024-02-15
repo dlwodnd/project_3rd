@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 @Data
-public class UserAddressEntity {
+public class UserAddressInfo {
     @JsonIgnore
     private int userPk;
     private String addressName;

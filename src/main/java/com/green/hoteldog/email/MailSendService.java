@@ -2,7 +2,7 @@ package com.green.hoteldog.email;
 
 import com.green.hoteldog.common.RedisUtil;
 import com.green.hoteldog.user.UserMapper;
-import com.green.hoteldog.user.models.UserEntity;
+import com.green.hoteldog.user.models.UserInfo;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +24,9 @@ public class MailSendService {
     private RedisUtil redisUtil;
     private final UserMapper userMapper;
     public boolean checkDuplicationEmail(String email){
-        List<UserEntity> userEntityList = userMapper.selUserEntity();
-        for(UserEntity userEntity : userEntityList){
-            if(userEntity.getUserEmail().equals(email)){
+        List<UserInfo> userInfoList = userMapper.selUserEntity();
+        for(UserInfo userInfo : userInfoList){
+            if(userInfo.getUserEmail().equals(email)){
                 return true;
             }
         }

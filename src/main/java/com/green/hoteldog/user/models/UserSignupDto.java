@@ -30,5 +30,5 @@ public class UserSignupDto {
     private String userAddress;
 
 
-    private UserAddressEntity addressEntity;
+    private UserAddressInfo addressEntity;
 }

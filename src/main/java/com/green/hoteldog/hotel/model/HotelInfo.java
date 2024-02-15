@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Schema(name = "호텔 상세페이지 전체화면")
-public class HotelInfoEntity {
+public class HotelInfo {
     @JsonProperty(value = "hotel_info_vo")
     private HotelInfoVo hotelInfoVo;
     @JsonProperty(value = "my_dog_list")

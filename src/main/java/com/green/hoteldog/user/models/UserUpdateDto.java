@@ -11,5 +11,5 @@ public class UserUpdateDto {
     private String phoneNum;
     private String userAddress;
 
-    private UserAddressEntity addressEntity;
+    private UserAddressInfo addressEntity;
 }
