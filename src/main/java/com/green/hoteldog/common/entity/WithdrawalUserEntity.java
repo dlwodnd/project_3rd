@@ -13,10 +13,13 @@ public class WithdrawalUserEntity {
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "user_pk",referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userPk;
+
     @Column(nullable = false)
     private LocalDateTime approvalDate;
+
     @Column(nullable = false)
     private LocalDateTime applyDate;
+
     @Column(nullable = false)
     private String reason;
 }

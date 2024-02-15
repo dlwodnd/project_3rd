@@ -4,8 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-@Data
+/*@Data
 @Entity
-@Table(name = "")
+@Table(name = "")*/
 public class HotelAdvertiseEntity {
 }
