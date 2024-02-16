@@ -10,7 +10,7 @@ public class HotelWhereEntity {
     @Id
     @OneToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "hotel_pk",referencedColumnName = "hotelPk",columnDefinition = "BIGINT UNSIGNED")
-    private HotelEntity hotelPk;
+    private HotelEntity hotelEntity;
 
     @Column(nullable = false)
     private String addressName;

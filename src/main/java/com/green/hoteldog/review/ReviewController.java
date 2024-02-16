@@ -69,7 +69,10 @@ public class ReviewController {
     //--------------------------------------------------리뷰 삭제--------------------------------------------------------
     @DeleteMapping
     @Operation(summary = "리뷰 삭제", description = "리뷰 삭제처리")
-    public ResVo delReview(@Valid DelReviewDto dto) {
+    public ResVo delReview(int reviewPk,int resPk) {
+        DelReviewDto dto = new DelReviewDto();
+        dto.setReviewPk(reviewPk);
+        dto.setResPk(resPk);
         return service.delReview(dto);
     }
 

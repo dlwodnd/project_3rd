@@ -1,5 +1,6 @@
 package com.green.hoteldog.common.entity;
 
+import com.green.hoteldog.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,11 +15,11 @@ public class UserDogEntity extends BaseEntity {
 
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "user_pk",referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
-    private UserEntity userPk;
+    private UserEntity userEntity;
 
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "size_pk",referencedColumnName = "sizePk",columnDefinition = "BIGINT UNSIGNED")
-    private DogSizeEntity sizePk;
+    private DogSizeEntity dogSizeEntity;
 
     @Column(nullable = false)
     private String dogNm;

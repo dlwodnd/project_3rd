@@ -14,11 +14,11 @@ public class BoardCommentEntity {
 
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "user_pk",referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
-    private UserEntity userPk;
+    private UserEntity userEntity;
 
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "board_pk",referencedColumnName = "boardPk",columnDefinition = "BIGINT UNSIGNED")
-    private BoardEntity boardPk;
+    private BoardEntity boardEntity;
 
     @Column(nullable = false)
     private String comment;

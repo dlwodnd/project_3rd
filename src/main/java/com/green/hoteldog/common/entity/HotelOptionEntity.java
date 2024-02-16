@@ -1,11 +1,17 @@
 package com.green.hoteldog.common.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
-/*@Data
+@Data
 @Entity
-@Table(name = "")*/
+@Table(name = "t_hotel_option_info")
 public class HotelOptionEntity {
+    @Id
+    @Column(columnDefinition = "BIGINT UNSIGNED")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long hotelPk;
+
+    @Column(nullable = false)
+    private String hotelNm;
 }

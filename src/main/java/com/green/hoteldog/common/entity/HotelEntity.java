@@ -1,5 +1,6 @@
 package com.green.hoteldog.common.entity;
 
+import com.green.hoteldog.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,7 +15,7 @@ public class HotelEntity extends BaseEntity {
 
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "business_pk",referencedColumnName = "businessPk",columnDefinition = "BIGINT UNSIGNED")
-    private BusinessEntity businessPk;
+    private BusinessEntity businessEntity;
 
     @Column(nullable = false)
     private String hotelNm;
@@ -34,6 +35,9 @@ public class HotelEntity extends BaseEntity {
     @Column(nullable = false)
     private Long approval;
 
+    @Column(nullable = false)
+    private Long signStatus;
 
+    private String cancelReason;
 
 }

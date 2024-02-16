@@ -13,7 +13,7 @@ public class ReviewEntity {
     private Long reviewPk;
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "res_pk",referencedColumnName = "resPk",columnDefinition = "BIGINT UNSIGNED")
-    private ReservationEntity resPk;
+    private ReservationEntity reservationEntity;
     @Column(nullable = false)
     private String comment;
     @Column(nullable = false)

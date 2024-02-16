@@ -148,33 +148,41 @@ public class ReservationService {
         int perPage = Const.RES_LIST_COUNT_PER_PAGE;
         int pages = (page - 1) * Const.RES_LIST_COUNT_PER_PAGE;
         List<ResInfoVo> resInfoVos = reservationMapper.getUserReservation(userPk, perPage, pages);
-
-        List<Integer> resPkList = resInfoVos
-                .stream()
-                .map(ResInfoVo::getResPk)
-                .collect(Collectors.toList());
-        List<Integer> hotelPkList = resInfoVos
-                .stream()
-                .map(ResInfoVo::getHotelPK)
-                .collect(Collectors.toList());
-        log.info("hotelPkList : {}", hotelPkList);
-
-        List<ResDogInfoVo> resDogInfo = reservationMapper.getDogInfoReservation(resPkList);
-        List<ResHotelPicVo> resHotelPicVos = reservationMapper.getHotelResPic(hotelPkList);
-        resInfoVos.forEach(resInfoVo -> {
-            List<ResDogInfoVo> resDogInfoVoList = resDogInfo
+        if(resInfoVos != null && resInfoVos.size() > 0){
+            List<Integer> resPkList = resInfoVos
                     .stream()
-                    .filter(resDogInfoVo -> resInfoVo.getResPk() == resDogInfoVo.getResPk())
+                    .map(ResInfoVo::getResPk)
                     .collect(Collectors.toList());
-            resInfoVo.setResDogInfoVoList(resDogInfoVoList);
-        });
-        resHotelPicVos.forEach(picVo ->
-                resInfoVos.stream()
-                        .filter(vo -> picVo.getHotelPk() == vo.getHotelPK())
-                        .findFirst()
-                        .ifPresent(vo -> vo.setPic(picVo.getPic()))
-        );
-        log.info("resHotelPicVos : {}", resHotelPicVos);
+            List<Integer> hotelPkList = resInfoVos
+                    .stream()
+                    .map(ResInfoVo::getHotelPK)
+                    .collect(Collectors.toList());
+            log.info("hotelPkList : {}", hotelPkList);
+
+            List<ResDogInfoVo> resDogInfo = reservationMapper.getDogInfoReservation(resPkList);
+            List<ResHotelPicVo> resHotelPicVos = reservationMapper.getHotelResPic(hotelPkList);
+            if(resDogInfo != null && resDogInfo.size() > 0){
+                resInfoVos.forEach(resInfoVo -> {
+                    List<ResDogInfoVo> resDogInfoVoList = resDogInfo
+                            .stream()
+                            .filter(resDogInfoVo -> resInfoVo.getResPk() == resDogInfoVo.getResPk())
+                            .collect(Collectors.toList());
+                    resInfoVo.setResDogInfoVoList(resDogInfoVoList);
+                });
+            }
+
+            if(resHotelPicVos != null && resHotelPicVos.size() > 0){
+                resHotelPicVos.forEach(picVo ->
+                        resInfoVos.stream()
+                                .filter(vo -> picVo.getHotelPk() == vo.getHotelPK())
+                                .findFirst()
+                                .ifPresent(vo -> vo.setPic(picVo.getPic()))
+                );
+            }
+
+            log.info("resHotelPicVos : {}", resHotelPicVos);
+        }
+
 
         return resInfoVos;
     }

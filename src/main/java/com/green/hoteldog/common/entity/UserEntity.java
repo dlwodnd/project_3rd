@@ -1,5 +1,6 @@
 package com.green.hoteldog.common.entity;
 
+import com.green.hoteldog.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
@@ -7,7 +8,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Data
 @Entity
 @Table(name = "t_user")
-public class UserEntity extends BaseEntity{
+public class UserEntity extends BaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

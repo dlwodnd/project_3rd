@@ -1,12 +1,14 @@
 package com.green.hoteldog.common.entity;
 
+import com.green.hoteldog.common.entity.base.BaseEntity;
+import com.green.hoteldog.common.entity.base.CreatedAtBaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "t_board_pic")
-public class BoardPicsEntity extends BaseEntity {
+public class BoardPicsEntity extends CreatedAtBaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +16,7 @@ public class BoardPicsEntity extends BaseEntity {
 
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "board_pk",referencedColumnName = "boardPk",columnDefinition = "BIGINT UNSIGNED")
-    private BoardEntity boardPk;
+    private BoardEntity boardEntity;
     @Column(nullable = false)
     private String pic;
 }

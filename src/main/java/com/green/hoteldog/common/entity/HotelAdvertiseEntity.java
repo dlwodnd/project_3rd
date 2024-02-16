@@ -16,13 +16,20 @@ public class HotelAdvertiseEntity {
 
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "hotel_pk",referencedColumnName = "hotelPk",columnDefinition = "BIGINT UNSIGNED")
-    private HotelEntity hotelPk;
+    private HotelEntity hotelEntity;
 
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "advertise_policy_pk",referencedColumnName = "advertisePolicyPk",columnDefinition = "BIGINT UNSIGNED")
-    private HotelAdvertisePolicyEntity advertisePolicyPk;
+    private HotelAdvertisePolicyEntity hotelAdvertisePolicyEntity;
 
     private LocalDateTime hotelAdvertiseToDate;
+
     private LocalDateTime hotelAdvertiseFromDate;
+
     private Long paymentStatus;
+
+    @Column(nullable = false)
+    private Long signStatus;
+
+    private String cancelReason;
 }
