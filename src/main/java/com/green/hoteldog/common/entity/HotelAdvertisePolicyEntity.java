@@ -1,11 +1,14 @@
 package com.green.hoteldog.common.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
-/*@Data
+@Data
 @Entity
-@Table(name = "")*/
+@Table(name = "t_hotle_advertise_policy")
 public class HotelAdvertisePolicyEntity {
+    @Id
+    @Column(columnDefinition = "BIGINT UNSIGNED")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long advertisePolicyPk;
 }

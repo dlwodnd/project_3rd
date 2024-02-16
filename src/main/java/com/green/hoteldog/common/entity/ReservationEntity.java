@@ -21,10 +21,13 @@ public class ReservationEntity extends BaseEntity{
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "hotel_pk",referencedColumnName = "hotelPk",columnDefinition = "BIGINT UNSIGNED")
     private HotelEntity hotelPk;
+
     @Column(nullable = false)
     private LocalDateTime fromDate;
+
     @Column(nullable = false)
     private LocalDateTime toDate;
+
     @Column(nullable = false)
     @ColumnDefault("'0'")
     private Long resStatus;
