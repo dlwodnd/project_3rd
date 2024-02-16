@@ -22,61 +22,63 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class BoardService {
-    private final BoardRepositoryRef boardRepository;
+    private final BoardMapper boardMapper;
     private final MyFileUtils fileUtils;
     private final AuthenticationFacade facade;
+
     //---------------------------------------------------게시글 등록------------------------------------------------------
-    public ResVo postBoard(PostBoardDto dto){
+    public ResVo postBoard(PostBoardDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
-        if(dto.getUserPk() == 0){
+        if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
-        log.info("postDto : {}",dto);
+        log.info("postDto : {}", dto);
         try {
-            boardRepository.postBoard(dto);
-        }catch (Exception e){
+            boardMapper.postBoard(dto);
+        } catch (Exception e) {
             return new ResVo(0);
         }
-        if(dto.getPics() != null){
+        if (dto.getPics() != null) {
             List<String> pics = new ArrayList<>();
-            String target = "/board/"+dto.getBoardPk();
-            for(MultipartFile file : dto.getPics()){
-                String saveFileNm = fileUtils.transferTo(file,target);
+            String target = "/board/" + dto.getBoardPk();
+            for (MultipartFile file : dto.getPics()) {
+                String saveFileNm = fileUtils.transferTo(file, target);
                 pics.add(saveFileNm);
             }
             PostBoardPicDto picsDto = new PostBoardPicDto();
             picsDto.setBoardPk(dto.getBoardPk());
             picsDto.setPics(pics);
             try {
-                boardRepository.postBoardPics(picsDto);
-            }catch (Exception e){
+                boardMapper.postBoardPics(picsDto);
+            } catch (Exception e) {
                 return new ResVo(0);
             }
         }
         return new ResVo(1);
     }
+
     //---------------------------------------------------게시글 수정------------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
-    public ResVo putBoard(PutBoardDto dto){
+    public ResVo putBoard(PutBoardDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
-        if(dto.getUserPk() == 0){
+        if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
-        int result = boardRepository.putBoard(dto);
-        if (result == 0){
+        int result = boardMapper.putBoard(dto);
+        if (result == 0) {
             return new ResVo(0);
         }
-        if(dto.getPics() != null){
-            String target = "/board/"+dto.getBoardPk();
+        if (dto.getPics() != null) {
+            String target = "/board/" + dto.getBoardPk();
             try {
                 fileUtils.delFolderTrigger(target);
-                boardRepository.delBoardPics(dto.getBoardPk());
-            }catch (Exception e){
+                boardMapper.delBoardPics(dto.getBoardPk());
+            } catch (Exception e) {
                 throw new CustomException(CommonErrorCode.ACCEPTED);
             }
             List<String> pics = new ArrayList<>();
-            for(MultipartFile file : dto.getPics()){
-                String saveFileNm = fileUtils.transferTo(file,target);
+            for (MultipartFile file : dto.getPics()) {
+                String saveFileNm = fileUtils.transferTo(file, target);
                 pics.add(saveFileNm);
             }
 
@@ -84,13 +86,14 @@ public class BoardService {
             picsDto.setBoardPk(dto.getBoardPk());
             picsDto.setPics(pics);
             try {
-                boardRepository.postBoardPics(picsDto);
-            }catch (Exception e){
+                boardMapper.postBoardPics(picsDto);
+            } catch (Exception e) {
                 throw new CustomException(CommonErrorCode.ACCEPTED);
             }
         }
         return new ResVo(1);
     }
+
     //---------------------------------------------------게시글 좋아요 임시 중단-------------------------------------------
     /*
     public ResVo putBoardFav(BoardFavDto dto){
@@ -107,123 +110,132 @@ public class BoardService {
     */
     //---------------------------------------------------게시글 삭제------------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
-    public ResVo deleteBoard(DeleteBoardDto dto){
+    public ResVo deleteBoard(DeleteBoardDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
-        log.info("DeleteBoardDto : {}",dto);
-        if(dto.getUserPk() == 0){
+        log.info("DeleteBoardDto : {}", dto);
+        if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
-        int result = boardRepository.delBoard(dto);
-        log.info("result : {} , dto.getBoardPkList().size() : {}",result,dto.getBoardPkList().size());
-        if (result != dto.getBoardPkList().size()){
+        int result = boardMapper.delBoard(dto);
+        log.info("result : {} , dto.getBoardPkList().size() : {}", result, dto.getBoardPkList().size());
+        if (result != dto.getBoardPkList().size()) {
             throw new CustomException(BoardErrorCode.BAD_REQUEST_BOARD_PK);
         }
 
-        for(Integer boardPk : dto.getBoardPkList()){
-            String target = "/board/"+boardPk;
+        for (Integer boardPk : dto.getBoardPkList()) {
+            String target = "/board/" + boardPk;
             fileUtils.delAllFolderTrigger(target);
         }
         return new ResVo(Const.SUCCESS);
     }
+
     //---------------------------------------------------댓글 등록--------------------------------------------------------
-    public ResVo postComment(PostCommentDto dto){
+    public ResVo postComment(PostCommentDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
-        if(dto.getUserPk() == 0){
+        if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
-        int result = boardRepository.postComment(dto);
+        int result = boardMapper.postComment(dto);
         return new ResVo(result);
     }
+
     //---------------------------------------------------댓글 삭제--------------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
-    public ResVo deleteComment(DeleteCommentDto dto){
+    public ResVo deleteComment(DeleteCommentDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
-        if(dto.getUserPk() == 0){
+        if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
-        int result = boardRepository.delComment(dto);
-        if (result != dto.getCommentPkList().size()){
+        int result = boardMapper.delComment(dto);
+        if (result != dto.getCommentPkList().size()) {
             throw new CustomException(BoardErrorCode.BAD_REQUEST_BOARD_PK);
         }
         return new ResVo(Const.SUCCESS);
     }
+
     //---------------------------------------------------댓글 수정--------------------------------------------------------
-    public ResVo updateComment(PutCommentDto dto){
+    public ResVo updateComment(PutCommentDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
-        if(dto.getUserPk() == 0){
+        if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
-        int result = boardRepository.updComment(dto);
+        int result = boardMapper.updComment(dto);
         return new ResVo(result);
     }
+
     //---------------------------------------------------게시글 리스트----------------------------------------------------
-    public GetSimpleBoardVo getBoardList(GetBoardListDto dto){
+    public GetSimpleBoardVo getBoardList(GetBoardListDto dto) {
         GetSimpleBoardVo vo = new GetSimpleBoardVo();
-        vo.setSimpleBoardVoList(boardRepository.getBoardList(dto));
-        int boardCount = boardRepository.selBoardCount(dto);
+        vo.setSimpleBoardVoList(boardMapper.getBoardList(dto));
+        int boardCount = boardMapper.selBoardCount(dto);
         int maxPage = 1;
-        if (boardCount != 0){
-            maxPage = this.maxPage(boardCount,dto.getRowCount());
+        if (boardCount != 0) {
+            maxPage = this.maxPage(boardCount, dto.getRowCount());
         }
         vo.setMaxPage(maxPage);
         return vo;
     }
+
     //---------------------------------------------------게시글 정보------------------------------------------------------
-    public GetBoardInfoVo getBoardInfo(GetBoardInfoDto dto){
-        boardRepository.boardViewCount(dto.getBoardPk());
-        GetBoardInfoVo vo = boardRepository.getBoardInfo(dto.getBoardPk());
-        vo.setPics(boardRepository.selBoardPics(dto.getBoardPk()));
+    public GetBoardInfoVo getBoardInfo(GetBoardInfoDto dto) {
+        boardMapper.boardViewCount(dto.getBoardPk());
+        GetBoardInfoVo vo = boardMapper.getBoardInfo(dto.getBoardPk());
+        vo.setPics(boardMapper.selBoardPics(dto.getBoardPk()));
         return vo;
     }
-    //--------------------------------------------게시글에 등록된 댓글 리스트------------------------------------------------
-    public BoardCommentVo getBoardComment(GetBoardCommentDto dto){
 
-        List<CommentInfoVo> boardComment  = boardRepository.selBoardComment(dto);
+    //--------------------------------------------게시글에 등록된 댓글 리스트------------------------------------------------
+    public BoardCommentVo getBoardComment(GetBoardCommentDto dto) {
+
+        List<CommentInfoVo> boardComment = boardMapper.selBoardComment(dto);
         BoardCommentVo vo = new BoardCommentVo();
         vo.setCommentInfoVoList(boardComment);
-        int commentCount = boardRepository.selBoardCommentCount(dto.getBoardPk());
+        int commentCount = boardMapper.selBoardCommentCount(dto.getBoardPk());
         vo.setCommentCount(commentCount);
-        int commentMaxPage = this.maxPage(commentCount,dto.getRowCount());
-        if(commentMaxPage == 0){
+        int commentMaxPage = this.maxPage(commentCount, dto.getRowCount());
+        if (commentMaxPage == 0) {
             commentMaxPage = 1;
         }
         vo.setCommentMaxPage(commentMaxPage);
         return vo;
     }
+
     //--------------------------------------------로그인 유저가 작성한 게시글-----------------------------------------------
-    public GetSimpleBoardVo userPostingBoardList(GetUserBoardListDto dto){
+    public GetSimpleBoardVo userPostingBoardList(GetUserBoardListDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
-        if(dto.getUserPk() == 0){
+        if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
         GetSimpleBoardVo vo = new GetSimpleBoardVo();
-        vo.setSimpleBoardVoList(boardRepository.myPostingBoardList(dto));
-        int userBoardCount = boardRepository.selUserBoardCount(dto.getUserPk());
+        vo.setSimpleBoardVoList(boardMapper.myPostingBoardList(dto));
+        int userBoardCount = boardMapper.selUserBoardCount(dto.getUserPk());
         int userBoardMaxPage = 1;
-        if(userBoardCount != 0){
-            userBoardMaxPage = this.maxPage(userBoardCount,dto.getRowCount());
+        if (userBoardCount != 0) {
+            userBoardMaxPage = this.maxPage(userBoardCount, dto.getRowCount());
         }
         vo.setMaxPage(userBoardMaxPage);
         return vo;
     }
+
     //--------------------------------------------로그인 유저가 작성한 댓글-------------------------------------------------
-    public GetUserCommentVo userPostingCommentList(GetUserCommentListDto dto){
+    public GetUserCommentVo userPostingCommentList(GetUserCommentListDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
-        if(dto.getUserPk() == 0){
+        if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
         GetUserCommentVo vo = new GetUserCommentVo();
-        vo.setUserCommentVoList(boardRepository.myPostingCommentList(dto));
-        int userCommentCount = boardRepository.selUserCommentCount(dto.getUserPk());
+        vo.setUserCommentVoList(boardMapper.myPostingCommentList(dto));
+        int userCommentCount = boardMapper.selUserCommentCount(dto.getUserPk());
         int userCommentMaxPage = 1;
-        if(userCommentCount != 0){
-            userCommentMaxPage = this.maxPage(boardRepository.selUserCommentCount(dto.getUserPk()),dto.getRowCount());
+        if (userCommentCount != 0) {
+            userCommentMaxPage = this.maxPage(boardMapper.selUserCommentCount(dto.getUserPk()), dto.getRowCount());
         }
         vo.setMaxPage(userCommentMaxPage);
         return vo;
     }
+
     //------------------------------------------------총 페이지 수 계산---------------------------------------------------
-    public int maxPage (int columnCount,int rowCount){
-        return (int)Math.ceil((double) columnCount / rowCount);
+    public int maxPage(int columnCount, int rowCount) {
+        return (int) Math.ceil((double) columnCount / rowCount);
     }
 }

@@ -16,57 +16,61 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DogService {
-    private final DogRepositoryRef dogRepository;
+    private final DogMapper dogMapper;
     private final MyFileUtils fileUtils;
     private final AuthenticationFacade facade;
+
     //-------------------------------------유저가 등록한 강아지 리스트 호출-------------------------------------------------
-    public List<GetDogListVo> selUserDogList(){
+    public List<GetDogListVo> selUserDogList() {
         GetUserDogDto dto = new GetUserDogDto();
         dto.setUserPk(facade.getLoginUserPk());
-        if (dto.getUserPk() == 0){
+        if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
-        return dogRepository.selUserDog(dto);
+        return dogMapper.selUserDog(dto);
     }
+
     //-------------------------------------------------유저 강아지 등록---------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
-    public ResVo insUserDog(InsUserDogDto dto){
+    public ResVo insUserDog(InsUserDogDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
-        if (dto.getUserPk() == 0){
+        if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
         try {
-            dogRepository.insUserDog(dto);
-            if(dto.getDogPic() != null){
-                String target = "/user/"+dto.getUserPk()+"/"+dto.getUserDogPk();
-                String saveFileNm = fileUtils.transferTo(dto.getDogPic(),target);
+            dogMapper.insUserDog(dto);
+            if (dto.getDogPic() != null) {
+                String target = "/user/" + dto.getUserPk() + "/" + dto.getUserDogPk();
+                String saveFileNm = fileUtils.transferTo(dto.getDogPic(), target);
                 SetUserDogPicDto picDto = new SetUserDogPicDto();
                 picDto.setPic(saveFileNm);
                 picDto.setUserDogPk(dto.getUserDogPk());
                 picDto.setUserPk(dto.getUserPk());
-                dogRepository.setUserDogPic(picDto);
+                dogMapper.setUserDogPic(picDto);
             }
             return new ResVo(1);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new CustomException(CommonErrorCode.INVALID_PARAMETER);
         }
     }
+
     //---------------------------------------------유저 강아지 정보 수정---------------------------------------------------
-    public ResVo updUserDog(UpdUserDogDto dto){
+    public ResVo updUserDog(UpdUserDogDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
-        if (dto.getUserPk() == 0){
+        if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
-        int result = dogRepository.updUserDog(dto);
+        int result = dogMapper.updUserDog(dto);
         return new ResVo(result);
     }
+
     //--------------------------------------------유저 강아지 사진 정보 수정------------------------------------------------
-    public ResVo updUserDogPic(PatchUserDogPicDto dto){
+    public ResVo updUserDogPic(PatchUserDogPicDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
-        if (dto.getUserPk() == 0){
+        if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
-        String target = "/user/"+facade.getLoginUserPk()+"/"+dto.getUserDogPk();
+        String target = "/user/" + facade.getLoginUserPk() + "/" + dto.getUserDogPk();
         fileUtils.delFolderTrigger(target);
         String saveFileNm = fileUtils.transferTo(dto.getPic(), target);
         SetUserDogPicDto picDto = new SetUserDogPicDto();
@@ -74,19 +78,20 @@ public class DogService {
         picDto.setUserDogPk(dto.getUserDogPk());
         picDto.setPic(saveFileNm);
         try {
-            dogRepository.setUserDogPic(picDto);
-        }catch (Exception e){
+            dogMapper.setUserDogPic(picDto);
+        } catch (Exception e) {
             return new ResVo(0);
         }
         return new ResVo(1);
     }
+
     //---------------------------------------------------유저 강아지 삭제-------------------------------------------------
-    public ResVo delUserDog(DelUserDogDto dto){
+    public ResVo delUserDog(DelUserDogDto dto) {
         dto.setUserPk(facade.getLoginUserPk());
         String target = "/user/" + dto.getUserPk();
         try {
-            dogRepository.delUserDog(dto);
-        }catch (Exception e){
+            dogMapper.delUserDog(dto);
+        } catch (Exception e) {
             return new ResVo(0);
         }
         fileUtils.delFolderTrigger(target);

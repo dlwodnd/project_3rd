@@ -20,32 +20,33 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ReservationService {
-    private final ReservationRepositoryRef reservationRepository;
+    private final ReservationMapper reservationMapper;
     private final AuthenticationFacade authenticationFacade;
+
     //--------------------------------------------------호텔 예약---------------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
-    public ResVo postHotelReservation(List<HotelReservationInsDto> dto){
+    public ResVo postHotelReservation(List<HotelReservationInsDto> dto) {
         log.info("dto : {}", dto);
-        for ( HotelReservationInsDto dtos : dto ) {
+        for (HotelReservationInsDto dtos : dto) {
             dtos.setUserPk(authenticationFacade.getLoginUserPk());
-            if(dtos.getUserPk() == 0){
+            if (dtos.getUserPk() == 0) {
                 throw new CustomException(ReservationErrorCode.UNKNOWN_USER_PK);
             }
-            int affectedrows = reservationRepository.insHotelReservation(dtos);
+            int affectedrows = reservationMapper.insHotelReservation(dtos);
             dtos.setResPk(dtos.getResPk());
-            if (dtos.getResPk() == null){
+            if (dtos.getResPk() == null) {
                 throw new CustomException(ReservationErrorCode.RESERVATION_TABLE_REGISTRATION_FAILED); // 예약 테이블에 등록 실패
             }
-            for ( DogInfo info : dtos.getDogInfo() ) {
-                int affectedRows1 = reservationRepository.insHotelReservationDogInfo(info);
-                if(affectedRows1 == 0){
+            for (DogInfo info : dtos.getDogInfo()) {
+                int affectedRows1 = reservationMapper.insHotelReservationDogInfo(info);
+                if (affectedRows1 == 0) {
                     throw new CustomException(ReservationErrorCode.RESERVATION_DOG_TABLE_REGISTRATION_FAILED); // 예약 강아지 정보 등록 실패
                 }
             }
         }
-        for ( HotelReservationInsDto dtos : dto ) {
-            int affectedRows2 = reservationRepository.insHotelReservationInfo(dtos);
-            if(affectedRows2 == 0){
+        for (HotelReservationInsDto dtos : dto) {
+            int affectedRows2 = reservationMapper.insHotelReservationInfo(dtos);
+            if (affectedRows2 == 0) {
                 throw new CustomException(ReservationErrorCode.ROOM_AND_DOG_RESERVATION_TABLE_REGISTRATION_FAILED); // 예약방강아지 예약정보 등록 실패
             }
         }
@@ -74,54 +75,55 @@ public class ReservationService {
             }
         }
         try {
-            int affectedRows3 = reservationRepository.updRemainedHotelRoom(updList);
+            int affectedRows3 = reservationMapper.updRemainedHotelRoom(updList);
             log.info("affectedRows3 : {}", affectedRows3);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new CustomException(ReservationErrorCode.NO_ROOMS_AVAILABLE_FOR_THIS_DATE);
         }
         return new ResVo(Const.SUCCESS);
     }
+
     //---------------------------------------------------예약 취소--------------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
-    public ResVo delHotelReservation(HotelReservationDelDto dto){
+    public ResVo delHotelReservation(HotelReservationDelDto dto) {
         dto.setUserPk(authenticationFacade.getLoginUserPk());
         // 먼저 유저가 예약 했는지 셀렉트
-        List<HotelReservationSelProcVo> procVo = reservationRepository.selHotelReservation(dto);
-        if(procVo.size() == 0){
+        List<HotelReservationSelProcVo> procVo = reservationMapper.selHotelReservation(dto);
+        if (procVo.size() == 0) {
             throw new CustomException(ReservationErrorCode.NO_RESERVATION_INFORMATION);  // 예약 정보 없음
         }
-        for ( HotelReservationSelProcVo vo: procVo ) {
+        for (HotelReservationSelProcVo vo : procVo) {
             dto.setResPk(vo.getResPk()); // 다 같은 pk
             dto.getResDogPkList().add(vo.getResDogPk());
         }
-        List<Integer> roomPk = reservationRepository.selHotelRoomPk(dto);
-        if (roomPk == null){
+        List<Integer> roomPk = reservationMapper.selHotelRoomPk(dto);
+        if (roomPk == null) {
             throw new CustomException(ReservationErrorCode.ROOM_PK_SELECT_FAILURE);
         }
         dto.setHotelRoomPk(roomPk);
 
         // 호텔방강아지테이블 삭제
-        int affectedRows1 = reservationRepository.delHotelReservationInfo(dto);
+        int affectedRows1 = reservationMapper.delHotelReservationInfo(dto);
         log.info("affectedRowsHotelReservationInfoDel : {}", affectedRows1);
-        if(affectedRows1 == 0){
+        if (affectedRows1 == 0) {
             throw new CustomException(ReservationErrorCode.FAILED_TO_DELETE_HOTEL_ROOM_DOG_TABLE);
         }
         // 예약 강아지 테이블 삭제
-        int affectedRows2 = reservationRepository.delHotelReservationDogInfo(dto);
+        int affectedRows2 = reservationMapper.delHotelReservationDogInfo(dto);
         log.info("affectedRowsHotelDogInfoDel : {}", affectedRows2);
-        if(affectedRows2 == 0){
+        if (affectedRows2 == 0) {
             throw new CustomException(ReservationErrorCode.FAILED_TO_DELETE_RESERVED_DOG_TABLE);
         }
         // 호텔 예약 테이블 삭제
-        int affectedRows3 = reservationRepository.delHotelReservation(dto);
+        int affectedRows3 = reservationMapper.delHotelReservation(dto);
         log.info("affectedRowsHotelReservationDel : {}", affectedRows3);
-        if(affectedRows3 == 0){
+        if (affectedRows3 == 0) {
             throw new CustomException(ReservationErrorCode.FAILED_TO_DELETE_HOTEL_RESERVATION_TABLE);
         }
         // 호텔방 관리테이블 업데이트
         // fromdate, todate를 다 가져와 dateRange로 변경
         List<LocalDate> dateRange = new ArrayList<>();
-        for ( HotelReservationSelProcVo vo: procVo ) {
+        for (HotelReservationSelProcVo vo : procVo) {
             LocalDate fromDate = vo.getFromDate();
             LocalDate toDate = vo.getToDate();
             while (!fromDate.isAfter(toDate)) {
@@ -133,31 +135,32 @@ public class ReservationService {
         HotelReservationUpdProc2Dto pDtoList = new HotelReservationUpdProc2Dto();
         pDtoList.setDate(dateRange);
         pDtoList.setHotelRoomPk(dto.getHotelRoomPk());
-        int affectedRows4 = reservationRepository.updRemainedHotelRoom2(pDtoList);
+        int affectedRows4 = reservationMapper.updRemainedHotelRoom2(pDtoList);
         log.info("affectedRowsHotelRoomUpd : {}", affectedRows4);
-        if(affectedRows4 == 0){
+        if (affectedRows4 == 0) {
             throw new CustomException(ReservationErrorCode.HOTEL_ROOM_MANAGEMENT_TABLE_UPDATE_FAILED);
         }
         return new ResVo(Const.SUCCESS);
     }
+
     //--------------------------------------------------예약 정보---------------------------------------------------------
-    public List<ResInfoVo> getUserReservation(int userPk,int page){
-        int perPage=Const.RES_LIST_COUNT_PER_PAGE;
-        int pages=(page-1)*Const.RES_LIST_COUNT_PER_PAGE;
-        List<ResInfoVo> resInfoVos = reservationRepository.getUserReservation(userPk,perPage,pages);
+    public List<ResInfoVo> getUserReservation(int userPk, int page) {
+        int perPage = Const.RES_LIST_COUNT_PER_PAGE;
+        int pages = (page - 1) * Const.RES_LIST_COUNT_PER_PAGE;
+        List<ResInfoVo> resInfoVos = reservationMapper.getUserReservation(userPk, perPage, pages);
 
         List<Integer> resPkList = resInfoVos
                 .stream()
                 .map(ResInfoVo::getResPk)
                 .collect(Collectors.toList());
-        List<Integer> hotelPkList=resInfoVos
+        List<Integer> hotelPkList = resInfoVos
                 .stream()
                 .map(ResInfoVo::getHotelPK)
                 .collect(Collectors.toList());
-        log.info("hotelPkList : {}",hotelPkList);
+        log.info("hotelPkList : {}", hotelPkList);
 
-        List<ResDogInfoVo> resDogInfo = reservationRepository.getDogInfoReservation(resPkList);
-        List<ResHotelPicVo> resHotelPicVos=reservationRepository.getHotelResPic(hotelPkList);
+        List<ResDogInfoVo> resDogInfo = reservationMapper.getDogInfoReservation(resPkList);
+        List<ResHotelPicVo> resHotelPicVos = reservationMapper.getHotelResPic(hotelPkList);
         resInfoVos.forEach(resInfoVo -> {
             List<ResDogInfoVo> resDogInfoVoList = resDogInfo
                     .stream()
@@ -171,7 +174,7 @@ public class ReservationService {
                         .findFirst()
                         .ifPresent(vo -> vo.setPic(picVo.getPic()))
         );
-        log.info("resHotelPicVos : {}",resHotelPicVos);
+        log.info("resHotelPicVos : {}", resHotelPicVos);
 
         return resInfoVos;
     }

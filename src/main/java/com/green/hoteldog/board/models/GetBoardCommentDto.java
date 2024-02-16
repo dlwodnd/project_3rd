@@ -1,4 +1,4 @@
-package com.green.hoteldog.board;
+package com.green.hoteldog.board.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.green.hoteldog.common.Const;
