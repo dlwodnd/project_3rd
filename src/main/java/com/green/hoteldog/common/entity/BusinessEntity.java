@@ -13,7 +13,7 @@ public class BusinessEntity {
     private Long businessPk;
 
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_pk",referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
+    @JoinColumn(name = "user_pk", referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userEntity;
     @Column(nullable = false)
     private String accountNumber;
