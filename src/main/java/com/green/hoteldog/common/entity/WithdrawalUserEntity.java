@@ -2,6 +2,7 @@ package com.green.hoteldog.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +18,8 @@ public class WithdrawalUserEntity {
     @Column(nullable = false)
     private LocalDateTime approvalDate;
 
-    @Column(nullable = false)
+    @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime applyDate;
 
     @Column(nullable = false)
