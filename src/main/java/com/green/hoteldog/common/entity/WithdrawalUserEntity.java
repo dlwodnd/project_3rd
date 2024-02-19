@@ -24,4 +24,5 @@ public class WithdrawalUserEntity {
 
     @Column(nullable = false, columnDefinition = "VARCHAR(1000)")
     private String reason;
+    //
 }
