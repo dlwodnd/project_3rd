@@ -8,7 +8,7 @@ import lombok.Data;
 @Table(name = "t_hotel_where")
 public class HotelWhereEntity {
     @Id
-    @OneToOne(optional = false,cascade = CascadeType.ALL)
+    @OneToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_pk",referencedColumnName = "hotelPk",columnDefinition = "BIGINT UNSIGNED")
     private HotelEntity hotelEntity;
 

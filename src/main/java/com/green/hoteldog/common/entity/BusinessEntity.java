@@ -12,7 +12,7 @@ public class BusinessEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long businessPk;
 
-    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_pk", referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userEntity;
     @Column(nullable = false)

@@ -14,11 +14,11 @@ public class HotelAdvertiseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotelAdvertisePk;
 
-    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_pk",referencedColumnName = "hotelPk",columnDefinition = "BIGINT UNSIGNED")
     private HotelEntity hotelEntity;
 
-    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "advertise_policy_pk",referencedColumnName = "advertisePolicyPk",columnDefinition = "BIGINT UNSIGNED")
     private HotelAdvertisePolicyEntity hotelAdvertisePolicyEntity;
 

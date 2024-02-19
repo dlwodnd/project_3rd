@@ -13,7 +13,7 @@ public class ResDogInfoEntity extends CreatedAtBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resDogPk;
 
-    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "size_pk",referencedColumnName = "sizePk",columnDefinition = "BIGINT UNSIGNED")
     private DogSizeEntity dogSizeEntity;
 

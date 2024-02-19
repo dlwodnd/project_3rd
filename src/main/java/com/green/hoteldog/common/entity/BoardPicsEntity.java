@@ -14,7 +14,7 @@ public class BoardPicsEntity extends CreatedAtBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardPicPk;
 
-    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "board_pk",referencedColumnName = "boardPk",columnDefinition = "BIGINT UNSIGNED")
     private BoardEntity boardEntity;
     @Column(nullable = false)

@@ -8,7 +8,7 @@ import lombok.Data;
 @Table(name = "t_user_where")
 public class UserWhereEntity {
     @Id
-    @OneToOne(optional = false,cascade = CascadeType.ALL)
+    @OneToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_pk",referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userEntity;
 

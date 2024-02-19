@@ -13,7 +13,7 @@ public class ReviewPicEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewPicPk;
 
-    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "review_pk",referencedColumnName = "reviewPk",columnDefinition = "BIGINT UNSIGNED")
     private ReviewEntity reviewEntity;
 

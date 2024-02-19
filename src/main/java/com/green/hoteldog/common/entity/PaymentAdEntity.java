@@ -13,11 +13,11 @@ public class PaymentAdEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentPk;
 
-    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "business_pk",referencedColumnName = "businessPk",columnDefinition = "BIGINT UNSIGNED")
     private BusinessEntity businessEntity;
 
-    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_advertise_pk",referencedColumnName = "hotelAdvertisePk",columnDefinition = "BIGINT UNSIGNED")
     private HotelAdvertiseEntity hotelAdvertiseEntity;
 

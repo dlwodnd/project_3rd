@@ -12,10 +12,10 @@ public class BoardEntity extends BaseEntity {
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardPk;
-    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_pk",referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userEntity;
-    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "board_category_pk",referencedColumnName = "boardCategoryPk",columnDefinition = "BIGINT UNSIGNED")
     private BoardCategoryEntity boardCategoryEntity;
     @Column(nullable = false)

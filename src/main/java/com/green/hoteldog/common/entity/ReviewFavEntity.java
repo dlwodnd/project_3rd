@@ -11,12 +11,12 @@ public class ReviewFavEntity {
     @EmbeddedId
     private ReviewFavComposite composite;
 
-    @ManyToOne(optional = false,cascade = CascadeType.REMOVE)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @MapsId("reviewPk")
     @JoinColumn(name = "review_pk",columnDefinition = "BIGINT UNSIGNED")
     private ReviewEntity reviewPk;
 
-    @ManyToOne(optional = false,cascade = CascadeType.REMOVE)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @MapsId("userPk")
     @JoinColumn(name = "user_pk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userPk;

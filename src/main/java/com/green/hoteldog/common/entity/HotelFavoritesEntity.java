@@ -12,12 +12,12 @@ public class HotelFavoritesEntity extends CreatedAtBaseEntity {
     @EmbeddedId
     private HotelFavoritesComposite composite;
 
-    @ManyToOne(optional = false,cascade = CascadeType.REMOVE)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @MapsId("hotelPk")
     @JoinColumn(name = "hotel_pk",columnDefinition = "BIGINT UNSIGNED")
     private HotelEntity hotelEntity;
 
-    @ManyToOne(optional = false,cascade = CascadeType.REMOVE)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @MapsId("userPk")
     @JoinColumn(name = "user_pk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userEntity;
