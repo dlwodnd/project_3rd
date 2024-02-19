@@ -1,12 +1,14 @@
 package com.green.hoteldog.common.entity;
 
+import com.green.hoteldog.common.entity.base.BaseEntity;
+import com.green.hoteldog.common.entity.base.CreatedAtBaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "t_board_comment")
-public class BoardCommentEntity {
+public class BoardCommentEntity extends BaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

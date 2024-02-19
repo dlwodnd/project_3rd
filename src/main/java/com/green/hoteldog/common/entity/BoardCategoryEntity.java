@@ -8,7 +8,7 @@ import lombok.Data;
 @Table(name = "t_board_category")
 public class BoardCategoryEntity {
     @Id
-    @Column(columnDefinition = "BIGINT UNSIGNED")
+    @Column(columnDefinition = "TINYINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardCategoryPk;
     @Column(nullable = false)

@@ -1,13 +1,14 @@
 package com.green.hoteldog.common.entity;
 
 import com.green.hoteldog.common.entity.base.BaseEntity;
+import com.green.hoteldog.common.entity.base.CreatedAtBaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "t_payment_ad")
-public class PaymentAdEntity extends BaseEntity {
+public class PaymentAdEntity extends CreatedAtBaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

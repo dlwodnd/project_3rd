@@ -16,7 +16,7 @@ spring:
       port: 6379
   datasource:
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    url: jdbc:log4jdbc:mariadb://localhost:3306/doghotel?allowMultiQueries=true
+    url: jdbc:log4jdbc:mariadb://localhost:3306/hoteldog_ver3?allowMultiQueries=true
     username: root
     password: green502
   servlet:
@@ -126,7 +126,7 @@ spring:
     password: green502
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:

@@ -26,4 +26,7 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false)
     @ColumnDefault("'0'")
     private Long userStatus;
+    @Column(nullable = false)
+    @ColumnDefault("'1'")
+    private Long userRole;
 }
