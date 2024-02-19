@@ -1,5 +1,6 @@
 package com.green.hoteldog.manager;
 
+import com.green.hoteldog.common.entity.BusinessEntity;
 import com.green.hoteldog.common.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,15 +10,11 @@ import java.util.Optional;
 public interface ManagerRepository extends JpaRepository<UserEntity,Long> {
 
     //모든 유저
-    List<UserEntity> findAllByOdrerbycreatedAtdesc();
+    List<UserEntity> findAllByOrderByCreatedAtDesc();
     // 사업자 유저
-    List<UserEntity> findAllByAccountStatusOrderByCreatedAtDesc(Long accountStatus);
+    List<UserEntity> findAllByUserStatusNotOrderByCreatedAtDesc(Long UserStatus);
     // 일반유저
-    List<UserEntity> findAllByAccountStatusNotOrderByCreatedAtDesc(Long accountStatus);
+    List<UserEntity> findAllByUserStatusOrderByCreatedAtDesc(Long UserStatus);
 
-    //List<UserEntity> normalUsers = managerRepository.findAllByAccountStatusNotOrderByCreatedAtDesc(1L);
-
-    //accountStatus  OdrerbycreatedAtdesc
-   // List<UserEntity> normalUsers = managerRepository.findAllByAccountStatusOrderByCreatedAtDesc(1L);
 
 }

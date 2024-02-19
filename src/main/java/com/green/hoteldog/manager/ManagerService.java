@@ -12,8 +12,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ManagerService {
     private final ManagerRepository managerRepository;
-
-    public List <UserEntity> getAllUser(){
-        return managerRepository.findAllByOdrerbycreatedAtdesc();
+// 모든유저
+    public List <UserEntity> allUsers(){
+        return managerRepository.findAllByOrderByCreatedAtDesc();
     }
+/// 사업자유저
+    public List<UserEntity> businessUsers(){
+        List<UserEntity> businessUsers = managerRepository.findAllByUserStatusOrderByCreatedAtDesc(1L);
+        return businessUsers;
+    }
+// 일반유저
+    public List<UserEntity> normalUsers(){
+        List<UserEntity> normalUsers = managerRepository.findAllByUserStatusNotOrderByCreatedAtDesc(1L);
+        return normalUsers;
+    }
+
 }
