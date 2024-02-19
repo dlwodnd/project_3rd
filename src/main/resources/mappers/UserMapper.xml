@@ -4,8 +4,7 @@
 <mapper namespace="com.green.hoteldog.user.UserMapper">
     <insert id="userSignup" useGeneratedKeys="true" keyProperty="userPk">
         INSERT INTO t_user
-        SET user_type_pk = #{userTypePk}
-        , user_email = #{userEmail}
+        SET user_email = #{userEmail}
         , upw = #{upw}
         , nickname = #{nickname}
         , phone_num = #{phoneNum}
@@ -30,7 +29,6 @@
     </select>
     <select id="userEntityByUserEmail">
         SELECT user_pk AS userPk
-        , user_type_pk AS userTypePk
         , user_email AS userEmail
         , upw
         , nickname
@@ -41,7 +39,6 @@
     </select>
     <select id="userEntityByUserPk">
         SELECT user_pk AS userPk
-        , user_type_pk AS userTypePk
         , user_email AS userEmail
         , upw
         , nickname
@@ -52,7 +49,6 @@
     </select>
     <select id="selUserEntity">
         SELECT user_pk AS userPk
-        ,user_type_pk AS userTypePk
         ,user_email AS userEmail
         ,upw ,nickname
         ,phone_num AS phoneNum

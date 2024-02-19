@@ -75,7 +75,6 @@ public class UserService {
         /*vo.setDepthName(mapper.selUserDepthName(userInfo.getUserPk()));
         vo.setSizePkList(dogSizeList);*/
         vo.setUserPk(userInfo.getUserPk());
-        vo.setUserTypePk(userInfo.getUserTypePk());
         vo.setAccessToken(at);
         vo.setNickname(userInfo.getNickname());
         return vo;
