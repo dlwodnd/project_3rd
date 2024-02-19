@@ -1,7 +1,9 @@
 package com.green.hoteldog.business_user;
 
+import com.green.hoteldog.business_user.model.HotelAdvertiseApplicationDto;
 import com.green.hoteldog.business_user.model.ReservaionListSelVo;
 import com.green.hoteldog.common.ResVo;
+import com.green.hoteldog.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BusinessService {
+    private final AuthenticationFacade authenticationFacade;
 
     // 호텔 삭제
     public ResVo delHotel(){
@@ -19,7 +22,12 @@ public class BusinessService {
     }
 
     // 광고 신청
-    public ResVo postHotelAdvertiseApplication(int hotelPk){
+    public ResVo postHotelAdvertiseApplication(HotelAdvertiseApplicationDto dto){
+        // 1. 유저가 사업자유저인지 체크
+        // 2. 광고테이블 인서트, 결제 테이블 인서트
+        // 3. 결제 완료 후 광고테이블 결제여부 업데이트
+        dto.builder().iuser(authenticationFacade.getLoginUserPk()).build();
+
         return new ResVo(0);
     }
 

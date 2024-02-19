@@ -1,5 +1,6 @@
 package com.green.hoteldog.business_user;
 
+import com.green.hoteldog.business_user.model.HotelAdvertiseApplicationDto;
 import com.green.hoteldog.business_user.model.ReservaionListSelVo;
 import com.green.hoteldog.common.ResVo;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,8 @@ public class BusinessController {
 
     // 광고 신청
     @GetMapping("/advertise")
-    public ResVo postHotelAdvertiseApplication(int hotelPk){
-        return service.postHotelAdvertiseApplication(hotelPk);
+    public ResVo postHotelAdvertiseApplication(HotelAdvertiseApplicationDto dto){
+        return service.postHotelAdvertiseApplication(dto);
     }
 
     // 호텔 방 등록
