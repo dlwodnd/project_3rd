@@ -13,13 +13,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ManagerService {
     private final ManagerRepository managerRepository;
+    private final ManagerBusinessRepository managerBusinessRepository;
 // 모든유저
     public List <UserEntity> allUsers(){
         return managerRepository.findAllByOrderByCreatedAtDesc();
     }
 /// 사업자유저
-    public List<UserEntity> businessUsers(){
-        List<UserEntity> businessUsers = managerRepository.findUsersByBusinessAccountStatus(1l);
+    public List<BusinessEntity> businessUsers(){
+        Long accountStatus = 1L;
+        List<BusinessEntity> businessUsers = managerBusinessRepository.findAllByAccountStatusOrderByAccountStatusDesc(accountStatus);
         return businessUsers;
     }
 // 일반유저

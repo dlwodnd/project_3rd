@@ -31,4 +31,8 @@ public class UserEntity extends BaseEntity {
     @ColumnDefault("'USER'")
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum userRole;
+//    @ToString.Exclude
+//    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.PERSIST)
+//    private List<BusinessEntity> businessEntities;
+
 }

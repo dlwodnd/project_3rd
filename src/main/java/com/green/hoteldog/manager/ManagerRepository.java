@@ -14,8 +14,6 @@ public interface ManagerRepository extends JpaRepository<UserEntity,Long> {
     //모든 유저
     List<UserEntity> findAllByOrderByCreatedAtDesc();
     // 사업자 유저
-    @Query("SELECT DISTINCT u FROM UserEntity u JOIN u.businessEntities b WHERE b.accountStatus = :accountStatus")
-    List<UserEntity> findUsersByBusinessAccountStatus(@Param("accountStatus") Long accountStatus);
 
 
 
