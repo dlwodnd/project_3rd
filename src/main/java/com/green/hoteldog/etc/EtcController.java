@@ -21,10 +21,10 @@ public class EtcController {
         return service.getReviewEncouragementNotification();
     }
 
-    // 유저 회원 탈퇴
+    // 유저 회원 탈퇴(벤)
     @PostMapping("/withdrawal")
-    public ResVo postWithdrawal(){
-        return service.postWithdrawal();
+    public ResVo postWithdrawal(int userPk){
+        return service.postWithdrawal(userPk);
     }
     // 영웅
 

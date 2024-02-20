@@ -17,6 +17,7 @@ public class BusinessService {
 
     // 호텔 삭제
     public ResVo delHotel(){
+        // 삭제 정책 논의 후 작성
         return new ResVo(0);
     }
 
@@ -35,16 +36,20 @@ public class BusinessService {
     }
 
     // 호텔 방 등록
-    public ResVo postHotelRoom(HotelRoomInsDto dto){
+    public ResVo postHotelRoom(List<HotelRoomInsDto> dto){
+        // 1. 해당 호텔이 있는지 체크
+
+        // 2. 등록
         return new ResVo(0);
     }
 
     // 예약 리스트 출력
-    public List<ReservaionListSelVo> getHotelReservationList(){
+    public List<ReservaionListSelVo> getHotelReservationList(int hotelPk){
+        // 정렬 방식 추후 논의 후 작업
         return null;
     }
     // 영웅
-
+    // ---------------------------------------------------------------------------------------------------
     //재웅
 
     //사업자 유저 호텔 등록

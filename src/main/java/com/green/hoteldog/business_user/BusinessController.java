@@ -29,14 +29,14 @@ public class BusinessController {
 
     // 호텔 방 등록
     @PostMapping("/hotelRoom")
-    public ResVo postHotelRoom(HotelRoomInsDto dto){
+    public ResVo postHotelRoom(List<HotelRoomInsDto> dto){
         return service.postHotelRoom(dto);
     }
 
     // 예약 리스트 출력
     @GetMapping("/reservation")
-    public List<ReservaionListSelVo> getHotelReservationList(){
-        return service.getHotelReservationList();
+    public List<ReservaionListSelVo> getHotelReservationList(int hotelPk){
+        return service.getHotelReservationList(hotelPk);
     }
     // 영웅
 
