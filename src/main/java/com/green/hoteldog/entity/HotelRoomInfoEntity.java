@@ -41,7 +41,7 @@ public class HotelRoomInfoEntity extends BaseEntity {
     @ColumnDefault("'1'")
     private Long roomAble;
 
-    @Column(columnDefinition = "BIGINT UNSIGNED")
+    @Column
     private String discountPer;
 
     @Column(nullable = false,columnDefinition = "BIGINT UNSIGNED")

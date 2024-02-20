@@ -1,9 +1,6 @@
 package com.green.hoteldog.business_user;
 
-import com.green.hoteldog.business_user.model.BusinessUserHotelRoomVo;
-import com.green.hoteldog.business_user.model.BusinessUserHotelVo;
-import com.green.hoteldog.business_user.model.HotelAdvertiseApplicationDto;
-import com.green.hoteldog.business_user.model.ReservaionListSelVo;
+import com.green.hoteldog.business_user.model.*;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +35,7 @@ public class BusinessService {
     }
 
     // 호텔 방 등록
-    public ResVo postHotelRoom(){
+    public ResVo postHotelRoom(HotelRoomInsDto dto){
         return new ResVo(0);
     }
 
