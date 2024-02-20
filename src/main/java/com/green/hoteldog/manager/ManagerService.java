@@ -1,5 +1,6 @@
 package com.green.hoteldog.manager;
 
+import com.green.hoteldog.common.entity.BusinessEntity;
 import com.green.hoteldog.common.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +19,9 @@ public class ManagerService {
     }
 /// 사업자유저
     public List<UserEntity> businessUsers(){
-        List<UserEntity> businessUsers = managerRepository.findAllByUserStatusOrderByCreatedAtDesc(1L);
+        List<UserEntity> businessUsers = managerRepository.findUsersByBusinessAccountStatus(1l);
         return businessUsers;
     }
 // 일반유저
-    public List<UserEntity> normalUsers(){
-        List<UserEntity> normalUsers = managerRepository.findAllByUserStatusNotOrderByCreatedAtDesc(1L);
-        return normalUsers;
-    }
 
 }

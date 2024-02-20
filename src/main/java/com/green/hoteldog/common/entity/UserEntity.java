@@ -3,7 +3,10 @@ package com.green.hoteldog.common.entity;
 import com.green.hoteldog.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -26,4 +29,9 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false)
     @ColumnDefault("'0'")
     private Long userStatus;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.PERSIST)
+    private List<BusinessEntity> businessEntities;
+
 }

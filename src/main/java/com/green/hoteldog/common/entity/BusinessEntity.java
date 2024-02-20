@@ -1,12 +1,13 @@
 package com.green.hoteldog.common.entity;
 
+import com.green.hoteldog.common.entity.base.CreatedAtBaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "t_buisiness")
-public class BusinessEntity {
+public class BusinessEntity  {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +16,7 @@ public class BusinessEntity {
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_pk", referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userEntity;
+
     @Column(nullable = false)
     private String accountNumber;
     @Column(nullable = false)
