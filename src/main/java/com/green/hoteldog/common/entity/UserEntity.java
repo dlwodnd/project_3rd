@@ -1,6 +1,7 @@
 package com.green.hoteldog.common.entity;
 
 import com.green.hoteldog.common.entity.base.BaseEntity;
+import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
@@ -27,6 +28,7 @@ public class UserEntity extends BaseEntity {
     @ColumnDefault("'0'")
     private Long userStatus;
     @Column(nullable = false)
-    @ColumnDefault("'1'")
-    private Long userRole;
+    @ColumnDefault("'USER'")
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum userRole;
 }
