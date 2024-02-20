@@ -10,7 +10,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/business")
+@RequestMapping("/api/manager")
 public class ManagerController {
     private final ManagerService service;
 

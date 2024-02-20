@@ -10,4 +10,5 @@ public class UserInfo {
     private String nickname;
     private String phoneNum;
     private String userAddress;
+    private String userRole;
 }

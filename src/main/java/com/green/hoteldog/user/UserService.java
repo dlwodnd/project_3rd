@@ -9,8 +9,8 @@ import com.green.hoteldog.exceptions.CustomException;
 import com.green.hoteldog.exceptions.UserErrorCode;
 import com.green.hoteldog.security.AuthenticationFacade;
 import com.green.hoteldog.security.JwtTokenProvider;
-import com.green.hoteldog.security.MyUserDtails;
-import com.green.hoteldog.security.Myprincipal;
+import com.green.hoteldog.security.MyUserDetails;
+import com.green.hoteldog.security.MyPrincipal;
 import com.green.hoteldog.user.models.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -61,10 +61,14 @@ public class UserService {
         if (!passwordEncoder.matches(dto.getUpw(), userInfo.getUpw())) {
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
         }
-        Myprincipal myprincipal = new Myprincipal(userInfo.getUserPk());
-        String at = tokenProvider.generateAccessToken(myprincipal);
+
+        MyPrincipal myPrincipal = MyPrincipal.builder()
+                .userPk(userInfo.getUserPk())
+                .build();
+        myPrincipal.getRoles().add(userInfo.getUserRole());
+        String at = tokenProvider.generateAccessToken(myPrincipal);
         //엑서스 토큰 값 받아오기
-        String rt = tokenProvider.generateRefreshToken(myprincipal);
+        String rt = tokenProvider.generateRefreshToken(myPrincipal);
         //리프레쉬 토큰 값 받아오기
         /*List<Integer> dogSizeList = mapper.selUserDogSize(userInfo.getUserPk());*/
 
@@ -142,8 +146,8 @@ public class UserService {
         if (!tokenProvider.isValidateToken(token)) {
             throw new CustomException(AuthorizedErrorCode.REFRESH_TOKEN_IS_EXPIRATION);
         }
-        MyUserDtails myUserDtails = (MyUserDtails) tokenProvider.getUserDetailsFromToken(token);
-        Myprincipal myprincipal = myUserDtails.getMyprincipal();
+        MyUserDetails myUserDetails = (MyUserDetails) tokenProvider.getUserDetailsFromToken(token);
+        MyPrincipal myprincipal = myUserDetails.getMyPrincipal();
         String at = tokenProvider.generateAccessToken(myprincipal);
         vo.setUserPk(facade.getLoginUserPk());
         vo.setAccessToken(at);
