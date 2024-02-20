@@ -22,6 +22,7 @@ public class WithdrawalUserEntity {
     @Column(updatable = false)
     private LocalDateTime applyDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(1000)")
     private String reason;
+    //
 }

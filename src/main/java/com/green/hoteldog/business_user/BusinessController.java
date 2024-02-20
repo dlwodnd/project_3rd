@@ -1,5 +1,7 @@
 package com.green.hoteldog.business_user;
 
+import com.green.hoteldog.business_user.model.BusinessUserHotelRoomVo;
+import com.green.hoteldog.business_user.model.BusinessUserHotelVo;
 import com.green.hoteldog.business_user.model.HotelAdvertiseApplicationDto;
 import com.green.hoteldog.business_user.model.ReservaionListSelVo;
 import com.green.hoteldog.common.ResVo;
@@ -41,4 +43,28 @@ public class BusinessController {
     }
     // 영웅
 
+    //재웅
+
+    //사업자 유저 호텔 등록
+    @PostMapping
+    public ResVo postHotel(){
+        return null;
+    }
+    //사업자 유저가 등록한 호텔 리스트
+    @GetMapping
+    public List<BusinessUserHotelVo> getBusinessUserHotel(){
+        return null;
+    }
+    //사업자 유저가 등록한 호텔 방 수정
+    @PutMapping("/hotelRoom")
+    public ResVo putHotelRoom(){
+        return null;
+    }
+    //사업자 유저가 등록한 방 리스트
+    @GetMapping("/hotelRoomList")
+    public List<BusinessUserHotelRoomVo> getBusinessUserHotelRoom(){
+        return null;
+    }
+
+    //재웅
 }

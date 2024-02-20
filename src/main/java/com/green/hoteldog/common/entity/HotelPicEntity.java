@@ -15,4 +15,7 @@ public class HotelPicEntity {
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_pk",referencedColumnName = "hotelPk",columnDefinition = "BIGINT UNSIGNED")
     private HotelEntity hotelEntity;
+
+    @Column(columnDefinition = "VARCHAR(2100)", nullable = false)
+    private String pic;
 }

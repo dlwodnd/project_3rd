@@ -45,14 +45,14 @@ public class JwtTokenProvider {
                 , SignatureAlgorithm.HS256.getJcaName());
 
     }
-    public String generateAccessToken(Myprincipal myprincipal){
+    public String generateAccessToken(MyPrincipal myprincipal){
         return generateToken(myprincipal,appProperties.getJwt().getAccessTokenExpiry());
     }
-    public String generateRefreshToken(Myprincipal myprincipal){
+    public String generateRefreshToken(MyPrincipal myprincipal){
         return generateToken(myprincipal,appProperties.getJwt().getRefreshTokenExpiry());
     }
 
-    private String generateToken(Myprincipal myprincipal,long toeknValidMs){
+    private String generateToken(MyPrincipal myprincipal, long toeknValidMs){
         Date now = new Date();
         return Jwts.builder()
                 .claims(createClaims(myprincipal))
@@ -78,7 +78,7 @@ public class JwtTokenProvider {
                 .parseSignedClaims(token)
                 .getPayload();
     }
-    private Claims createClaims(Myprincipal myprincipal){
+    private Claims createClaims(MyPrincipal myprincipal){
 
         try{
             String json = objectMapper.writeValueAsString(myprincipal);
@@ -99,9 +99,9 @@ public class JwtTokenProvider {
         try {
             Claims claims = getAllClaims(token);
             String json = (String)claims.get("user");
-            Myprincipal myprincipal = objectMapper.readValue(json, Myprincipal.class);
-            return MyUserDtails.builder()
-                    .myprincipal(myprincipal)
+            MyPrincipal myprincipal = objectMapper.readValue(json, MyPrincipal.class);
+            return MyUserDetails.builder()
+                    .myPrincipal(myprincipal)
                     .build();
         }catch (Exception e){
             return null;
