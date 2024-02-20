@@ -1,11 +1,9 @@
 package com.green.hoteldog.manager;
 
-import com.green.hoteldog.common.entity.BusinessEntity;
-import com.green.hoteldog.common.entity.UserEntity;
+import com.green.hoteldog.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ManagerRepository extends JpaRepository<UserEntity,Long> {
 
