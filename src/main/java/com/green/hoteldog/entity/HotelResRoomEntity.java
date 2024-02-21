@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "t_hotel_room_info_date")
-public class HotelRoomInfoDateEntity {
+@Table(name = "t_res_room_date")
+public class HotelResRoomEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

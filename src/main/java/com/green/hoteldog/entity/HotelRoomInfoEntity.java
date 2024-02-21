@@ -7,7 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @Entity
-@Table(name = "t_hotel_info")
+@Table(name = "t_hotel_room_info")
 public class HotelRoomInfoEntity extends BaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
@@ -39,7 +39,7 @@ public class HotelRoomInfoEntity extends BaseEntity {
 
     @Column(nullable = false,columnDefinition = "BIGINT UNSIGNED")
     @ColumnDefault("'1'")
-    private Long roomAble;
+    private Long bookAble;
 
     @Column
     private String discountPer;

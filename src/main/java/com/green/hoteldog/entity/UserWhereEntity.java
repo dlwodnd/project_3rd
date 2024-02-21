@@ -15,13 +15,13 @@ public class UserWhereEntity {
     @Column(nullable = false)
     private String addressName;
 
-    @Column(nullable = false)
+    @Column(name = "region_1depth_name",nullable = false)
     private String region1DepthName;
 
-    @Column(nullable = false)
+    @Column(name = "region_2depth_name",nullable = false)
     private String region2DepthName;
 
-    @Column(nullable = false)
+    @Column(name = "region_3depth_name",nullable = false)
     private String region3DepthName;
 
     @Column(nullable = false)

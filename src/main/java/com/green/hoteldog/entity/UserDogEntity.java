@@ -30,6 +30,6 @@ public class UserDogEntity extends BaseEntity {
     @Column(nullable = false)
     private String etc;
 
-    private String pic;
+    private String dogPic;
 
 }

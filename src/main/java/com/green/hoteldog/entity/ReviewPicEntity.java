@@ -18,5 +18,5 @@ public class ReviewPicEntity extends CreatedAtBaseEntity {
     private ReviewEntity reviewEntity;
 
     @Column(nullable = false)
-    private String reviewPic;
+    private String pic;
 }

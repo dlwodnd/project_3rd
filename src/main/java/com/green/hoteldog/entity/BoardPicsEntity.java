@@ -16,6 +16,7 @@ public class BoardPicsEntity extends CreatedAtBaseEntity {
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "board_pk",referencedColumnName = "boardPk",columnDefinition = "BIGINT UNSIGNED")
     private BoardEntity boardEntity;
+
     @Column(nullable = false)
     private String pic;
 }
