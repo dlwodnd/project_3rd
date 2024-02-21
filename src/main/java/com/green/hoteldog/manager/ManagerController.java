@@ -1,7 +1,7 @@
 package com.green.hoteldog.manager;
 
-import com.green.hoteldog.common.entity.BusinessEntity;
-import com.green.hoteldog.common.entity.UserEntity;
+import com.green.hoteldog.entity.BusinessEntity;
+import com.green.hoteldog.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -28,26 +28,19 @@ public class ManagerController {
     @GetMapping("/userList")
     public List<UserEntity> getUserList(@RequestParam(required = false) Integer accountStatus) {
         if (accountStatus != null && accountStatus == 1) {
-            List<BusinessEntity> businessEntities = service.businessUsers();
-            // BusinessEntity를 UserEntity로 변환
-            List<UserEntity> userEntities = businessEntities.stream()
-                    .map(BusinessEntity::getUserEntity)
-                    .collect(Collectors.toList());
-            return userEntities;
-        }
-        return service.allUsers();
+            // accountStatus가 1인 경우 사업자 유저 목록 반환
+            List<Long> businessUserPks = service.getBusinessUserPks();
+            List<UserEntity> businessUsers = service.getUsersPks(businessUserPks);
+            return businessUsers;
+        } else if (accountStatus != null && accountStatus != 1) {
+            List<Long> nomalsUserPks = service.getBusinessUserPks();
+            List<UserEntity> nomalUsers = service.getNormalUsersPks(nomalsUserPks);
+            // 그 외의 경우에는 모든 유저 목록 반환
+            return nomalUsers;
+        } return null;
     }
 }
 
 
-//    @GetMapping("/userList")
-////    public List<UserEntity> getUserList(@RequestParam(required=false) Integer accountStatus) {
-//        if(1 == accountStatus){
-//            return service.businessUsers();
-//        } else if(0 == accountStatus){
-//            return service.normalUsers();
-//        }
-//        return service.allUsers();
-//    }
 
 
