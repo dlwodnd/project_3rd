@@ -18,4 +18,5 @@ public class HotelAdvertiseApplicationDto {
     private int hotelPk;
     private LocalDate fromDate;
     private LocalDate toDate;
+    private int cost; // 가격
 }

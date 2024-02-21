@@ -16,7 +16,7 @@ public class EtcService {
     }
 
     // 유저 회원 탈퇴
-    public ResVo postWithdrawal(){
+    public ResVo postWithdrawal(int userPk){
         return null;
     }
     // 영웅

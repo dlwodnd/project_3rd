@@ -1,9 +1,6 @@
 package com.green.hoteldog.business_user;
 
-import com.green.hoteldog.business_user.model.BusinessUserHotelRoomVo;
-import com.green.hoteldog.business_user.model.BusinessUserHotelVo;
-import com.green.hoteldog.business_user.model.HotelAdvertiseApplicationDto;
-import com.green.hoteldog.business_user.model.ReservaionListSelVo;
+import com.green.hoteldog.business_user.model.*;
 import com.green.hoteldog.common.ResVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,14 +29,14 @@ public class BusinessController {
 
     // 호텔 방 등록
     @PostMapping("/hotelRoom")
-    public ResVo postHotelRoom(){
-        return service.postHotelRoom();
+    public ResVo postHotelRoom(List<HotelRoomInsDto> dto){
+        return service.postHotelRoom(dto);
     }
 
     // 예약 리스트 출력
     @GetMapping("/reservation")
-    public List<ReservaionListSelVo> getHotelReservationList(){
-        return service.getHotelReservationList();
+    public List<ReservaionListSelVo> getHotelReservationList(int hotelPk){
+        return service.getHotelReservationList(hotelPk);
     }
     // 영웅
 

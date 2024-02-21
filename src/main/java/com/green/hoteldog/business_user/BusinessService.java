@@ -1,9 +1,6 @@
 package com.green.hoteldog.business_user;
 
-import com.green.hoteldog.business_user.model.BusinessUserHotelRoomVo;
-import com.green.hoteldog.business_user.model.BusinessUserHotelVo;
-import com.green.hoteldog.business_user.model.HotelAdvertiseApplicationDto;
-import com.green.hoteldog.business_user.model.ReservaionListSelVo;
+import com.green.hoteldog.business_user.model.*;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
@@ -20,30 +17,39 @@ public class BusinessService {
 
     // 호텔 삭제
     public ResVo delHotel(){
+        // 삭제 정책 논의 후 작성
         return new ResVo(0);
     }
 
     // 광고 신청
     public ResVo postHotelAdvertiseApplication(HotelAdvertiseApplicationDto dto){
         // 1. 유저가 사업자유저인지 체크
-        // 2. 광고테이블 인서트, 결제 테이블 인서트
-        // 3. 결제 완료 후 광고테이블 결제여부 업데이트
         dto.builder().iuser(authenticationFacade.getLoginUserPk()).build();
+
+        // 2. 광고테이블 인서트, 결제 테이블 인서트
+
+
+        // 3. 결제 완료 후 광고테이블 결제여부 업데이트
+
 
         return new ResVo(0);
     }
 
     // 호텔 방 등록
-    public ResVo postHotelRoom(){
+    public ResVo postHotelRoom(List<HotelRoomInsDto> dto){
+        // 1. 해당 호텔이 있는지 체크
+
+        // 2. 등록
         return new ResVo(0);
     }
 
     // 예약 리스트 출력
-    public List<ReservaionListSelVo> getHotelReservationList(){
+    public List<ReservaionListSelVo> getHotelReservationList(int hotelPk){
+        // 정렬 방식 추후 논의 후 작업
         return null;
     }
     // 영웅
-
+    // ---------------------------------------------------------------------------------------------------
     //재웅
 
     //사업자 유저 호텔 등록
