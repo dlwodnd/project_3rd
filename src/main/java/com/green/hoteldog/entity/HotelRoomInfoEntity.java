@@ -47,6 +47,7 @@ public class HotelRoomInfoEntity extends BaseEntity {
     @Column(nullable = false,columnDefinition = "BIGINT UNSIGNED")
     @ColumnDefault("'0'")
     private Long discountSignStatus;
+
     @Column
     private String cancelReason;
 }

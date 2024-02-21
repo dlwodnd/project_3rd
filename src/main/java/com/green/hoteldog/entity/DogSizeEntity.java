@@ -11,8 +11,10 @@ public class DogSizeEntity {
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sizePk;
+
     @Column(nullable = false)
     private String dogSize;
+
     @Column(nullable = false)
     private Long dogCost;
 }

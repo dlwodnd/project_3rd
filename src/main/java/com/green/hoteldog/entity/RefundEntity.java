@@ -16,17 +16,17 @@ public class RefundEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long refundPk;
 
-    @Column(nullable = false)
+
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "policy_pk",referencedColumnName = "policyPk",columnDefinition = "BIGINT UNSIGNED")
     private RefundPolicyEntity refundPolicyEntity;
 
-    @Column(nullable = false)
+
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_pk",referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userEntity;
 
-    @Column(nullable = false)
+
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "res_pk",referencedColumnName = "resPk",columnDefinition = "BIGINT UNSIGNED")
     private ReservationEntity reservationEntity;

@@ -15,6 +15,7 @@ public class ReservationEntity extends BaseEntity {
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resPk;
+
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_pk",referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userEntity;

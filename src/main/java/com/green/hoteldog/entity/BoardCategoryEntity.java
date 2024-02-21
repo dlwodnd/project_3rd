@@ -11,6 +11,7 @@ public class BoardCategoryEntity {
     @Column(columnDefinition = "TINYINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardCategoryPk;
+
     @Column(nullable = false)
     private String categoryNm;
 }
