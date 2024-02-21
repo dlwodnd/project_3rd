@@ -148,13 +148,3 @@ file:
   dir: /home/download/
 server:
   port: 8080
-
-logging:
-  level:
-    jdbc:
-      sqlonly: off
-      sqltiming: info
-      resultsettable: info
-      audit: off
-      resultset: off
-      connection: off
