@@ -34,6 +34,7 @@
         , nickname
         , phone_num AS phoneNum
         , user_address AS userAddress
+        , user_role AS userRole
         FROM t_user
         WHERE user_email = #{userEmail}
     </select>

@@ -1,11 +1,13 @@
 package com.green.hoteldog.manager;
 
+import com.green.hoteldog.entity.BusinessEntity;
 import com.green.hoteldog.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -14,42 +16,31 @@ import java.util.List;
 public class ManagerController {
     private final ManagerService service;
 
-//    @GetMapping("/uesrList")
-//    public List<UserEntity> getAllUser(){
-//        return service.allUsers();
-//    }
-//    @GetMapping("/uesrList")
-//    public List<UserEntity> getUser() {
-//        return service.normalUsers();
-//    }
-//
-//    @GetMapping("/uesrList")
-//    public List<UserEntity> businessUsers(){
-//        return service.businessUsers();
-//    }
-//
 
-//인티지 오더스 유저타입
 //    @GetMapping("/userList")
-//    public List<UserEntity> getUserList(@RequestParam(required=false) String userType) {
-//        if("business".equals(userType)){
-//            return service.businessUsers();
-//        } else if("normal".equals(userType)){
-//            return service.normalUsers();
-//        }
+//    public List<UserEntity> getUserList() {
+//
 //        return service.allUsers();
 //    }
+//}
+
 
     @GetMapping("/userList")
-    public List<UserEntity> getUserList(@RequestParam(required=false) Integer accountStatus) {
-        if(1 == accountStatus){
-            return service.businessUsers();
-        } else if(0 == accountStatus){
-            return service.normalUsers();
-        }
-        return service.allUsers();
+    public List<UserEntity> getUserList(@RequestParam(required = false) Integer accountStatus) {
+        if (accountStatus != null && accountStatus == 1) {
+            // accountStatus가 1인 경우 사업자 유저 목록 반환
+            List<Long> businessUserPks = service.getBusinessUserPks();
+            List<UserEntity> businessUsers = service.getUsersPks(businessUserPks);
+            return businessUsers;
+        } else if (accountStatus != null && accountStatus != 1) {
+            List<Long> nomalsUserPks = service.getBusinessUserPks();
+            List<UserEntity> nomalUsers = service.getNormalUsersPks(nomalsUserPks);
+            // 그 외의 경우에는 모든 유저 목록 반환
+            return nomalUsers;
+        } return null;
     }
-
-
 }
+
+
+
 

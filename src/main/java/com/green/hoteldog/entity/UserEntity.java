@@ -1,14 +1,20 @@
 package com.green.hoteldog.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.green.hoteldog.entity.base.BaseEntity;
 import com.green.hoteldog.entity.jpa_enum.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.List;
 
 @Data
 @Entity
 @Table(name = "t_user")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 public class UserEntity extends BaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
@@ -31,4 +37,8 @@ public class UserEntity extends BaseEntity {
     @ColumnDefault("'USER'")
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum userRole;
+//    @ToString.Exclude
+//    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.PERSIST)
+//    private List<BusinessEntity> businessEntities;
+
 }
