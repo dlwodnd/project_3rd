@@ -80,4 +80,12 @@ public class UserController {
     public RefreshTokenVo getRefreshToken(HttpServletRequest request) {
         return service.getRefreshToken(request);
     }
+
+    //-----------------------------------------------------3차 추가 기능-------------------------------------------------
+
+    // 유저 회원 탈퇴
+
+    // 일괄 환불 출력 기능
+
+    // 일괄 환불 기능
 }
