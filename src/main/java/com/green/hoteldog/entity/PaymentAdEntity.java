@@ -3,6 +3,10 @@ package com.green.hoteldog.entity;
 import com.green.hoteldog.entity.base.CreatedAtBaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -21,6 +25,15 @@ public class PaymentAdEntity extends CreatedAtBaseEntity {
     @JoinColumn(name = "hotel_advertise_pk",referencedColumnName = "hotelAdvertisePk",columnDefinition = "BIGINT UNSIGNED")
     private HotelAdvertiseEntity hotelAdvertiseEntity;
 
+    @Column(nullable = false)
+    @ColumnDefault("'0'")
     private Long paymentStatus;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime paymentDate;
+
+    @Column(nullable = false)
+    private String paymentAdNum;
 
 }

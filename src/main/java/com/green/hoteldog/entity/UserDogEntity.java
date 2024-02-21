@@ -32,4 +32,6 @@ public class UserDogEntity extends BaseEntity {
 
     private String dogPic;
 
+    @Column(nullable = false)
+    private String userDogNum;
 }

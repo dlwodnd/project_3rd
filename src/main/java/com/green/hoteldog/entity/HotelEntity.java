@@ -3,6 +3,7 @@ package com.green.hoteldog.entity;
 import com.green.hoteldog.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @Entity
@@ -36,8 +37,12 @@ public class HotelEntity extends BaseEntity {
     private Long approval;
 
     @Column(nullable = false)
+    @ColumnDefault("'0'")
     private Long signStatus;
 
+    @Column(nullable = false)
     private String cancelReason;
 
+    @Column(nullable = false)
+    private String hotelNum;
 }

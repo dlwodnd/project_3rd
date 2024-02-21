@@ -23,4 +23,7 @@ public class BoardCommentEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String comment;
+
+    @Column(nullable = false)
+    private String commentNum;
 }

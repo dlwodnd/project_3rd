@@ -35,4 +35,7 @@ public class ReservationEntity extends BaseEntity {
 
     @Column(columnDefinition = "varchar(1000)")
     private String cancelReason;
+
+    @Column(nullable = false)
+    private String resNum;
 }

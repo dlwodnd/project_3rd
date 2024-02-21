@@ -2,10 +2,11 @@ package com.green.hoteldog.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @Entity
-@Table(name = "t_buisiness")
+@Table(name = "t_business")
 public class BusinessEntity  {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
@@ -18,8 +19,11 @@ public class BusinessEntity  {
 
     @Column(nullable = false)
     private String accountNumber;
+
     @Column(nullable = false)
     private String bankNm;
+
     @Column(nullable = false)
+    @ColumnDefault("'0'")
     private Long accountStatus;
 }

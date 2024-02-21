@@ -19,4 +19,7 @@ public class ReviewEntity extends BaseEntity {
     private String comment;
     @Column(nullable = false)
     private Long score;
+
+    @Column(nullable = false)
+    private String reviewNum;
 }
