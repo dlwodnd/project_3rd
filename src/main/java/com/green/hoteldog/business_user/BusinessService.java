@@ -17,7 +17,13 @@ public class BusinessService {
 
     // 호텔 삭제
     public ResVo delHotel(){
-        // 삭제 정책 논의 후 작성
+        // 운영중지 상태를 만들어 예약을 못하게 하며
+        // 최소 n개월 유예 기간(예약 가능 기간과 동일)
+        // 삭제 시에는 환불을 마친 후 삭제가 되도록 합니다.
+
+        // 1. 호텔테이블 상태, 호텔 방 테이블 상태 변경
+
+        // 2. n개월이 지나면 자동 삭제, 환불신경x
         return new ResVo(0);
     }
 
@@ -45,7 +51,9 @@ public class BusinessService {
 
     // 예약 리스트 출력
     public List<ReservaionListSelVo> getHotelReservationList(int hotelPk){
-        // 정렬 방식 추후 논의 후 작업
+        // 1. 최신순으로 예약 리스트 출력
+        // 2. 검색 기능(예약번호, 닉네임)
+        // 3. 필터링 기능(추후 논의)
         return null;
     }
     // 영웅
