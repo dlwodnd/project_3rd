@@ -28,7 +28,7 @@ public class ReservationService {
     public ResVo postHotelReservation(List<HotelReservationInsDto> dto) {
         log.info("dto : {}", dto);
         for (HotelReservationInsDto dtos : dto) {
-            dtos.setUserPk(authenticationFacade.getLoginUserPk());
+            dtos.setUserPk((int)authenticationFacade.getLoginUserPk());
             if (dtos.getUserPk() == 0) {
                 throw new CustomException(ReservationErrorCode.UNKNOWN_USER_PK);
             }
@@ -86,7 +86,7 @@ public class ReservationService {
     //---------------------------------------------------예약 취소--------------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
     public ResVo delHotelReservation(HotelReservationDelDto dto) {
-        dto.setUserPk(authenticationFacade.getLoginUserPk());
+        dto.setUserPk((int)authenticationFacade.getLoginUserPk());
         // 먼저 유저가 예약 했는지 셀렉트
         List<HotelReservationSelProcVo> procVo = reservationMapper.selHotelReservation(dto);
         if (procVo.size() == 0) {

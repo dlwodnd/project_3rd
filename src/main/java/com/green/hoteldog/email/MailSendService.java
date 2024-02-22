@@ -2,6 +2,7 @@ package com.green.hoteldog.email;
 
 import com.green.hoteldog.common.utils.RedisUtil;
 import com.green.hoteldog.user.UserMapper;
+import com.green.hoteldog.user.UserRepository;
 import com.green.hoteldog.user.models.UserInfo;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -19,16 +20,16 @@ import java.util.Random;
 public class MailSendService {
     @Autowired
     private JavaMailSender mailSender;
-    private String authNumber;
     @Autowired
     private RedisUtil redisUtil;
+    private String authNumber;
     private final UserMapper userMapper;
+    private final UserRepository userRepository;
     public boolean checkDuplicationEmail(String email){
+        userRepository.findByUserEmail(email).isPresent();
         List<UserInfo> userInfoList = userMapper.selUserEntity();
-        for(UserInfo userInfo : userInfoList){
-            if(userInfo.getUserEmail().equals(email)){
-                return true;
-            }
+        if(userRepository.findByUserEmail(email).isPresent()){
+            return true;
         }
         return false;
     }

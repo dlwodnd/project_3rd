@@ -112,7 +112,7 @@ public class HotelController {
             , description = "toggle로 처리함<br>.북마크 등록 시 result : 1 ,북마크 등록 해제 시 : 2")
     public ResVo toggleHotelBookMark(int hotelPk) {
         checkUser();
-        int userPk = authenticationFacade.getLoginUserPk();
+        int userPk = (int)authenticationFacade.getLoginUserPk();
         return service.toggleHotelBookMark(hotelPk, userPk);
     }
 
@@ -124,7 +124,7 @@ public class HotelController {
             throw new CustomException(HotelErrorCode.NON_EXIST_PAGE_DATA);
         }
         checkUser();
-        int userPk = authenticationFacade.getLoginUserPk();
+        int userPk = (int)authenticationFacade.getLoginUserPk();
         return service.getHotelBookmarkList(userPk, page);
     }
 

@@ -15,7 +15,7 @@ public class AuthenticationFacade {
             return null;
         }
     }
-    public int getLoginUserPk(){
+    public long getLoginUserPk(){
         MyUserDetails myUserDetails = getLoginUser();
         return myUserDetails == null ? 0 : myUserDetails.getMyPrincipal().getUserPk();
     }
