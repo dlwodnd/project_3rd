@@ -43,17 +43,29 @@ public class HotelRoomInfoEntity extends BaseEntity {
     @Column(nullable = false,columnDefinition = "BIGINT UNSIGNED")
     private Long maximum;
 
-    @Column(nullable = false,columnDefinition = "BIGINT UNSIGNED")
+    @Column(columnDefinition = "BIGINT UNSIGNED")
     @ColumnDefault("'1'")
     private Long roomAble;
 
     @Column
     private String discountPer;
 
-    @Column(nullable = false,columnDefinition = "BIGINT UNSIGNED")
+    @Column(columnDefinition = "BIGINT UNSIGNED")
     @ColumnDefault("'0'")
     private Long discountSignStatus;
 
     @Column
     private String cancelReason;
+
+    //승민
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
+    //재웅
 }

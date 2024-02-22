@@ -20,5 +20,17 @@ public class ReviewFavEntity {
     @MapsId("userPk")
     @JoinColumn(name = "user_pk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userPk;
+
+    //승민
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
+    //재웅
     
 }

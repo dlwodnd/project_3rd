@@ -34,7 +34,7 @@ public class RefundEntity {
     @Column(nullable = false)
     private String refundNum;
 
-    @Column(nullable = false)
+
     @ColumnDefault("'0'")
     private Long refundStatus;
 
@@ -45,5 +45,17 @@ public class RefundEntity {
 
     @Column(nullable = false)
     private String refundAmount;
+
+    //승민
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
+    //재웅
 
 }

@@ -36,4 +36,16 @@ public class HotelWhereEntity {
     @Column(nullable = false)
     private String detailAddress;
 
+    //승민
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
+    //재웅
+
 }

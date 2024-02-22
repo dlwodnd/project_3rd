@@ -30,7 +30,7 @@ public class ReservationEntity extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime toDate;
 
-    @Column(nullable = false)
+
     @ColumnDefault("'0'")
     private Long resStatus;
 
@@ -39,4 +39,16 @@ public class ReservationEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String resNum;
+
+    //승민
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
+    //재웅
 }

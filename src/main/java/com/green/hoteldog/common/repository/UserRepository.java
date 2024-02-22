@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-
+    //승민
 
     //모든 유저
     List<UserEntity> findAllByOrderByCreatedAtDesc();
@@ -21,10 +21,16 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByUserEmail(String email);
     UserEntity findByNickname(String nickname);
 
+
+    //승민
+
+    //승준
     //승준
 
     //영웅
+    //영웅
 
+    //재웅
     //재웅
 
 }

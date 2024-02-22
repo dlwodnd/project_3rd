@@ -24,5 +24,16 @@ public class WithdrawalUserEntity {
 
     @Column(nullable = false, columnDefinition = "VARCHAR(1000)")
     private String reason;
-    //
+
+    //승민
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
+    //재웅
 }

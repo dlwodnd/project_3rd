@@ -22,4 +22,16 @@ public class HotelFavoritesEntity extends CreatedAtBaseEntity {
     @JoinColumn(name = "user_pk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userEntity;
 
+    //승민
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
+    //재웅
+
 }
