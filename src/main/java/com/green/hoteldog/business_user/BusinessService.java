@@ -10,6 +10,8 @@ import com.green.hoteldog.common.repository.BusinessRepository;
 import com.green.hoteldog.common.repository.HotelRepository;
 import com.green.hoteldog.common.repository.HotelRoomRepository;
 import com.green.hoteldog.common.repository.HotelSuspendedRepository;
+import com.green.hoteldog.exceptions.CustomException;
+import com.green.hoteldog.exceptions.HotelErrorCode;
 import com.green.hoteldog.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,46 +42,45 @@ public class BusinessService {
 
         long loginIuser = (long) authenticationFacade.getLoginUserPk();
         // 1. 운영 중지 신청
-        // 운영 중지 상태를 만들어 예약을 못하게 합니다.
-        // 호텔 테이블 상태, 호텔 방 테이블 상태 변경
+        HotelEntity hotelEntity = hotelRepository.findByHotelPk(loginIuser);
         if(dto.getStateChange() == 1){
-
-            HotelEntity hotelEntity = hotelRepository.findByHotelPk(loginIuser);
-
-            HotelSuspendedEntity suspendedEntity = HotelSuspendedEntity.builder()
-                    .hotelEntity(hotelEntity)
-                    .suspendedReason(dto.getSuspendReason())
-                    .build();
-
-            HotelSuspendedEntity savedEntity = suspendedRepository.save(suspendedEntity);
-            List<Long> hotelPkList = new ArrayList<>();
-            hotelPkList.add(hotelEntity.getHotelPk());
-
-            List<HotelRoomInfoEntity> roomInfoEntity = hotelRoomRepository.findAllById(hotelPkList);
-
-            List<HotelRoomInfoEntity> UpdRoomInfoEntity = roomInfoEntity.stream().map(room ->
-                    HotelRoomInfoEntity.builder()
-                            .roomAble((long) 2)
-                            .build()).collect(Collectors.toList());
-            for ( HotelRoomInfoEntity updRoominfo : UpdRoomInfoEntity ) {
-
+            try {
+                HotelSuspendedEntity suspendedEntity = HotelSuspendedEntity.builder()
+                        .hotelEntity(hotelEntity)
+                        .suspendedReason(dto.getSuspendReason())
+                        .build();
+                HotelSuspendedEntity savedEntity = suspendedRepository.save(suspendedEntity);
+                if (savedEntity == null){
+                    throw new CustomException(HotelErrorCode.UNKNOWN_DATE_FORM); // 멘트 나중에 수정
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                throw new CustomException(HotelErrorCode.UNKNOWN_DATE_FORM); // 멘트 나중에 수정
             }
 
-            if(savedEntity.getSuspendedPk() == 0){
-                return new ResVo(Const.FAIL); // 나중에 예외처리 하기
-            }
-            return new ResVo(Const.SUCCESS);
         }else{
+            // 2. 운영 중지 철회 - 호텔 상테 1로 변경
+            // 호텔 테이블 상태, 호텔 방 테이블 상태 변경
+            try {
+                List<Long> hotelPkList = new ArrayList<>();
+                hotelPkList.add(hotelEntity.getHotelPk());
 
+                List<HotelRoomInfoEntity> roomInfoEntity = hotelRoomRepository.findAllById(hotelPkList);
 
-            return new ResVo(Const.SUCCESS);
+                List<HotelRoomInfoEntity> UpdRoomInfoEntity = roomInfoEntity.stream().map(room ->
+                        HotelRoomInfoEntity.builder()
+                                .roomAble((long) 1)
+                                .build()).collect(Collectors.toList());
+                List<HotelRoomInfoEntity> savedEntity = hotelRoomRepository.saveAll(UpdRoomInfoEntity);
+                if (savedEntity.size() == 0){
+                    throw new CustomException(HotelErrorCode.UNKNOWN_DATE_FORM); // 멘트 나중에 수정
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                throw new CustomException(HotelErrorCode.UNKNOWN_DATE_FORM); // 멘트 나중에 수정
+            }
         }
-
-
-
-        // 2. 운영 중지 철회 - 호텔 상테 1로 변경
-
-
+        return new ResVo(Const.SUCCESS);
     }
 
     // 광고 신청
