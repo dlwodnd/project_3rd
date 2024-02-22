@@ -15,10 +15,10 @@ import java.util.List;
 public class BusinessController {
     private final BusinessService service;
 
-    // 호텔 삭제
-    @DeleteMapping
-    public  ResVo delHotel(){
-        return service.delHotel();
+    // 호텔 상태 전환
+    @PostMapping
+    public  ResVo insHotelStateChange(@RequestBody HotelSateChangeInsDto dto){
+        return service.insHotelStateChange(dto);
     }
 
     // 광고 신청

@@ -15,15 +15,16 @@ import java.util.List;
 public class BusinessService {
     private final AuthenticationFacade authenticationFacade;
 
-    // 호텔 삭제
-    public ResVo delHotel(){
-        // 운영중지 상태를 만들어 예약을 못하게 하며
-        // 최소 n개월 유예 기간(예약 가능 기간과 동일)
-        // 삭제 시에는 환불을 마친 후 삭제가 되도록 합니다.
+    // 호텔 상태 전환 (1 - 운영 상태, 2 - 운영 중지 상태)
+    public ResVo insHotelStateChange(HotelSateChangeInsDto dto){
+        // 1. 운영 중지 신청
+        // 운영 중지 상태를 만들어 예약을 못하게 합니다.
 
-        // 1. 호텔테이블 상태, 호텔 방 테이블 상태 변경
+        // 1. 호텔 테이블 상태, 호텔 방 테이블 상태 변경
 
-        // 2. n개월이 지나면 자동 삭제, 환불신경x
+        // 2. 운영 중지 철회 - 호텔 상테 1로 변경
+
+
         return new ResVo(0);
     }
 
