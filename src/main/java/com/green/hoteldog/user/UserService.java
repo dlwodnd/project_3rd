@@ -151,25 +151,23 @@ public class UserService {
     }
 
     //--------------------------------------------------유저 정보 업데이트-------------------------------------------------
+    @Transactional
     public ResVo updUserInfo(UserUpdateDto dto) {
         Optional<UserEntity> optionalUserEntity = userRepository.findById(facade.getLoginUserPk());
         UserEntity userEntity = optionalUserEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        userEntity = UserEntity.builder()
-                .nickname(dto.getNickname())
-                .phoneNum(dto.getPhoneNum())
-                .userAddress(dto.getAddressEntity().getAddressName() + " " + dto.getAddressEntity().getDetailAddress())
-                .userWhereEntity(UserWhereEntity.builder()
-                        .x(dto.getAddressEntity().getX())
-                        .y(dto.getAddressEntity().getY())
-                        .addressName(dto.getAddressEntity().getAddressName())
-                        .zoneNum(dto.getAddressEntity().getZoneNum())
-                        .region1DepthName(dto.getAddressEntity().getRegion1DepthName())
-                        .region2DepthName(dto.getAddressEntity().getRegion2DepthName())
-                        .region3DepthName(dto.getAddressEntity().getRegion3DepthName())
-                        .detailAddress(dto.getAddressEntity().getDetailAddress())
-                        .build())
-                .build();
-
+        userEntity.setUserAddress(dto.getAddressEntity().getAddressName() + " " + dto.getAddressEntity().getDetailAddress());
+        userEntity.setNickname(dto.getNickname());
+        UserWhereEntity userWhereEntity = userEntity.getUserWhereEntity();
+        userWhereEntity.setX(dto.getAddressEntity().getX());
+        userWhereEntity.setY(dto.getAddressEntity().getY());
+        userWhereEntity.setAddressName(dto.getAddressEntity().getAddressName());
+        userWhereEntity.setZoneNum(dto.getAddressEntity().getZoneNum());
+        userWhereEntity.setRegion1DepthName(dto.getAddressEntity().getRegion1DepthName());
+        userWhereEntity.setRegion2DepthName(dto.getAddressEntity().getRegion2DepthName());
+        userWhereEntity.setRegion3DepthName(dto.getAddressEntity().getRegion3DepthName());
+        userWhereEntity.setDetailAddress(dto.getAddressEntity().getDetailAddress());
+        userEntity.setUserWhereEntity(userWhereEntity);
+        userEntity.setPhoneNum(dto.getPhoneNum());
         return new ResVo(Const.SUCCESS);
     }
 

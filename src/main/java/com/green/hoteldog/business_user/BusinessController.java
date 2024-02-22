@@ -5,6 +5,7 @@ import com.green.hoteldog.common.ResVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -44,7 +45,11 @@ public class BusinessController {
 
     //사업자 유저 호텔 등록
     @PostMapping("/registration")
-    public ResVo postHotel(){
+    public ResVo postHotel(@RequestParam HotelInsDto dto,
+                           @RequestPart MultipartFile businessCertificationFile,
+                           @RequestPart List<MultipartFile> hotelPics){
+        dto.setBusinessCertificationFile(businessCertificationFile);
+        dto.setHotelPics(hotelPics);
         return null;
     }
     //사업자 유저가 등록한 호텔 리스트

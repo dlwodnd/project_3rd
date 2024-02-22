@@ -62,7 +62,8 @@ public class BusinessService {
     //재웅
 
     //사업자 유저 호텔 등록
-    public ResVo insHotelInfo(){
+    public ResVo insHotelInfo(HotelInsDto dto){
+
         return null;
     }
     //사업자 유저가 등록한 호텔 리스트
