@@ -12,14 +12,29 @@ public class ReviewEntity extends BaseEntity {
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewPk;
+
     @OneToOne
     @JoinColumn(name = "res_pk",referencedColumnName = "resPk",columnDefinition = "BIGINT UNSIGNED")
     private ReservationEntity reservationEntity;
+
     @Column(nullable = false)
     private String comment;
+
     @Column(nullable = false)
     private Long score;
 
     @Column(nullable = false)
     private String reviewNum;
+
+    //승민
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
+    //재웅
 }

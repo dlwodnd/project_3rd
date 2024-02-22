@@ -44,6 +44,7 @@ public class UserService {
     public ResVo userSignup(UserSignupDto dto) {
         log.info("UserSignupDto : {}", dto);
         UserEntity userEntity = UserEntity.builder()
+                .userStatus(0L)
                 .userNum("U" + RandomCodeUtils.getRandomCode(6))
                 .userEmail(dto.getEmailResponseVo().getEmail())
                 .upw(passwordEncoder.encode(dto.getUpw()))

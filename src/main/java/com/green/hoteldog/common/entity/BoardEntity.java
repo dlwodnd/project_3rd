@@ -32,4 +32,16 @@ public class BoardEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String boardNum;
+
+    //승민
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
+    //재웅
 }

@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/business")
 public class BusinessController {
     private final BusinessService service;
+    //영웅
 
     // 호텔 상태 전환
     @PostMapping("/state")
@@ -41,6 +42,8 @@ public class BusinessController {
         return service.getHotelReservationList(hotelPk);
     }
     // 영웅
+
+    // ---------------------------------------------------------------------------------------------------
 
     //재웅
 
@@ -70,4 +73,8 @@ public class BusinessController {
     }
 
     //재웅
+
+    // ---------------------------------------------------------------------------------------------------
+    //승준
+    //승준
 }

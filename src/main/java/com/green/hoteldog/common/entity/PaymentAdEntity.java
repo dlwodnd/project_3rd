@@ -25,7 +25,7 @@ public class PaymentAdEntity extends CreatedAtBaseEntity {
     @JoinColumn(name = "hotel_advertise_pk",referencedColumnName = "hotelAdvertisePk",columnDefinition = "BIGINT UNSIGNED")
     private HotelAdvertiseEntity hotelAdvertiseEntity;
 
-    @Column(nullable = false)
+
     @ColumnDefault("'0'")
     private Long paymentStatus;
 
@@ -35,5 +35,17 @@ public class PaymentAdEntity extends CreatedAtBaseEntity {
 
     @Column(nullable = false)
     private String paymentAdNum;
+
+    //승민
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
+    //재웅
 
 }

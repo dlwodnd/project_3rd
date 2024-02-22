@@ -11,8 +11,22 @@ public class EventListEntity {
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long eventPk;
+
     @Column(nullable = false)
     private String pic;
+
     @Column(nullable = false)
     private String url;
+
+    //승민
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
+    //재웅
 }

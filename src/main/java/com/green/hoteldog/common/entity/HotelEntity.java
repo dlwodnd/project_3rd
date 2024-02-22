@@ -30,15 +30,15 @@ public class HotelEntity extends BaseEntity {
     @Column(nullable = false)
     private String hotelCall;
 
-    @Column(nullable = false)
+
     @ColumnDefault("'0'")
     private Long advertise;
 
-    @Column(nullable = false)
+
     @ColumnDefault("'0'")
     private Long approval;
 
-    @Column(nullable = false)
+
     @ColumnDefault("'0'")
     private Long signStatus;
 
@@ -51,4 +51,16 @@ public class HotelEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String businessCertificate;
+
+    //승민
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
+    //재웅
 }

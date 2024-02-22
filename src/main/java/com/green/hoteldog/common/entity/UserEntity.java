@@ -46,14 +46,29 @@ public class UserEntity extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum userRole;
 
-//    @ToString.Exclude
-//    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.PERSIST)
-//    private List<BusinessEntity> businessEntities;
+
     @Column(nullable = false)
     private String userNum;
 
+
+    //승민
+
+    /*@ToString.Exclude
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.PERSIST)
+    private List<BusinessEntity> businessEntities;*/
+
+    //승민
+
+    //승준
+    //승준
+
+    //영웅
+    //영웅
+
+    //재웅
     @ToString.Exclude
     @OneToOne(mappedBy = "userEntity",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private UserWhereEntity userWhereEntity;
+    //재웅
 
 }
