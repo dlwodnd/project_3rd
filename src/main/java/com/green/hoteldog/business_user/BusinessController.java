@@ -17,8 +17,9 @@ public class BusinessController {
     private final BusinessService service;
 
     // 호텔 상태 전환
-    @PostMapping
-    public  ResVo insHotelStateChange(@RequestBody HotelSateChangeInsDto dto){
+    @PostMapping("/state")
+    public ResVo insHotelStateChange(@RequestBody HotelSateChangeInsDto dto){
+        if (dto.getStateChange() == 0){return new ResVo(0);}
         return service.insHotelStateChange(dto);
     }
 

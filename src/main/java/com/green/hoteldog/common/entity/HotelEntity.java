@@ -14,7 +14,7 @@ public class HotelEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotelPk;
 
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @OneToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "business_pk",referencedColumnName = "businessPk",columnDefinition = "BIGINT UNSIGNED")
     private BusinessEntity businessEntity;
 

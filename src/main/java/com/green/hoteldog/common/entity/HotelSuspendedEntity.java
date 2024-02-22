@@ -2,11 +2,17 @@ package com.green.hoteldog.common.entity;
 
 import com.green.hoteldog.common.entity.base.CreatedAtBaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "t_hotel_suspended")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class HotelSuspendedEntity extends CreatedAtBaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
