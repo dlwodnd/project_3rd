@@ -3,7 +3,7 @@ package com.green.hoteldog.user;
 import com.green.hoteldog.common.AppProperties;
 import com.green.hoteldog.common.Const;
 import com.green.hoteldog.common.entity.UserWhereEntity;
-import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
+import com.green.hoteldog.common.repository.UserRepository;
 import com.green.hoteldog.common.utils.CookieUtils;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.common.entity.UserEntity;
@@ -25,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j

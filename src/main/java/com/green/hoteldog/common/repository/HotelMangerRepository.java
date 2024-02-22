@@ -1,4 +1,4 @@
-package com.green.hoteldog.manager;
+package com.green.hoteldog.common.repository;
 
 import com.green.hoteldog.common.entity.BusinessEntity;
 import com.green.hoteldog.common.entity.HotelEntity;

@@ -6,21 +6,17 @@ import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.common.entity.HotelEntity;
 import com.green.hoteldog.common.entity.HotelRoomInfoEntity;
 import com.green.hoteldog.common.entity.HotelSuspendedEntity;
-import com.green.hoteldog.hotel.repository.HotelRepository;
-import com.green.hoteldog.hotel.repository.HotelRoomRepository;
-import com.green.hoteldog.hotel.repository.HotelSuspendedRepository;
+import com.green.hoteldog.common.repository.BusinessRepository;
+import com.green.hoteldog.common.repository.HotelRepository;
+import com.green.hoteldog.common.repository.HotelRoomRepository;
+import com.green.hoteldog.common.repository.HotelSuspendedRepository;
 import com.green.hoteldog.security.AuthenticationFacade;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 

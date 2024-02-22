@@ -2,7 +2,7 @@ package com.green.hoteldog.email;
 
 import com.green.hoteldog.common.utils.RedisUtil;
 import com.green.hoteldog.user.UserMapper;
-import com.green.hoteldog.user.UserRepository;
+import com.green.hoteldog.common.repository.UserRepository;
 import com.green.hoteldog.user.models.UserInfo;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

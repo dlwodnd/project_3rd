@@ -1,4 +1,4 @@
-package com.green.hoteldog.business_user;
+package com.green.hoteldog.common.repository;
 
 public interface BusinessQdslRepository {
 
