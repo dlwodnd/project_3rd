@@ -38,7 +38,7 @@ public class ReviewService {
     //-----------------------------------------------------리뷰 등록------------------------------------------------------
     @Transactional
     public ResVo insReview(ReviewInsDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -70,7 +70,7 @@ public class ReviewService {
     //--------------------------------------------------리뷰 전체 수정-----------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
     public ResVo putReview(ReviewUpdDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -99,7 +99,7 @@ public class ReviewService {
 
     //--------------------------------------------------리뷰 코멘트 수정---------------------------------------------------
     public ResVo patchReviewComment(ReviewPatchDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -114,7 +114,7 @@ public class ReviewService {
 
     //--------------------------------------------------리뷰 좋아요 토글---------------------------------------------------
     public ResVo patchReviewFav(ReviewFavDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -127,7 +127,7 @@ public class ReviewService {
 
     //--------------------------------------------------리뷰 삭제---------------------------------------------------
     public ResVo delReview(DelReviewDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         log.info("DelReviewDto : {}", dto);
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
@@ -145,7 +145,7 @@ public class ReviewService {
 
     //------------------------------------------------유저가 등록한 리뷰 목록--------------------------------------------
     public List<UserReviewVo> userReviewList() {
-        int userPk = facade.getLoginUserPk();
+        int userPk =(int) facade.getLoginUserPk();
         if (userPk == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }

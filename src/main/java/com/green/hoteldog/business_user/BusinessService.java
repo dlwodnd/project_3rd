@@ -31,7 +31,7 @@ public class BusinessService {
     // 광고 신청
     public ResVo postHotelAdvertiseApplication(HotelAdvertiseApplicationDto dto){
         // 1. 유저가 사업자유저인지 체크
-        dto.builder().iuser(authenticationFacade.getLoginUserPk()).build();
+        dto.builder().userPk(authenticationFacade.getLoginUserPk()).build();
 
         // 2. 광고테이블 인서트, 결제 테이블 인서트
 

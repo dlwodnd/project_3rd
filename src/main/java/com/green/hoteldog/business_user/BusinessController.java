@@ -43,7 +43,7 @@ public class BusinessController {
     //재웅
 
     //사업자 유저 호텔 등록
-    @PostMapping
+    @PostMapping("/registration")
     public ResVo postHotel(){
         return null;
     }

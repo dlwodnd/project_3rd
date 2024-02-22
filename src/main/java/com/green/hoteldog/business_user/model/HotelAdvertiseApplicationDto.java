@@ -14,9 +14,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class HotelAdvertiseApplicationDto {
     @JsonIgnore
-    private int iuser;
-    private int hotelPk;
+    private long userPk;
+    private long hotelPk;
     private LocalDate fromDate;
     private LocalDate toDate;
-    private int cost; // 가격
+    private long cost; // 가격
 }

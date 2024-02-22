@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -45,7 +46,6 @@ public class UserService {
         log.info("UserSignupDto : {}", dto);
         UserEntity userEntity = UserEntity.builder()
                 .userNum("U" + RandomCodeUtils.getRandomCode(6))
-                .userRole(UserRoleEnum.USER)
                 .userEmail(dto.getEmailResponseVo().getEmail())
                 .upw(passwordEncoder.encode(dto.getUpw()))
                 .nickname(dto.getNickname())
@@ -72,19 +72,19 @@ public class UserService {
 
     //--------------------------------------------------유저 로그인-------------------------------------------------------
     public UserSigninVo userSignin(HttpServletResponse response, HttpServletRequest request, UserSigninDto dto) {
-        UserSigninVo vo = new UserSigninVo();
-        UserInfo userInfo = userMapper.userEntityByUserEmail(dto.getUserEmail());
-        if (userInfo == null) {
-            throw new CustomException(UserErrorCode.UNKNOWN_EMAIL_ADDRESS);
-        }
-        if (!passwordEncoder.matches(dto.getUpw(), userInfo.getUpw())) {
+        Optional<UserEntity> userEntityOptional = userRepository.findByUserEmail(dto.getUserEmail());
+
+        UserEntity userEntity = userEntityOptional.orElseThrow(() -> new CustomException(UserErrorCode.UNKNOWN_EMAIL_ADDRESS));
+
+        if (!passwordEncoder.matches(dto.getUpw(), userEntity.getUpw())) {
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
         }
 
+
         MyPrincipal myPrincipal = MyPrincipal.builder()
-                .userPk(userInfo.getUserPk())
+                .userPk(userEntity.getUserPk())
                 .build();
-        myPrincipal.getRoles().add(userInfo.getUserRole());
+        myPrincipal.getRoles().add(userEntity.getUserRole().name());
         String at = tokenProvider.generateAccessToken(myPrincipal);
         //엑서스 토큰 값 받아오기
         String rt = tokenProvider.generateRefreshToken(myPrincipal);
@@ -97,20 +97,21 @@ public class UserService {
 
         /*vo.setDepthName(mapper.selUserDepthName(userInfo.getUserPk()));
         vo.setSizePkList(dogSizeList);*/
-        vo.setUserPk(userInfo.getUserPk());
+        UserSigninVo vo = new UserSigninVo();
+        vo.setUserRole(userEntity.getUserRole().name());
+        vo.setUserPk(userEntity.getUserPk());
         vo.setAccessToken(at);
-        vo.setNickname(userInfo.getNickname());
+        vo.setNickname(userEntity.getNickname());
         return vo;
     }
 
     //--------------------------------------------------유저 닉네임 체크--------------------------------------------------
     public ResVo checkNickname(String nickname) {
-        List<UserInfo> userInfoList = userMapper.selUserEntity();
-        for (UserInfo entity : userInfoList) {
-            if (entity.getNickname().equals(nickname)) {
-                throw new CustomException(UserErrorCode.ALREADY_USED_NICKNAME);
-            }
+        UserEntity userEntity = userRepository.findByNickname(nickname);
+        if (userEntity != null) {
+            throw new CustomException(UserErrorCode.ALREADY_USED_NICKNAME);
         }
+
         return new ResVo(1);
     }
 
@@ -122,35 +123,53 @@ public class UserService {
 
     //--------------------------------------------------유저 정보 조회----------------------------------------------------
     public UserInfoVo getUserInfo(UserInfoDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
-        if (dto.getUserPk() == 0) {
-            throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
-        }
-        UserInfo entity = userMapper.userEntityByUserPk(dto.getUserPk());
-        if (!passwordEncoder.matches(dto.getUpw(), entity.getUpw())) {
+        Optional<UserEntity> optionalUser = userRepository.findById(facade.getLoginUserPk());
+        UserEntity userEntity = optionalUser.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+
+        if (!passwordEncoder.matches(dto.getUpw(), userEntity.getUpw())) {
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
         }
         UserInfoVo vo = new UserInfoVo();
-        vo.setUserPk(entity.getUserPk());
-        vo.setUserEmail(entity.getUserEmail());
-        vo.setNickname(entity.getNickname());
-        vo.setPhoneNum(entity.getPhoneNum());
-        vo.setUserAddress(entity.getUserAddress());
-        vo.setAddressEntity(userMapper.getUserAddress(entity.getUserPk()));
+
+        vo.setUserPk(userEntity.getUserPk());
+        vo.setUserEmail(userEntity.getUserEmail());
+        vo.setNickname(userEntity.getNickname());
+        vo.setPhoneNum(userEntity.getPhoneNum());
+        vo.setUserAddress(userEntity.getUserAddress());
+        vo.setAddressEntity(UserAddressInfo.builder()
+                .userPk(userEntity.getUserPk())
+                .x(userEntity.getUserWhereEntity().getX())
+                .y(userEntity.getUserWhereEntity().getY())
+                .addressName(userEntity.getUserWhereEntity().getAddressName())
+                .detailAddress(userEntity.getUserWhereEntity().getDetailAddress())
+                .zoneNum(userEntity.getUserWhereEntity().getZoneNum())
+                .region1DepthName(userEntity.getUserWhereEntity().getRegion1DepthName())
+                .region2DepthName(userEntity.getUserWhereEntity().getRegion2DepthName())
+                .region3DepthName(userEntity.getUserWhereEntity().getRegion3DepthName())
+                .build());
         return vo;
     }
 
     //--------------------------------------------------유저 정보 업데이트-------------------------------------------------
     public ResVo updUserInfo(UserUpdateDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
-        log.info("UserUpdateDto : {}", dto);
-        if (dto.getUserPk() == 0) {
-            throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
-        }
-        //dto.setUserAddress(dto.getAddressEntity().getAddressName() + " " + dto.getAddressEntity().getDetailAddress());
-        userMapper.updateUserInfo(dto);
-        dto.getAddressEntity().setUserPk(dto.getUserPk());
-        userMapper.updateUserAddress(dto.getAddressEntity());
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(facade.getLoginUserPk());
+        UserEntity userEntity = optionalUserEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        userEntity = UserEntity.builder()
+                .nickname(dto.getNickname())
+                .phoneNum(dto.getPhoneNum())
+                .userAddress(dto.getAddressEntity().getAddressName() + " " + dto.getAddressEntity().getDetailAddress())
+                .userWhereEntity(UserWhereEntity.builder()
+                        .x(dto.getAddressEntity().getX())
+                        .y(dto.getAddressEntity().getY())
+                        .addressName(dto.getAddressEntity().getAddressName())
+                        .zoneNum(dto.getAddressEntity().getZoneNum())
+                        .region1DepthName(dto.getAddressEntity().getRegion1DepthName())
+                        .region2DepthName(dto.getAddressEntity().getRegion2DepthName())
+                        .region3DepthName(dto.getAddressEntity().getRegion3DepthName())
+                        .detailAddress(dto.getAddressEntity().getDetailAddress())
+                        .build())
+                .build();
+
         return new ResVo(Const.SUCCESS);
     }
 
@@ -168,7 +187,7 @@ public class UserService {
         MyUserDetails myUserDetails = (MyUserDetails) tokenProvider.getUserDetailsFromToken(token);
         MyPrincipal myprincipal = myUserDetails.getMyPrincipal();
         String at = tokenProvider.generateAccessToken(myprincipal);
-        vo.setUserPk(facade.getLoginUserPk());
+        vo.setUserPk((int)facade.getLoginUserPk());
         vo.setAccessToken(at);
         return vo;
     }

@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class UserSigninVo {
-    private int userPk;
-    private int userTypePk;
+    private long userPk;
+    private String userRole;
     private String nickname;
     private String accessToken;
     /*

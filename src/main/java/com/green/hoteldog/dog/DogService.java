@@ -23,7 +23,7 @@ public class DogService {
     //-------------------------------------유저가 등록한 강아지 리스트 호출-------------------------------------------------
     public List<GetDogListVo> selUserDogList() {
         GetUserDogDto dto = new GetUserDogDto();
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -33,7 +33,7 @@ public class DogService {
     //-------------------------------------------------유저 강아지 등록---------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
     public ResVo insUserDog(InsUserDogDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -56,7 +56,7 @@ public class DogService {
 
     //---------------------------------------------유저 강아지 정보 수정---------------------------------------------------
     public ResVo updUserDog(UpdUserDogDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -66,7 +66,7 @@ public class DogService {
 
     //--------------------------------------------유저 강아지 사진 정보 수정------------------------------------------------
     public ResVo updUserDogPic(PatchUserDogPicDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -74,7 +74,7 @@ public class DogService {
         fileUtils.delFolderTrigger(target);
         String saveFileNm = fileUtils.transferTo(dto.getPic(), target);
         SetUserDogPicDto picDto = new SetUserDogPicDto();
-        picDto.setUserPk(facade.getLoginUserPk());
+        picDto.setUserPk((int)facade.getLoginUserPk());
         picDto.setUserDogPk(dto.getUserDogPk());
         picDto.setPic(saveFileNm);
         try {
@@ -87,7 +87,7 @@ public class DogService {
 
     //---------------------------------------------------유저 강아지 삭제-------------------------------------------------
     public ResVo delUserDog(DelUserDogDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         String target = "/user/" + dto.getUserPk();
         try {
             dogMapper.delUserDog(dto);

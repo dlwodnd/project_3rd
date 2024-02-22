@@ -28,7 +28,7 @@ public class BoardService {
 
     //---------------------------------------------------게시글 등록------------------------------------------------------
     public ResVo postBoard(PostBoardDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -60,7 +60,7 @@ public class BoardService {
     //---------------------------------------------------게시글 수정------------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
     public ResVo putBoard(PutBoardDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -111,7 +111,7 @@ public class BoardService {
     //---------------------------------------------------게시글 삭제------------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
     public ResVo deleteBoard(DeleteBoardDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         log.info("DeleteBoardDto : {}", dto);
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
@@ -131,7 +131,7 @@ public class BoardService {
 
     //---------------------------------------------------댓글 등록--------------------------------------------------------
     public ResVo postComment(PostCommentDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -142,7 +142,7 @@ public class BoardService {
     //---------------------------------------------------댓글 삭제--------------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
     public ResVo deleteComment(DeleteCommentDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -155,7 +155,7 @@ public class BoardService {
 
     //---------------------------------------------------댓글 수정--------------------------------------------------------
     public ResVo updateComment(PutCommentDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -202,7 +202,7 @@ public class BoardService {
 
     //--------------------------------------------로그인 유저가 작성한 게시글-----------------------------------------------
     public GetSimpleBoardVo userPostingBoardList(GetUserBoardListDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -219,7 +219,7 @@ public class BoardService {
 
     //--------------------------------------------로그인 유저가 작성한 댓글-------------------------------------------------
     public GetUserCommentVo userPostingCommentList(GetUserCommentListDto dto) {
-        dto.setUserPk(facade.getLoginUserPk());
+        dto.setUserPk((int)facade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }

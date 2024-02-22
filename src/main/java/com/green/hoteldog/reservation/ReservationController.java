@@ -53,7 +53,7 @@ public class ReservationController {
             throw new CustomException(HotelErrorCode.NON_EXIST_PAGE_DATA);
         }
         checkUser();
-        int userPk = authenticationFacade.getLoginUserPk();
+        int userPk = (int)authenticationFacade.getLoginUserPk();
         return service.getUserReservation(userPk, page);
     }
 }

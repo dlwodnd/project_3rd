@@ -51,7 +51,7 @@ public class HotelService {
                 throw new CustomException(HotelErrorCode.UNKNOWN_DATE_FORM);
             }
         }
-        dto.setUserPk(authenticationFacade.getLoginUserPk());
+        dto.setUserPk((int)authenticationFacade.getLoginUserPk());
         // 0. 랜덤 광고 리스트 셀렉
         List<HotelListSelVo> hotelAdvertiseList = mapper.selHotelAdvertiseList();
         log.info("hotelAdvertiseList : {}", hotelAdvertiseList);
@@ -279,7 +279,7 @@ public class HotelService {
     //--------------------------------------------호텔 상세페이지----------------------------------------------------------
     public HotelInfo getHotelDetail(int hotelPk) {
         if (hotelPk > 0) {
-            int userPk = authenticationFacade.getLoginUserPk();
+            int userPk = (int)authenticationFacade.getLoginUserPk();
             log.info("userPk : {}", userPk);
 
             //메인페이지 객체 생성
@@ -593,7 +593,7 @@ public class HotelService {
     // 호텔 더미데이터 작성
     @Transactional(rollbackFor = Exception.class)
     public ResVo hotelRegistration(List<MultipartFile> pics, HotelInsDto dto) {
-        dto.setUserPk(authenticationFacade.getLoginUserPk());
+        dto.setUserPk((int)authenticationFacade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             //예외처리
             return new ResVo(0);
@@ -625,7 +625,7 @@ public class HotelService {
 
     //호텔 사진 수정
     public ResVo putHotelPics(HotelPutPicDto dto) {
-        dto.setUserPk(authenticationFacade.getLoginUserPk());
+        dto.setUserPk((int)authenticationFacade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -650,7 +650,7 @@ public class HotelService {
 
     @Transactional(rollbackFor = Exception.class)
     public ResVo insHotelRoom(MultipartFile hotelPic, InsHotelRoomDto dto) {
-        dto.setUserPk(authenticationFacade.getLoginUserPk());
+        dto.setUserPk((int)authenticationFacade.getLoginUserPk());
         if (dto.getUserPk() == 0) {
             return new ResVo(0);
         }
