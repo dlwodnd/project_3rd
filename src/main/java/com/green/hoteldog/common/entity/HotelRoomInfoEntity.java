@@ -2,12 +2,18 @@ package com.green.hoteldog.common.entity;
 
 import com.green.hoteldog.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @Entity
 @Table(name = "t_hotel_room_info")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class HotelRoomInfoEntity extends BaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
@@ -39,7 +45,7 @@ public class HotelRoomInfoEntity extends BaseEntity {
 
     @Column(nullable = false,columnDefinition = "BIGINT UNSIGNED")
     @ColumnDefault("'1'")
-    private Long bookAble;
+    private Long roomAble;
 
     @Column
     private String discountPer;

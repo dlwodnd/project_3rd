@@ -1,31 +1,89 @@
 package com.green.hoteldog.business_user;
 
 import com.green.hoteldog.business_user.model.*;
+import com.green.hoteldog.common.Const;
 import com.green.hoteldog.common.ResVo;
+import com.green.hoteldog.common.entity.HotelEntity;
+import com.green.hoteldog.common.entity.HotelRoomInfoEntity;
+import com.green.hoteldog.common.entity.HotelSuspendedEntity;
+import com.green.hoteldog.hotel.repository.HotelRepository;
+import com.green.hoteldog.hotel.repository.HotelRoomRepository;
+import com.green.hoteldog.hotel.repository.HotelSuspendedRepository;
 import com.green.hoteldog.security.AuthenticationFacade;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class BusinessService {
     private final AuthenticationFacade authenticationFacade;
+    private final BusinessRepository repository;
+    private final HotelRepository hotelRepository;
+    private final HotelSuspendedRepository suspendedRepository;
+    private final HotelRoomRepository hotelRoomRepository;
 
     // 호텔 상태 전환 (1 - 운영 상태, 2 - 운영 중지 상태)
+    @Transactional
     public ResVo insHotelStateChange(HotelSateChangeInsDto dto){
+        /*EntityManagerFactory emf = Persistence.createEntityManagerFactory("Hotel");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();*/
+
+        long loginIuser = (long) authenticationFacade.getLoginUserPk();
         // 1. 운영 중지 신청
         // 운영 중지 상태를 만들어 예약을 못하게 합니다.
+        // 호텔 테이블 상태, 호텔 방 테이블 상태 변경
+        if(dto.getStateChange() == 1){
 
-        // 1. 호텔 테이블 상태, 호텔 방 테이블 상태 변경
+            HotelEntity hotelEntity = hotelRepository.findByHotelPk(loginIuser);
+
+            HotelSuspendedEntity suspendedEntity = HotelSuspendedEntity.builder()
+                    .hotelEntity(hotelEntity)
+                    .suspendedReason(dto.getSuspendReason())
+                    .build();
+
+            HotelSuspendedEntity savedEntity = suspendedRepository.save(suspendedEntity);
+            List<Long> hotelPkList = new ArrayList<>();
+            hotelPkList.add(hotelEntity.getHotelPk());
+
+            List<HotelRoomInfoEntity> roomInfoEntity = hotelRoomRepository.findAllById(hotelPkList);
+
+            List<HotelRoomInfoEntity> UpdRoomInfoEntity = roomInfoEntity.stream().map(room ->
+                    HotelRoomInfoEntity.builder()
+                            .roomAble((long) 2)
+                            .build()).collect(Collectors.toList());
+            for ( HotelRoomInfoEntity updRoominfo : UpdRoomInfoEntity ) {
+
+            }
+
+            if(savedEntity.getSuspendedPk() == 0){
+                return new ResVo(Const.FAIL); // 나중에 예외처리 하기
+            }
+            return new ResVo(Const.SUCCESS);
+        }else{
+
+
+            return new ResVo(Const.SUCCESS);
+        }
+
+
 
         // 2. 운영 중지 철회 - 호텔 상테 1로 변경
 
 
-        return new ResVo(0);
     }
 
     // 광고 신청
@@ -62,7 +120,8 @@ public class BusinessService {
     //재웅
 
     //사업자 유저 호텔 등록
-    public ResVo insHotelInfo(){
+    public ResVo insHotelInfo(HotelInsDto dto){
+
         return null;
     }
     //사업자 유저가 등록한 호텔 리스트
