@@ -1,8 +1,9 @@
 package com.green.hoteldog.manager;
 
 import com.green.hoteldog.common.entity.UserEntity;
-import com.green.hoteldog.common.repository.ManagerBusinessRepository;
-import com.green.hoteldog.common.repository.ManagerRepository;
+
+import com.green.hoteldog.common.repository.BusinessRepository;
+import com.green.hoteldog.common.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ManagerService {
-    private final ManagerRepository managerRepository;
-    private final ManagerBusinessRepository managerBusinessRepository;
+    private final UserRepository managerRepository;
+    private final BusinessRepository businessEntityRepository;
 
     // 모든유저
     public List <UserEntity> allUsers(List<UserEntity> nomalUsers){
@@ -27,7 +28,7 @@ public class ManagerService {
 
     // t_buisiness 테이블에서 account_status가 1인 사용자의 user_pk 목록을 가져오는 메서드
     public List<Long> getBusinessUserPks() {
-        return managerBusinessRepository.findByAccountStatus(1)
+        return businessEntityRepository.findByAccountStatus(1)
                 .stream()
                 .map(businessEntity -> businessEntity.getUserEntity().getUserPk())
                 .collect(Collectors.toList());
