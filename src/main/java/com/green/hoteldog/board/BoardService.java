@@ -2,7 +2,7 @@ package com.green.hoteldog.board;
 
 import com.green.hoteldog.board.models.*;
 import com.green.hoteldog.common.Const;
-import com.green.hoteldog.common.MyFileUtils;
+import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.exceptions.AuthorizedErrorCode;
 import com.green.hoteldog.exceptions.BoardErrorCode;

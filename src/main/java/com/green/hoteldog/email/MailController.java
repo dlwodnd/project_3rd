@@ -1,7 +1,10 @@
 package com.green.hoteldog.email;
 
-import com.green.hoteldog.common.RedisUtil;
+import com.green.hoteldog.common.utils.RedisUtil;
 import com.green.hoteldog.common.ResVo;
+import com.green.hoteldog.email.models.EmailCheckDto;
+import com.green.hoteldog.email.models.EmailRequestDto;
+import com.green.hoteldog.email.models.EmailResponseVo;
 import com.green.hoteldog.exceptions.CustomException;
 import com.green.hoteldog.exceptions.EmailErrorCode;
 import com.green.hoteldog.exceptions.UserErrorCode;

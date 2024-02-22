@@ -1,7 +1,6 @@
 package com.green.hoteldog.manager;
 
-import com.green.hoteldog.entity.BusinessEntity;
-import com.green.hoteldog.entity.UserEntity;
+import com.green.hoteldog.common.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

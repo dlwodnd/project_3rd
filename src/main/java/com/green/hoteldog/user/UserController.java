@@ -1,6 +1,6 @@
 package com.green.hoteldog.user;
 
-import com.green.hoteldog.common.RedisUtil;
+import com.green.hoteldog.common.utils.RedisUtil;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.exceptions.CustomException;
 import com.green.hoteldog.exceptions.UserErrorCode;

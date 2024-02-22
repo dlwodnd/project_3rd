@@ -1,6 +1,6 @@
 package com.green.hoteldog.dog;
 
-import com.green.hoteldog.common.MyFileUtils;
+import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.dog.models.*;
 import com.green.hoteldog.exceptions.AuthorizedErrorCode;

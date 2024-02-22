@@ -1,7 +1,7 @@
 package com.green.hoteldog.user.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.green.hoteldog.email.EmailResponseVo;
+import com.green.hoteldog.email.models.EmailResponseVo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;

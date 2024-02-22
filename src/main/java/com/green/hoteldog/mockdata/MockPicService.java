@@ -1,6 +1,6 @@
 package com.green.hoteldog.mockdata;
 
-import com.green.hoteldog.common.MyFileUtils;
+import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.mockdata.models.MockPicDto;
 import com.green.hoteldog.mockdata.models.MockPicsDto;

@@ -2,8 +2,9 @@ package com.green.hoteldog.user;
 
 import com.green.hoteldog.common.AppProperties;
 import com.green.hoteldog.common.Const;
-import com.green.hoteldog.common.CookieUtils;
+import com.green.hoteldog.common.utils.CookieUtils;
 import com.green.hoteldog.common.ResVo;
+import com.green.hoteldog.common.entity.UserEntity;
 import com.green.hoteldog.exceptions.AuthorizedErrorCode;
 import com.green.hoteldog.exceptions.CustomException;
 import com.green.hoteldog.exceptions.UserErrorCode;
@@ -37,6 +38,16 @@ public class UserService {
     //--------------------------------------------------유저 회원가입-----------------------------------------------------
     @Transactional(rollbackFor = {Exception.class})
     public ResVo userSignup(UserSignupDto dto) {
+        /*UserEntity userEntity = UserEntity.builder()
+                .userNum()
+                .userRole("USER")
+                .userEmail(dto.getUserEmail())
+                .userWhereEntity(dto.getAddressEntity())
+                .upw()
+                .nickname()
+                .phoneNum()
+                .build();
+*/
         String pw = passwordEncoder.encode(dto.getUpw());
         dto.setUpw(pw);
         dto.setUserEmail(dto.getEmailResponseVo().getEmail());

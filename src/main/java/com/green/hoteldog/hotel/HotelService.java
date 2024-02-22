@@ -3,7 +3,7 @@ package com.green.hoteldog.hotel;
 
 import com.green.hoteldog.common.AppProperties;
 import com.green.hoteldog.common.Const;
-import com.green.hoteldog.common.MyFileUtils;
+import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.exceptions.AuthorizedErrorCode;
 import com.green.hoteldog.exceptions.CommonErrorCode;
