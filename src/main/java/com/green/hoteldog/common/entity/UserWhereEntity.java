@@ -1,11 +1,17 @@
 package com.green.hoteldog.common.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "t_user_where")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserWhereEntity {
     @Id
     @OneToOne(optional = false,fetch = FetchType.LAZY)

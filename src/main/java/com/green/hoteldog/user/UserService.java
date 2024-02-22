@@ -2,9 +2,12 @@ package com.green.hoteldog.user;
 
 import com.green.hoteldog.common.AppProperties;
 import com.green.hoteldog.common.Const;
+import com.green.hoteldog.common.entity.UserWhereEntity;
+import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
 import com.green.hoteldog.common.utils.CookieUtils;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.common.entity.UserEntity;
+import com.green.hoteldog.common.utils.RandomCodeUtils;
 import com.green.hoteldog.exceptions.AuthorizedErrorCode;
 import com.green.hoteldog.exceptions.CustomException;
 import com.green.hoteldog.exceptions.UserErrorCode;
@@ -34,31 +37,36 @@ public class UserService {
     private final AppProperties appProperties;
     private final CookieUtils cookie;
     private final AuthenticationFacade facade;
+    private final UserRepository userRepository;
 
     //--------------------------------------------------유저 회원가입-----------------------------------------------------
     @Transactional(rollbackFor = {Exception.class})
     public ResVo userSignup(UserSignupDto dto) {
-        /*UserEntity userEntity = UserEntity.builder()
-                .userNum()
-                .userRole("USER")
-                .userEmail(dto.getUserEmail())
-                .userWhereEntity(dto.getAddressEntity())
-                .upw()
-                .nickname()
-                .phoneNum()
+        log.info("UserSignupDto : {}", dto);
+        UserEntity userEntity = UserEntity.builder()
+                .userNum("U" + RandomCodeUtils.getRandomCode(6))
+                .userRole(UserRoleEnum.USER)
+                .userEmail(dto.getEmailResponseVo().getEmail())
+                .upw(passwordEncoder.encode(dto.getUpw()))
+                .nickname(dto.getNickname())
+                .phoneNum(dto.getPhoneNum())
+                .userAddress(dto.getAddressEntity().getAddressName() + " " + dto.getAddressEntity().getDetailAddress())
                 .build();
-*/
-        String pw = passwordEncoder.encode(dto.getUpw());
-        dto.setUpw(pw);
-        dto.setUserEmail(dto.getEmailResponseVo().getEmail());
-        dto.setUserTypePk(1);
-        String userAddress = dto.getAddressEntity().getAddressName() + " " + dto.getAddressEntity().getDetailAddress();
-        dto.setUserAddress(userAddress);
-        userMapper.userSignup(dto);
-        log.info("userPk : {}", dto.getUserPk());
-        dto.getAddressEntity().setUserPk(dto.getUserPk());
-        log.info("userAddressUserPk : {}", dto.getAddressEntity().getUserPk());
-        userMapper.insUserAddress(dto.getAddressEntity());
+        userRepository.save(userEntity);
+
+        UserWhereEntity userWhereEntity = UserWhereEntity.builder()
+                .userEntity(userEntity)
+                .x(dto.getAddressEntity().getX())
+                .y(dto.getAddressEntity().getY())
+                .addressName(dto.getAddressEntity().getAddressName())
+                .userEntity(userEntity)
+                .zoneNum(dto.getAddressEntity().getZoneNum())
+                .region1DepthName(dto.getAddressEntity().getRegion1DepthName())
+                .region2DepthName(dto.getAddressEntity().getRegion2DepthName())
+                .region3DepthName(dto.getAddressEntity().getRegion3DepthName())
+                .detailAddress(dto.getAddressEntity().getDetailAddress())
+                .build();
+        userEntity.setUserWhereEntity(userWhereEntity);
         return new ResVo(1);
     }
 

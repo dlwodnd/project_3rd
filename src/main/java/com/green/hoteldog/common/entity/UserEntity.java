@@ -35,11 +35,11 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false)
     private String userAddress;
 
-    @Column(nullable = false)
+
     @ColumnDefault("'0'")
     private Long userStatus;
 
-    @Column(nullable = false)
+
     @ColumnDefault("'USER'")
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum userRole;
