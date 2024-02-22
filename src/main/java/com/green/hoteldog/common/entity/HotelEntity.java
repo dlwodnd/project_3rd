@@ -2,12 +2,18 @@ package com.green.hoteldog.common.entity;
 
 import com.green.hoteldog.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Data
 @Entity
 @Table(name = "t_hotel")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class HotelEntity extends BaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")

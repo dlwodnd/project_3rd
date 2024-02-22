@@ -54,18 +54,21 @@ public class BusinessController {
                            @RequestPart List<MultipartFile> hotelPics){
         dto.setBusinessCertificationFile(businessCertificationFile);
         dto.setHotelPics(hotelPics);
-        return null;
+        return service.insHotel(dto);
     }
-    //사업자 유저가 등록한 호텔 리스트
+
+    //사업자 유저가 등록한 호텔 정보
     @GetMapping
-    public List<BusinessUserHotelVo> getBusinessUserHotel(){
+    public BusinessUserHotelVo getBusinessUserHotel(){
         return null;
     }
+
     //사업자 유저가 등록한 호텔 방 수정
     @PutMapping("/hotelRoom")
     public ResVo putHotelRoom(){
         return null;
     }
+
     //사업자 유저가 등록한 방 리스트
     @GetMapping("/hotelRoomList")
     public List<BusinessUserHotelRoomVo> getBusinessUserHotelRoom(){

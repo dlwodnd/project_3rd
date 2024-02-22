@@ -3,13 +3,11 @@ package com.green.hoteldog.business_user;
 import com.green.hoteldog.business_user.model.*;
 import com.green.hoteldog.common.Const;
 import com.green.hoteldog.common.ResVo;
-import com.green.hoteldog.common.entity.HotelEntity;
-import com.green.hoteldog.common.entity.HotelRoomInfoEntity;
-import com.green.hoteldog.common.entity.HotelSuspendedEntity;
-import com.green.hoteldog.common.repository.BusinessRepository;
-import com.green.hoteldog.common.repository.HotelRepository;
-import com.green.hoteldog.common.repository.HotelRoomRepository;
-import com.green.hoteldog.common.repository.HotelSuspendedRepository;
+import com.green.hoteldog.common.entity.*;
+import com.green.hoteldog.common.repository.*;
+import com.green.hoteldog.common.utils.MyFileUtils;
+import com.green.hoteldog.common.utils.RandomCodeUtils;
+import com.green.hoteldog.exceptions.AuthorizedErrorCode;
 import com.green.hoteldog.exceptions.CustomException;
 import com.green.hoteldog.exceptions.HotelErrorCode;
 import com.green.hoteldog.security.AuthenticationFacade;
@@ -17,9 +15,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,10 +27,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BusinessService {
     private final AuthenticationFacade authenticationFacade;
-    private final BusinessRepository repository;
+    private final BusinessRepository businessRepository;
     private final HotelRepository hotelRepository;
     private final HotelSuspendedRepository suspendedRepository;
     private final HotelRoomRepository hotelRoomRepository;
+    private final UserRepository userRepository;
+    private final MyFileUtils myFileUtils;
 
     // 호텔 상태 전환 (1 - 운영 상태, 2 - 운영 중지 상태)
     @Transactional
@@ -117,9 +119,41 @@ public class BusinessService {
     //재웅
 
     //사업자 유저 호텔 등록
-    public ResVo insHotelInfo(HotelInsDto dto){
+    @Transactional
+    public ResVo insHotel(HotelInsDto dto){
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(authenticationFacade.getLoginUserPk());
+        UserEntity userEntity = optionalUserEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
 
-        return null;
+
+        Optional<BusinessEntity> optionalBusinessEntity = businessRepository.findByUserEntity(userEntity);
+        BusinessEntity businessEntity = optionalBusinessEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+
+        HotelEntity hotelEntity = HotelEntity.builder()
+                .hotelNm(dto.getHotelNm())
+                .businessEntity(businessEntity)
+                .hotelDetailInfo(dto.getHotelDetailInfo())
+                .businessNum(dto.getBusinessNum())
+                .hotelCall(dto.getHotelCall())
+                .advertise(0L)
+                .approval(0L)
+                .signStatus(0L)
+                .hotelNum("H" + RandomCodeUtils.getRandomCode(6))
+                .build();
+        hotelRepository.save(hotelEntity);
+        String target = "/manager/hotel/" + hotelEntity.getHotelPk();
+        String saveFileNm = myFileUtils.transferTo(dto.getBusinessCertificationFile(),target);
+        hotelEntity.setBusinessCertificate(saveFileNm);
+        for(MultipartFile file : dto.getHotelPics()){
+            target = "/hotel/" + hotelEntity.getHotelPk();
+            saveFileNm = myFileUtils.transferTo(file,target);
+            HotelPicEntity hotelPicsEntity = HotelPicEntity.builder()
+                    .hotelEntity(hotelEntity)
+                    .pic(saveFileNm)
+                    .build();
+        }
+
+
+        return new ResVo(1);
     }
     //사업자 유저가 등록한 호텔 리스트
     public List<BusinessUserHotelVo> getBusinessUserHotel(){
