@@ -16,6 +16,7 @@ import org.hibernate.annotations.DynamicInsert;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
+
 public class UserEntity extends BaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")

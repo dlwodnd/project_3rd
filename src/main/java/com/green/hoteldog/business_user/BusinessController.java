@@ -2,6 +2,7 @@ package com.green.hoteldog.business_user;
 
 import com.green.hoteldog.business_user.model.*;
 import com.green.hoteldog.common.ResVo;
+import com.green.hoteldog.common.entity.HotelEntity;
 import com.green.hoteldog.exceptions.BoardErrorCode;
 import com.green.hoteldog.exceptions.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -70,8 +71,13 @@ public class BusinessController {
 
     //사업자 유저가 등록한 호텔 방 수정
     @PutMapping("/hotelRoom")
-    public ResVo putHotelRoom(){
-        return null;
+    public ResVo putHotelRoom(@RequestPart(required = false) MultipartFile roomPic,
+                              @RequestPart BusinessHotelRoomPutDto dto){
+        dto.setRoomPic(roomPic);
+        if(roomPic == null){
+            dto.setRoomPic(null);
+        }
+        return service.putHotelRoomInfo(dto);
     }
 
 

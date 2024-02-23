@@ -6,7 +6,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -71,7 +74,7 @@ public class HotelEntity extends BaseEntity {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
-    private List<HotelPicEntity> hotelPicEntity;
+    private List<HotelPicEntity> hotelPicEntity = new ArrayList<>();
 
     @ToString.Exclude
     @OneToOne(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
@@ -79,7 +82,7 @@ public class HotelEntity extends BaseEntity {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
-    private List<HotelOptionInfoEntity> hotelOptionInfoEntity;
+    private Set<HotelOptionInfoEntity> hotelOptionInfoEntity = new HashSet<>();
 
     //재웅
 }

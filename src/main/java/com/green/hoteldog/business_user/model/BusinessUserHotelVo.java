@@ -1,5 +1,6 @@
 package com.green.hoteldog.business_user.model;
 
+import com.green.hoteldog.common.entity.HotelOptionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,12 +21,12 @@ public class BusinessUserHotelVo {
     private String hotelCall;
     private long advertise;
     private String createdAt;
-    private List<String> optionNmList;
     private List<String> hotelPics;
     private String hotelFullAddress;
     private HotelAddressInfo hotelAddressInfo;
     private long approval;
+    private List<HotelOptionInfoVo> optionList;
 
-    List<HotelRoomInfo> hotelRoomInfoList;
+    private List<HotelRoomInfo> hotelRoomInfoList;
 
 }

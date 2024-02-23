@@ -16,6 +16,8 @@ public enum HotelErrorCode implements ErrorCode{
             (HttpStatus.NOT_FOUND,"존재하지 않는 페이지 번호"),
     UNKNOWN_DATE_FORM
             (HttpStatus.BAD_REQUEST,"날짜를 형식에 맞게 입력 해주세요."),
+    NOT_EXIST_HOTEL_ROOM
+            (HttpStatus.NOT_FOUND,"존재하지 않는 호텔 방 입니다"),
     NOT_EXIST_OPTION
             (HttpStatus.NOT_FOUND,"존재하지 않는 옵션 PK");
     private final HttpStatus httpStatus;
