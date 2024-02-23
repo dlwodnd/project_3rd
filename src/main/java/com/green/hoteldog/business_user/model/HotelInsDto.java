@@ -18,6 +18,8 @@ public class HotelInsDto {
     private String hotelDetailInfo;
     private String businessNum;
     private String hotelCall;
+
+    private HotelAddressInfo hotelAddressInfo;
     @JsonIgnore
     private MultipartFile businessCertificationFile;
     @JsonIgnore

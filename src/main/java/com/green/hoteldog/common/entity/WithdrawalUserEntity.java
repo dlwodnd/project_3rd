@@ -11,9 +11,13 @@ import java.time.LocalDateTime;
 @Table(name = "t_withdrawal_user")
 public class WithdrawalUserEntity {
     @Id
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @Column(name = "user_pk")
+    private Long id;
+
+    @MapsId
+    @OneToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_pk",referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
-    private UserEntity userPk;
+    private UserEntity userEntity;
 
     @Column(nullable = false)
     private LocalDateTime approvalDate;

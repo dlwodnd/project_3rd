@@ -1,7 +1,10 @@
 package com.green.hoteldog.common.repository;
 
+import com.green.hoteldog.common.entity.UserEntity;
 import com.green.hoteldog.common.entity.WithdrawalUserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
 
 public interface WithdrawalUserRepository extends JpaRepository<WithdrawalUserEntity, Long> {
 

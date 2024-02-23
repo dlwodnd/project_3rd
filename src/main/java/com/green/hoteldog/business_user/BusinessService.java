@@ -140,17 +140,34 @@ public class BusinessService {
                 .hotelNum("H" + RandomCodeUtils.getRandomCode(6))
                 .build();
         hotelRepository.save(hotelEntity);
+        HotelWhereEntity hotelWhereEntity = HotelWhereEntity.builder()
+                .x(dto.getHotelAddressInfo().getX())
+                .y(dto.getHotelAddressInfo().getY())
+                .addressName(dto.getHotelAddressInfo().getAddressName())
+                .zoneNum(dto.getHotelAddressInfo().getZoneNum())
+                .detailAddress(dto.getHotelAddressInfo().getDetailAddress())
+                .region1DepthName(dto.getHotelAddressInfo().getRegion1DepthName())
+                .region2DepthName(dto.getHotelAddressInfo().getRegion2DepthName())
+                .region3DepthName(dto.getHotelAddressInfo().getRegion3DepthName())
+                .hotelEntity(hotelEntity)
+                .build();
+        hotelEntity.setHotelWhereEntity(hotelWhereEntity);
+
         String target = "/manager/hotel/" + hotelEntity.getHotelPk();
-        String saveFileNm = myFileUtils.transferTo(dto.getBusinessCertificationFile(),target);
-        hotelEntity.setBusinessCertificate(saveFileNm);
+        String hotelCertificationFile = myFileUtils.transferTo(dto.getBusinessCertificationFile(),target);
+        hotelEntity.setBusinessCertificate(hotelCertificationFile);
+        List<HotelPicEntity> hotelPicEntityList = new ArrayList<>();
         for(MultipartFile file : dto.getHotelPics()){
             target = "/hotel/" + hotelEntity.getHotelPk();
-            saveFileNm = myFileUtils.transferTo(file,target);
+            String hotelPicFile = myFileUtils.transferTo(file,target);
             HotelPicEntity hotelPicsEntity = HotelPicEntity.builder()
                     .hotelEntity(hotelEntity)
-                    .pic(saveFileNm)
+                    .pic(hotelPicFile)
                     .build();
+            hotelPicEntityList.add(hotelPicsEntity);
         }
+
+        hotelEntity.setHotelPicEntity(hotelPicEntityList);
 
 
         return new ResVo(1);

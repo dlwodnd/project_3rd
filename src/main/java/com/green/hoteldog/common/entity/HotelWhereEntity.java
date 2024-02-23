@@ -1,17 +1,26 @@
 package com.green.hoteldog.common.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "t_hotel_where")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class HotelWhereEntity {
     @Id
-    @OneToOne(optional = false,fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_pk",referencedColumnName = "hotelPk",columnDefinition = "BIGINT UNSIGNED")
-    private HotelEntity hotelEntity;
+    @Column(name = "hotel_pk")
+    private Long id;
 
+    @MapsId
+    @OneToOne(optional = false,fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_pk",columnDefinition = "BIGINT UNSIGNED")
+    private HotelEntity hotelEntity;
     @Column(nullable = false)
     private String addressName;
 
