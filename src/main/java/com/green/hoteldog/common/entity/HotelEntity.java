@@ -1,6 +1,7 @@
 package com.green.hoteldog.common.entity;
 
 import com.green.hoteldog.common.entity.base.BaseEntity;
+import com.green.hoteldog.hotel.model.HotelOptionInfoVo;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -67,6 +68,7 @@ public class HotelEntity extends BaseEntity {
     //영웅
 
     //재웅
+
     @ToString.Exclude
     @OneToMany(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     private List<HotelPicEntity> hotelPicEntity;
@@ -74,5 +76,10 @@ public class HotelEntity extends BaseEntity {
     @ToString.Exclude
     @OneToOne(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     private HotelWhereEntity hotelWhereEntity;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    private List<HotelOptionInfoEntity> hotelOptionInfoEntity;
+
     //재웅
 }

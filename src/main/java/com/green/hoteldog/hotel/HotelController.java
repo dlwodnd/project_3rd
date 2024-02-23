@@ -128,7 +128,7 @@ public class HotelController {
         return service.getHotelBookmarkList(userPk, page);
     }
 
-    //--------------------------------------------------호텔 더미데이터 작성-----------------------------------------------
+    /*//--------------------------------------------------호텔 더미데이터 작성-----------------------------------------------
     @PostMapping("/registration")
     public ResVo hotelRegistration(@RequestPart(required = false) @Schema(hidden = true) List<MultipartFile> pics, @RequestBody HotelInsDto dto) {
         log.info("hotelDto : {}", dto);
@@ -146,5 +146,5 @@ public class HotelController {
     @PostMapping("/room")
     public ResVo hotelRoomRegistration(@RequestPart(required = false) @Schema(hidden = true) MultipartFile roomPic, @RequestBody InsHotelRoomDto dto) {
         return service.insHotelRoom(roomPic, dto);
-    }
+    }*/
 }

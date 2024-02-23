@@ -2,6 +2,8 @@ package com.green.hoteldog.business_user;
 
 import com.green.hoteldog.business_user.model.*;
 import com.green.hoteldog.common.ResVo;
+import com.green.hoteldog.exceptions.BoardErrorCode;
+import com.green.hoteldog.exceptions.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -49,9 +51,12 @@ public class BusinessController {
 
     //사업자 유저 호텔 등록
     @PostMapping("/registration")
-    public ResVo postHotel(@RequestParam HotelInsDto dto,
+    public ResVo postHotel(@RequestPart HotelInsDto dto,
                            @RequestPart MultipartFile businessCertificationFile,
                            @RequestPart List<MultipartFile> hotelPics){
+        if(hotelPics.size() > 5){
+            throw new CustomException(BoardErrorCode.PICS_SIZE_OVER);
+        }
         dto.setBusinessCertificationFile(businessCertificationFile);
         dto.setHotelPics(hotelPics);
         return service.insHotel(dto);
@@ -60,7 +65,7 @@ public class BusinessController {
     //사업자 유저가 등록한 호텔 정보
     @GetMapping
     public BusinessUserHotelVo getBusinessUserHotel(){
-        return null;
+        return service.getBusinessUserHotel();
     }
 
     //사업자 유저가 등록한 호텔 방 수정
@@ -69,11 +74,6 @@ public class BusinessController {
         return null;
     }
 
-    //사업자 유저가 등록한 방 리스트
-    @GetMapping("/hotelRoomList")
-    public List<BusinessUserHotelRoomVo> getBusinessUserHotelRoom(){
-        return null;
-    }
 
     //재웅
 

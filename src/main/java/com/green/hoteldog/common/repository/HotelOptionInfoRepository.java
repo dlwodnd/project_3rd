@@ -1,9 +1,10 @@
 package com.green.hoteldog.common.repository;
 
 import com.green.hoteldog.common.entity.HotelOptionInfoEntity;
+import com.green.hoteldog.common.entity.composite.HotelOptionComposite;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface HotelOptionInfoRepository extends JpaRepository<HotelOptionInfoEntity, Long> {
+public interface HotelOptionInfoRepository extends JpaRepository<HotelOptionInfoEntity, HotelOptionComposite> {
 
     //승민
     //승민

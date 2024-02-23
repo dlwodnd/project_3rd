@@ -4,6 +4,7 @@ import com.green.hoteldog.business_user.model.*;
 import com.green.hoteldog.common.Const;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.common.entity.*;
+import com.green.hoteldog.common.entity.composite.HotelOptionComposite;
 import com.green.hoteldog.common.repository.*;
 import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.utils.RandomCodeUtils;
@@ -33,6 +34,8 @@ public class BusinessService {
     private final HotelRoomRepository hotelRoomRepository;
     private final UserRepository userRepository;
     private final MyFileUtils myFileUtils;
+    private final HotelOptionRepository hotelOptionRepository;
+    private final HotelOptionInfoRepository hotelOptionInfoRepository;
 
     // 호텔 상태 전환 (1 - 운영 상태, 2 - 운영 중지 상태)
     @Transactional
@@ -139,6 +142,9 @@ public class BusinessService {
                 .signStatus(0L)
                 .hotelNum("H" + RandomCodeUtils.getRandomCode(6))
                 .build();
+        String target = "/manager/hotel/" + hotelEntity.getHotelPk();
+        String hotelCertificationFile = myFileUtils.transferTo(dto.getBusinessCertificationFile(),target);
+        hotelEntity.setBusinessCertificate(hotelCertificationFile);
         hotelRepository.save(hotelEntity);
         HotelWhereEntity hotelWhereEntity = HotelWhereEntity.builder()
                 .x(dto.getHotelAddressInfo().getX())
@@ -153,9 +159,7 @@ public class BusinessService {
                 .build();
         hotelEntity.setHotelWhereEntity(hotelWhereEntity);
 
-        String target = "/manager/hotel/" + hotelEntity.getHotelPk();
-        String hotelCertificationFile = myFileUtils.transferTo(dto.getBusinessCertificationFile(),target);
-        hotelEntity.setBusinessCertificate(hotelCertificationFile);
+
         List<HotelPicEntity> hotelPicEntityList = new ArrayList<>();
         for(MultipartFile file : dto.getHotelPics()){
             target = "/hotel/" + hotelEntity.getHotelPk();
@@ -166,14 +170,35 @@ public class BusinessService {
                     .build();
             hotelPicEntityList.add(hotelPicsEntity);
         }
-
         hotelEntity.setHotelPicEntity(hotelPicEntityList);
 
+        List<HotelOptionEntity> hotelOptionEntityList = hotelOptionRepository.findAllById(dto.getHotelOption());
+
+        List<HotelOptionInfoEntity> hotelOptionInfoEntityList = new ArrayList<>();
+        for(HotelOptionEntity hotelOptionEntity : hotelOptionEntityList){
+            HotelOptionComposite hotelOptionComposite = HotelOptionComposite.builder()
+                    .hotelPk(hotelEntity.getHotelPk())
+                    .optionPk(hotelOptionEntity.getOptionPk()).build();
+
+            HotelOptionInfoEntity hotelOptionInfoEntity = HotelOptionInfoEntity.builder()
+                    .composite(hotelOptionComposite)
+                    .hotelEntity(hotelEntity)
+                    .hotelOptionEntity(hotelOptionEntity)
+                    .build();
+            hotelOptionInfoEntityList.add(hotelOptionInfoEntity);
+        }
+        hotelOptionInfoRepository.saveAll(hotelOptionInfoEntityList);
 
         return new ResVo(1);
     }
-    //사업자 유저가 등록한 호텔 리스트
-    public List<BusinessUserHotelVo> getBusinessUserHotel(){
+    //사업자 유저가 등록한 호텔 정보
+    public BusinessUserHotelVo getBusinessUserHotel(){
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(authenticationFacade.getLoginUserPk());
+        UserEntity userEntity = optionalUserEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+
+
+        Optional<BusinessEntity> optionalBusinessEntity = businessRepository.findByUserEntity(userEntity);
+        BusinessEntity businessEntity = optionalBusinessEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
         return null;
     }
     //사업자 유저가 등록한 호텔 방 수정

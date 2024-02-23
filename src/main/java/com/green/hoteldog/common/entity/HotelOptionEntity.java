@@ -5,15 +5,15 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "t_hotel_option_info")
+@Table(name = "t_option")
 public class HotelOptionEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long hotelPk;
+    private Long optionPk;
 
     @Column(nullable = false)
-    private String hotelNm;
+    private String optionNm;
 
     //승민
     //승민
