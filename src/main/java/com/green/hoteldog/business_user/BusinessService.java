@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.green.hoteldog.common.utils.DiscountCostUtil.getDiscountCost;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -250,7 +252,7 @@ public class BusinessService {
                             .hotelRoomPk(hotelRoomInfoEntity.getHotelRoomPk())
                             .hotelRoomNm(hotelRoomInfoEntity.getHotelRoomNm())
                             .roomAble(hotelRoomInfoEntity.getRoomAble())
-                            .hotelRoomCost(hotelRoomInfoEntity.getHotelRoomCost())
+                            .hotelRoomCost(getDiscountCost(hotelRoomInfoEntity.getHotelRoomCost(),hotelRoomInfoEntity.getDiscountPer()))
                             .hotelRoomEa(hotelRoomInfoEntity.getHotelRoomEa())
                             .roomPic(hotelRoomInfoEntity.getRoomPic())
                             .maximum(hotelRoomInfoEntity.getMaximum())
