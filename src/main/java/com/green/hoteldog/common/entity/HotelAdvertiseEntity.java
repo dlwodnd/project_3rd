@@ -23,7 +23,7 @@ public class HotelAdvertiseEntity {
     private LocalDateTime hotelAdvertiseToDate;
 
     @Column(nullable = false)
-    private LocalDateTime hotelAdvertiseFromDate;
+    private LocalDateTime hotelAdvertiseEndDate;
 
     @Column(nullable = false)
     @ColumnDefault("'0'")

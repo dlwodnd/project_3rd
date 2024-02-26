@@ -2,8 +2,12 @@ package com.green.hoteldog.user;
 
 import com.green.hoteldog.common.AppProperties;
 import com.green.hoteldog.common.Const;
+import com.green.hoteldog.common.entity.BusinessEntity;
 import com.green.hoteldog.common.entity.UserWhereEntity;
+import com.green.hoteldog.common.entity.WithdrawalUserEntity;
+import com.green.hoteldog.common.repository.BusinessRepository;
 import com.green.hoteldog.common.repository.UserRepository;
+import com.green.hoteldog.common.repository.WithdrawalUserRepository;
 import com.green.hoteldog.common.utils.CookieUtils;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.common.entity.UserEntity;
@@ -38,6 +42,8 @@ public class UserService {
     private final CookieUtils cookie;
     private final AuthenticationFacade facade;
     private final UserRepository userRepository;
+    private final BusinessRepository businessRepository;
+    private final WithdrawalUserRepository withdrawalUserRepository;
 
     //--------------------------------------------------유저 회원가입-----------------------------------------------------
     @Transactional(rollbackFor = {Exception.class})
@@ -79,7 +85,10 @@ public class UserService {
         if (!passwordEncoder.matches(dto.getUpw(), userEntity.getUpw())) {
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
         }
-
+        Optional<WithdrawalUserEntity> withdrawalUserEntityOptional = withdrawalUserRepository.findById(userEntity.getUserPk());
+        if (withdrawalUserEntityOptional.isPresent()) {
+            throw new CustomException(UserErrorCode.WITHDRAWAL_USER);
+        }
 
         MyPrincipal myPrincipal = MyPrincipal.builder()
                 .userPk(userEntity.getUserPk())
@@ -190,12 +199,46 @@ public class UserService {
         return vo;
     }
     // 사업자 유저 로그인
-    public UserSigninVo businessSignin(HttpServletResponse response, HttpServletRequest request, UserSigninDto dto) {
+    public BusinessSigninVo businessSignin(HttpServletResponse response, HttpServletRequest request, UserSigninDto dto) {
         Optional<UserEntity> userEntityOptional = userRepository.findByUserEmail(dto.getUserEmail());
 
         UserEntity userEntity = userEntityOptional.orElseThrow(() -> new CustomException(UserErrorCode.UNKNOWN_EMAIL_ADDRESS));
 
+        Optional<BusinessEntity> businessEntityOptional = businessRepository.findByUserEntity(userEntity);
+
+        BusinessEntity businessEntity = businessEntityOptional.orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+
+
         if (!passwordEncoder.matches(dto.getUpw(), userEntity.getUpw())) {
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
         }
+        Optional<WithdrawalUserEntity> withdrawalUserEntityOptional = withdrawalUserRepository.findById(userEntity.getUserPk());
+        if (withdrawalUserEntityOptional.isPresent()) {
+            throw new CustomException(UserErrorCode.WITHDRAWAL_USER);
+        }
+
+        MyPrincipal myPrincipal = MyPrincipal.builder()
+                .userPk(userEntity.getUserPk())
+                .build();
+        myPrincipal.getRoles().add(userEntity.getUserRole().name());
+        String at = tokenProvider.generateAccessToken(myPrincipal);
+        //엑서스 토큰 값 받아오기
+        String rt = tokenProvider.generateRefreshToken(myPrincipal);
+        //리프레쉬 토큰 값 받아오기
+        /*List<Integer> dogSizeList = mapper.selUserDogSize(userInfo.getUserPk());*/
+
+        int rtCookieMaxAge = (int) appProperties.getJwt().getRefreshTokenExpiry() / 1000;
+        cookie.deleteCookie(response, "rt");
+        cookie.setCookie(response, "rt", rt, rtCookieMaxAge);
+
+        return BusinessSigninVo.builder()
+                .businessPk(businessEntity.getBusinessPk())
+                .userPk(userEntity.getUserPk())
+                .accessToken(at)
+                .nickname(userEntity.getNickname())
+                .bankNm(businessEntity.getBankNm())
+                .accountNumber(businessEntity.getAccountNumber())
+                .userRole(userEntity.getUserRole().name())
+                .build();
+    }
 }

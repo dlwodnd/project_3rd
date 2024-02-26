@@ -20,6 +20,8 @@ public class BusinessUserHotelVo {
     private String businessNum;
     private String hotelCall;
     private long advertise;
+    private String hotelAdvertiseToDate;
+    private String hotelAdvertiseEndDate;
     private String createdAt;
     private List<String> hotelPics;
     private String hotelFullAddress;

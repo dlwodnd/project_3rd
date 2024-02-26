@@ -83,7 +83,7 @@ public class UserController {
 
     //-----------------------------------------------------3차 추가 기능-------------------------------------------------
     // 사업자 유저 로그인
-    @PostMapping("/business-signin")
+    @PostMapping("/businessSignin")
     public BusinessSigninVo businessSignin(HttpServletResponse response, HttpServletRequest request, @RequestBody @Valid UserSigninDto dto) {
         return service.businessSignin(response, request, dto);
     }
