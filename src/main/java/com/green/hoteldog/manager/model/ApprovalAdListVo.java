@@ -22,7 +22,7 @@ public class ApprovalAdListVo {
         approvalAdListVo.setHotelNum(paymentAdEntity.getHotelAdvertiseEntity().getHotelEntity().getHotelNum());
         approvalAdListVo.setHotelNm(paymentAdEntity.getHotelAdvertiseEntity().getHotelEntity().getHotelNm());
         approvalAdListVo.setHotelAdvertiseToDate(paymentAdEntity.getHotelAdvertiseEntity().getHotelAdvertiseToDate());
-        approvalAdListVo.setHotelAdvertiseFromDate(paymentAdEntity.getHotelAdvertiseEntity().getHotelAdvertiseFromDate());
+        approvalAdListVo.setHotelAdvertiseFromDate(paymentAdEntity.getHotelAdvertiseEntity().getHotelAdvertiseEndDate());
         return approvalAdListVo;
     }
 }
