@@ -5,7 +5,6 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
-/*
 
 @Data
 @Entity
@@ -42,4 +41,3 @@ public class WithdrawalUserEntity {
     //재웅
     //재웅
 }
-*/
