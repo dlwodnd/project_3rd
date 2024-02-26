@@ -15,7 +15,9 @@ public interface BusinessRepository extends JpaRepository<BusinessEntity, Long> 
 
     //승민
     List<BusinessEntity> findByAccountStatus(int accountStatus);
+
     List<BusinessEntity> findByAccountStatusNot(int accountStatus);
+
     //승민
     List<BusinessEntity> findByUserEntity_UserPkIn(List<Long> userPks);
 
@@ -23,11 +25,13 @@ public interface BusinessRepository extends JpaRepository<BusinessEntity, Long> 
 //    @Query("UPDATE BusinessEntity b SET b.accountStatus = :accountStatus WHERE b.userEntity.userPk = :userPk")
 //    void updateBusinessEntityByAccountStatus(@Param("accountStatus") int accountStatus, @Param("userPk") long userPk);
 
-
+    //비지니스 유저로 바꾸는거
     @Modifying
     @Query("UPDATE BusinessEntity b SET b.accountStatus = :accountStatus WHERE b.businessPk = :businessPk")
     void updateBusinessEntityByAccountStatus(int accountStatus, long businessPk);
-    //승준
+
+
+      //승준
     //승준
 
     //영웅
