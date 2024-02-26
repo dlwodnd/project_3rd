@@ -27,6 +27,7 @@ public class ManagerService {
     private final HotelRepository hotelRepository;
     private final HotelAdvertiseRepository hotelAdvertiseRepository;
     private final PaymentAdRepository paymentAdRepository;
+    private final HotelAdvertiseRepository hotelAdvertiseEntityRepository;
 
     // 모든유저
 //    public List <UserEntity> allUsers(List<UserEntity> nomalUsers){
@@ -61,7 +62,7 @@ public class ManagerService {
     }
 
 
-    // 유저를 승인대기에서 비지니스로ㅗ 바꿈
+    // 유저를 승인대기에서 비지니스로 바꿈
     @Transactional
     public void updateAccountStatusTo1(long businessPk) {
         businessEntityRepository.updateBusinessEntityByAccountStatus(1, businessPk);
@@ -90,4 +91,18 @@ public class ManagerService {
                 .map(paymentAdEntity -> ApprovalAdListVo.approvalAdListVo(paymentAdEntity))
                 .collect(Collectors.toList());
     }
+
+    // 호텔 광고 승인
+    @Transactional
+    public  void updateHotelAdvertiseEntityBySignStatus( long hotelPk){
+        hotelAdvertiseEntityRepository.updateHotelAdvertiseEntityBySignStatus(1, hotelPk);
+
+    }
+    // 호텔 광고 거절
+    @Transactional
+   public void updateHotelAdvertiseEntityBySignStatusAndCancelReason( String cancelReason, long hotelPk){
+        hotelAdvertiseEntityRepository.updateHotelAdvertiseEntityBySignStatusAndCancelReason(0, cancelReason, hotelPk);
+    }
+
+
 }
