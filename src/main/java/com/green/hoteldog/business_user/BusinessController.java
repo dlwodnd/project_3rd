@@ -5,6 +5,7 @@ import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.common.entity.HotelEntity;
 import com.green.hoteldog.exceptions.BoardErrorCode;
 import com.green.hoteldog.exceptions.CustomException;
+import com.green.hoteldog.user.models.UserSignupDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -80,13 +81,12 @@ public class BusinessController {
         return service.putHotelRoomInfo(dto);
     }
 
+    //사업자 유저 호텔에 예약된 강아지 방 정보 리스트
     @GetMapping("/reservation/HotelRoomAndDogInfo")
     public List<HotelRoomAndDogInfoVo> getHotelRoomAndDogInfo(long resPk){
 
         return service.getHotelRoomAndDogInfo(resPk);
     }
-
-
     //재웅
 
     // ---------------------------------------------------------------------------------------------------

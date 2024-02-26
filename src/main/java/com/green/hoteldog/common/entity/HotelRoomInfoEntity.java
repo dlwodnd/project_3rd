@@ -31,16 +31,16 @@ public class HotelRoomInfoEntity extends BaseEntity {
     @Column(nullable = false)
     private String hotelRoomNm;
 
-    @Column(nullable = false)
+
     private String roomPic;
 
-    @Column(nullable = false,columnDefinition = "BIGINT UNSIGNED")
+    @Column(columnDefinition = "BIGINT UNSIGNED")
     private Long hotelRoomEa;
 
-    @Column(nullable = false,columnDefinition = "BIGINT UNSIGNED")
+    @Column(columnDefinition = "BIGINT UNSIGNED")
     private Long hotelRoomCost;
 
-    @Column(nullable = false,columnDefinition = "BIGINT UNSIGNED")
+    @Column(columnDefinition = "BIGINT UNSIGNED")
     private Long maximum;
 
     @Column(columnDefinition = "BIGINT UNSIGNED")

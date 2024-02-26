@@ -1,5 +1,7 @@
 package com.green.hoteldog.user;
 
+import com.green.hoteldog.business_user.model.BusinessUserSignupDto;
+import com.green.hoteldog.business_user.model.HotelInsDto;
 import com.green.hoteldog.common.utils.RedisUtil;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.exceptions.CustomException;
@@ -13,6 +15,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -86,6 +91,16 @@ public class UserController {
     @PostMapping("/businessSignin")
     public BusinessSigninVo businessSignin(HttpServletResponse response, HttpServletRequest request, @RequestBody @Valid UserSigninDto dto) {
         return service.businessSignin(response, request, dto);
+    }
+    // 사업자 유저 회원가입
+    @PostMapping("/business/signup")
+    public ResVo postBusinessUser(@RequestPart BusinessUserSignupDto businessUserDto,
+                                  @RequestPart HotelInsDto hotelDto,
+                                  @RequestPart MultipartFile businessCertificationFile,
+                                  @RequestPart List<MultipartFile> hotelPics){
+        hotelDto.setBusinessCertificationFile(businessCertificationFile);
+        hotelDto.setHotelPics(hotelPics);
+        return service.insBusinessUser(businessUserDto, hotelDto);
     }
     // 유저 회원 탈퇴
 

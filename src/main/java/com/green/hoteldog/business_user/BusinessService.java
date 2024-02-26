@@ -5,13 +5,16 @@ import com.green.hoteldog.common.Const;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.common.entity.*;
 import com.green.hoteldog.common.entity.composite.HotelOptionComposite;
+import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
 import com.green.hoteldog.common.repository.*;
 import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.utils.RandomCodeUtils;
 import com.green.hoteldog.exceptions.*;
 import com.green.hoteldog.security.AuthenticationFacade;
+import com.green.hoteldog.user.models.UserSignupDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +43,7 @@ public class BusinessService {
     private final HotelAdvertiseRepository hotelAdvertiseRepository;
     private final ResComprehensiveInfoRepository resComprehensiveInfoRepository;
     private final ReservationRepository reservationRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 호텔 상태 전환 (1 - 운영 상태, 2 - 운영 중지 상태)
     @Transactional
@@ -335,11 +339,7 @@ public class BusinessService {
                     .build());
         }
         return hotelRoomAndDogInfoVoList;
-
-
-
     }
-
     //재웅
     // ---------------------------------------------------------------------------------------------------
     //승준
