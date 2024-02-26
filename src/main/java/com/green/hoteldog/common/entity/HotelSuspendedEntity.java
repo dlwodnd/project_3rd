@@ -27,13 +27,16 @@ public class HotelSuspendedEntity extends CreatedAtBaseEntity {
     @Column(nullable = false)
     private String suspendedReason;
 
-    public Long getSignStatus() {
-        return hotelEntity.getSignStatus();
-    }
-    
 
 
-        //승민
+
+
+
+
+
+
+
+    //승민
     //승민
 
     //승준
