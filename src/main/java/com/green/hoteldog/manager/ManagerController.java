@@ -6,6 +6,8 @@ import com.green.hoteldog.manager.model.UserListVo;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,8 +57,8 @@ public class ManagerController {
     // 호텔 목록을 가져오는 메서드
     @GetMapping("/hotelList")
     @Operation(summary = "호텔목록", description = "호텔목록")
-    public List<HotelListVo> getManagementHotelList() {
-        return service.getManagementHotelList();
+    public List<HotelListVo> getManagementHotelList(@PageableDefault(page = 1,size = 2) Pageable pageable) {
+        return service.getManagementHotelList(pageable);
     }
 
     // 승인 대기 호텔목록 가져오는 메서드

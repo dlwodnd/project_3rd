@@ -13,6 +13,7 @@ import com.green.hoteldog.manager.model.UserListVo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -71,7 +72,7 @@ public class ManagerService {
 
 
     // 호텔 목록을 가져오는 메서드
-    public List<HotelListVo> getManagementHotelList() {
+    public List<HotelListVo> getManagementHotelList(Pageable pageable) {
         List<HotelEntity> hotelEntities = hotelRepository.findAll();
         return hotelEntities.stream()
                 .map(hotelEntity -> HotelListVo.hotelListVo(hotelEntity))
