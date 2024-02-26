@@ -12,7 +12,7 @@ public class RandomCodeUtils {
             int random = (int) (Math.random() * 10);
             code += random;
         }
-        code += date.getHour() + date.getMinute() + date.getSecond();
+        code += String.format("%d%d%d",date.getHour(),date.getMinute(),date.getSecond());
         return code;
     }
 

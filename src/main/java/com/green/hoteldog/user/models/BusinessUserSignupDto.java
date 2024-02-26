@@ -1,4 +1,4 @@
-package com.green.hoteldog.business_user.model;
+package com.green.hoteldog.user.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.green.hoteldog.email.models.EmailResponseVo;
@@ -40,9 +40,11 @@ public class BusinessUserSignupDto {
     @JsonIgnore
     private String userAddress;
 
-    private String accountNumber;
+    private String businessName;
 
-    private String bankNm;
+    /*private String accountNumber;
+
+    private String bankNm;*/
 
     private UserAddressInfo addressEntity;
 }

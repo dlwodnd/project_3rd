@@ -20,6 +20,9 @@ public class BusinessEntity  {
     private UserEntity userEntity;
 
     @Column(nullable = false)
+    private String businessName;
+
+    @Column(nullable = false)
     private String accountNumber;
 
     @Column(nullable = false)
