@@ -1,16 +1,16 @@
 package com.green.hoteldog.user;
 
+import com.green.hoteldog.business_user.model.BusinessUserSignupDto;
+import com.green.hoteldog.business_user.model.HotelInsDto;
 import com.green.hoteldog.common.AppProperties;
 import com.green.hoteldog.common.Const;
-import com.green.hoteldog.common.entity.BusinessEntity;
-import com.green.hoteldog.common.entity.UserWhereEntity;
-import com.green.hoteldog.common.entity.WithdrawalUserEntity;
-import com.green.hoteldog.common.repository.BusinessRepository;
-import com.green.hoteldog.common.repository.UserRepository;
-import com.green.hoteldog.common.repository.WithdrawalUserRepository;
+import com.green.hoteldog.common.entity.*;
+import com.green.hoteldog.common.entity.composite.HotelOptionComposite;
+import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
+import com.green.hoteldog.common.repository.*;
 import com.green.hoteldog.common.utils.CookieUtils;
 import com.green.hoteldog.common.ResVo;
-import com.green.hoteldog.common.entity.UserEntity;
+import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.utils.RandomCodeUtils;
 import com.green.hoteldog.exceptions.AuthorizedErrorCode;
 import com.green.hoteldog.exceptions.CustomException;
@@ -28,7 +28,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -44,6 +47,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final BusinessRepository businessRepository;
     private final WithdrawalUserRepository withdrawalUserRepository;
+    private final MyFileUtils myFileUtils;
+    private final HotelOptionRepository hotelOptionRepository;
+    private final HotelOptionInfoRepository hotelOptionInfoRepository;
+    private final DogSizeRepository dogSizeRepository;
+    private final HotelRepository hotelRepository;
+    private final HotelRoomRepository hotelRoomRepository;
 
     //--------------------------------------------------유저 회원가입-----------------------------------------------------
     @Transactional(rollbackFor = {Exception.class})
@@ -241,4 +250,149 @@ public class UserService {
                 .userRole(userEntity.getUserRole().name())
                 .build();
     }
+    //사업자 유저 회원가입
+    @Transactional
+    public ResVo insBusinessUser(BusinessUserSignupDto businessUserDto, HotelInsDto hotelDto){
+
+        //유저 엔티티 등록
+        UserEntity userEntity = UserEntity.builder()
+                .userStatus(0L)
+                .userRole(UserRoleEnum.BUSINESS_USER)
+                .userNum("U" + RandomCodeUtils.getRandomCode(6))
+                .userEmail(businessUserDto.getEmailResponseVo().getEmail())
+                .upw(passwordEncoder.encode(businessUserDto.getUpw()))
+                .nickname(businessUserDto.getNickname())
+                .phoneNum(businessUserDto.getPhoneNum())
+                .userAddress(businessUserDto.getAddressEntity().getAddressName() + " " + businessUserDto.getAddressEntity().getDetailAddress())
+                .build();
+        userRepository.save(userEntity);
+
+        UserWhereEntity userWhereEntity = UserWhereEntity.builder()
+                .userEntity(userEntity)
+                .x(businessUserDto.getAddressEntity().getX())
+                .y(businessUserDto.getAddressEntity().getY())
+                .addressName(businessUserDto.getAddressEntity().getAddressName())
+                .userEntity(userEntity)
+                .zoneNum(businessUserDto.getAddressEntity().getZoneNum())
+                .region1DepthName(businessUserDto.getAddressEntity().getRegion1DepthName())
+                .region2DepthName(businessUserDto.getAddressEntity().getRegion2DepthName())
+                .region3DepthName(businessUserDto.getAddressEntity().getRegion3DepthName())
+                .detailAddress(businessUserDto.getAddressEntity().getDetailAddress())
+                .build();
+        userEntity.setUserWhereEntity(userWhereEntity);
+        //유저 엔티티 등록
+
+        //사업자 엔티티 등록
+        BusinessEntity businessEntity = new BusinessEntity();
+        businessEntity.setUserEntity(userEntity);
+        businessEntity.setAccountNumber("B" + RandomCodeUtils.getRandomCode(6));
+        businessEntity.setAccountNumber(businessUserDto.getAccountNumber());
+        businessEntity.setBankNm(businessUserDto.getBankNm());
+        businessEntity.setAccountStatus(0L);
+        businessRepository.save(businessEntity);
+        //사업자 엔티티 등록
+
+        //호텔 등록
+        HotelEntity hotelEntity = HotelEntity.builder()
+                .hotelNm(hotelDto.getHotelNm())
+                .businessEntity(businessEntity)
+                .hotelDetailInfo(hotelDto.getHotelDetailInfo())
+                .businessNum(hotelDto.getBusinessNum())
+                .hotelCall(hotelDto.getHotelCall())
+                .businessCertificate("x")
+                .advertise(0L)
+                .approval(0L)
+                .signStatus(0L)
+                .hotelNum("H" + RandomCodeUtils.getRandomCode(6))
+                .build();
+        String target = "/manager/hotel/" + businessEntity.getBusinessPk();
+        String hotelCertificationFile = myFileUtils.transferTo(hotelDto.getBusinessCertificationFile(),target);
+        hotelEntity.setBusinessCertificate(hotelCertificationFile);
+        hotelRepository.save(hotelEntity);
+
+
+        HotelWhereEntity hotelWhereEntity = HotelWhereEntity.builder()
+                .x(hotelDto.getHotelAddressInfo().getX())
+                .y(hotelDto.getHotelAddressInfo().getY())
+                .addressName(hotelDto.getHotelAddressInfo().getAddressName())
+                .zoneNum(hotelDto.getHotelAddressInfo().getZoneNum())
+                .detailAddress(hotelDto.getHotelAddressInfo().getDetailAddress())
+                .region1DepthName(hotelDto.getHotelAddressInfo().getRegion1DepthName())
+                .region2DepthName(hotelDto.getHotelAddressInfo().getRegion2DepthName())
+                .region3DepthName(hotelDto.getHotelAddressInfo().getRegion3DepthName())
+                .hotelEntity(hotelEntity)
+                .build();
+        hotelEntity.setHotelWhereEntity(hotelWhereEntity);
+
+        List<HotelPicEntity> hotelPicEntityList = new ArrayList<>();
+        for(MultipartFile file : hotelDto.getHotelPics()){
+            target = "/hotel/" + hotelEntity.getHotelPk();
+            String hotelPicFile = myFileUtils.transferTo(file,target);
+            HotelPicEntity hotelPicsEntity = HotelPicEntity.builder()
+                    .hotelEntity(hotelEntity)
+                    .pic(hotelPicFile)
+                    .build();
+            hotelPicEntityList.add(hotelPicsEntity);
+        }
+        hotelEntity.setHotelPicEntity(hotelPicEntityList);
+
+        List<HotelOptionEntity> hotelOptionEntityList = hotelOptionRepository.findAllById(hotelDto.getHotelOption());
+
+        List<HotelOptionInfoEntity> hotelOptionInfoEntityList = new ArrayList<>();
+        for(HotelOptionEntity hotelOptionEntity : hotelOptionEntityList){
+            HotelOptionComposite hotelOptionComposite = HotelOptionComposite.builder()
+                    .hotelPk(hotelEntity.getHotelPk())
+                    .optionPk(hotelOptionEntity.getOptionPk()).build();
+
+            HotelOptionInfoEntity hotelOptionInfoEntity = HotelOptionInfoEntity.builder()
+                    .composite(hotelOptionComposite)
+                    .hotelEntity(hotelEntity)
+                    .hotelOptionEntity(hotelOptionEntity)
+                    .build();
+            hotelOptionInfoEntityList.add(hotelOptionInfoEntity);
+        }
+        hotelOptionInfoRepository.saveAll(hotelOptionInfoEntityList);
+        //호텔 등록
+
+
+        //호텔 방 자동 등록
+        List<DogSizeEntity> dogSizeEntityList = dogSizeRepository.findAll();
+        List<HotelRoomInfoEntity> hotelRoomInfoEntityList = new ArrayList<>();
+        HotelRoomInfoEntity smallRoomInfo = HotelRoomInfoEntity.builder()
+                .dogSizeEntity(dogSizeRepository.findById(1L).get())
+                .hotelEntity(hotelEntity)
+                .hotelRoomNm("소형견(7kg 이하)")
+                .build();
+        hotelRoomInfoEntityList.add(smallRoomInfo);
+        HotelRoomInfoEntity mediumRoomInfo = HotelRoomInfoEntity.builder()
+                .dogSizeEntity(dogSizeRepository.findById(2L).get())
+                .hotelEntity(hotelEntity)
+                .hotelRoomNm("중형견(15kg 이하)")
+                .build();
+        hotelRoomInfoEntityList.add(mediumRoomInfo);
+        HotelRoomInfoEntity largeRoomInfo = HotelRoomInfoEntity.builder()
+                .dogSizeEntity(dogSizeRepository.findById(3L).get())
+                .hotelEntity(hotelEntity)
+                .hotelRoomNm("대형견(40kg 이하)")
+                .build();
+        hotelRoomInfoEntityList.add(largeRoomInfo);
+        HotelRoomInfoEntity superLargeRoomInfo = HotelRoomInfoEntity.builder()
+                .dogSizeEntity(dogSizeRepository.findById(4L).get())
+                .hotelEntity(hotelEntity)
+                .hotelRoomNm("초대형견(40kg 초과)")
+                .build();
+        hotelRoomInfoEntityList.add(superLargeRoomInfo);
+        HotelRoomInfoEntity groupRoomInfo = HotelRoomInfoEntity.builder()
+                .dogSizeEntity(dogSizeRepository.findById(4L).get())
+                .hotelEntity(hotelEntity)
+                .hotelRoomNm("단체방")
+                .build();
+        hotelRoomInfoEntityList.add(groupRoomInfo);
+        hotelRoomRepository.saveAll(hotelRoomInfoEntityList);
+        //호텔 방 자동 등록
+
+
+        return new ResVo(1);
+    }
+
 }
