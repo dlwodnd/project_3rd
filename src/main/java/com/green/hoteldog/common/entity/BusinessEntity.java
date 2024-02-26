@@ -1,5 +1,6 @@
 package com.green.hoteldog.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
@@ -13,7 +14,8 @@ public class BusinessEntity  {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long businessPk;
 
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToOne(optional = false,fetch = FetchType.EAGER)
     @JoinColumn(name = "user_pk", referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userEntity;
 
@@ -26,6 +28,7 @@ public class BusinessEntity  {
     @Column(nullable = false)
     @ColumnDefault("'0'")
     private Long accountStatus;
+
 
     //승민
     //승민

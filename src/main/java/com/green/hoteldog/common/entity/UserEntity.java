@@ -1,5 +1,6 @@
 package com.green.hoteldog.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.green.hoteldog.common.entity.base.BaseEntity;
 import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
@@ -40,6 +41,7 @@ public class UserEntity extends BaseEntity {
 
     @ColumnDefault("'0'")
     private Long userStatus;
+
 
 
     @ColumnDefault("'USER'")

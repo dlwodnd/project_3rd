@@ -1,5 +1,6 @@
 package com.green.hoteldog.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.green.hoteldog.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ public class HotelEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotelPk;
 
-    @OneToOne(optional = false,fetch = FetchType.LAZY)
+    @OneToOne(optional = false,fetch = FetchType.EAGER)
     @JoinColumn(name = "business_pk",referencedColumnName = "businessPk",columnDefinition = "BIGINT UNSIGNED")
     private BusinessEntity businessEntity;
 
