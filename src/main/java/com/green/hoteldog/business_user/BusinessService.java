@@ -8,9 +8,7 @@ import com.green.hoteldog.common.entity.composite.HotelOptionComposite;
 import com.green.hoteldog.common.repository.*;
 import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.utils.RandomCodeUtils;
-import com.green.hoteldog.exceptions.AuthorizedErrorCode;
-import com.green.hoteldog.exceptions.CustomException;
-import com.green.hoteldog.exceptions.HotelErrorCode;
+import com.green.hoteldog.exceptions.*;
 import com.green.hoteldog.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +37,9 @@ public class BusinessService {
     private final HotelOptionRepository hotelOptionRepository;
     private final HotelOptionInfoRepository hotelOptionInfoRepository;
     private final DogSizeRepository dogSizeRepository;
+    private final HotelAdvertiseRepository hotelAdvertiseRepository;
+    private final ResComprehensiveInfoRepository resComprehensiveInfoRepository;
+    private final ReservationRepository reservationRepository;
 
     // 호텔 상태 전환 (1 - 운영 상태, 2 - 운영 중지 상태)
     @Transactional
@@ -224,7 +225,12 @@ public class BusinessService {
                 hotelOptionInfoVoList.add(vo);
             }
             List<HotelRoomInfoEntity> hotelRoomInfoEntityList = hotelRoomRepository.findHotelRoomInfoEntitiesByHotelEntity(hotelEntity);
-
+            Optional<HotelAdvertiseEntity> optionalHotelAdvertiseEntity = hotelAdvertiseRepository.findByHotelEntity(hotelEntity);
+            if (optionalHotelAdvertiseEntity.isPresent()){
+                HotelAdvertiseEntity hotelAdvertiseEntity = optionalHotelAdvertiseEntity.get();
+                businessUserHotelVo.setHotelAdvertiseToDate(hotelAdvertiseEntity.getHotelAdvertiseToDate().toString());
+                businessUserHotelVo.setHotelAdvertiseEndDate(hotelAdvertiseEntity.getHotelAdvertiseEndDate().toString());
+            }
             businessUserHotelVo = BusinessUserHotelVo.builder()
                     .hotelPk(hotelEntity.getHotelPk())
                     .hotelNm(hotelEntity.getHotelNm())
@@ -273,6 +279,10 @@ public class BusinessService {
         Optional<UserEntity> optionalUserEntity = userRepository.findById(authenticationFacade.getLoginUserPk());
         UserEntity userEntity = optionalUserEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
 
+
+        Optional<BusinessEntity> optionalBusinessEntity = businessRepository.findByUserEntity(userEntity);
+        BusinessEntity businessEntity = optionalBusinessEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+
         Optional<HotelRoomInfoEntity> optionalHotelRoomInfoEntity = hotelRoomRepository.findById(dto.getHotelRoomPk());
         HotelRoomInfoEntity hotelRoomInfoEntity = optionalHotelRoomInfoEntity.orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
         String hotelRoomPic = null;
@@ -289,6 +299,45 @@ public class BusinessService {
         hotelRoomInfoEntity.setDogSizeEntity(dogSizeRepository.getReferenceById(dto.getSizePk()));
 
         return new ResVo(1);
+    }
+    // 사업자 유저 예약 강아지 방 정보
+    @Transactional
+    public List<HotelRoomAndDogInfoVo> getHotelRoomAndDogInfo(long resPk){
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(authenticationFacade.getLoginUserPk());
+        UserEntity userEntity = optionalUserEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+
+
+        Optional<BusinessEntity> optionalBusinessEntity = businessRepository.findByUserEntity(userEntity);
+        BusinessEntity businessEntity = optionalBusinessEntity.orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        Optional<ReservationEntity> optionalReservationEntity = reservationRepository.findById(resPk);
+        ReservationEntity reservationEntity = optionalReservationEntity.orElseThrow(() -> new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION));
+        List<ResComprehensiveInfoEntity> resComprehensiveInfoEntityList = resComprehensiveInfoRepository.findAllByReservationEntity(reservationEntity);
+        List<HotelRoomAndDogInfoVo> hotelRoomAndDogInfoVoList = new ArrayList<>();
+        for(ResComprehensiveInfoEntity resComprehensiveInfoEntity : resComprehensiveInfoEntityList){
+            HotelRoomInfoEntity hotelRoomInfoEntity = resComprehensiveInfoEntity.getHotelRoomInfoEntity();
+            ResDogInfoEntity resDogInfoEntity = resComprehensiveInfoEntity.getResDogInfoEntity();
+            ResDogInfo resDogInfo = ResDogInfo.builder()
+                    .dogResDogPk(resDogInfoEntity.getResDogPk())
+                    .dogNm(resDogInfoEntity.getDogNm())
+                    .dogAge(resDogInfoEntity.getDogAge())
+                    .sizePk(resDogInfoEntity.getDogSizeEntity().getSizePk())
+                    .information(resDogInfoEntity.getInformation())
+                    .build();
+            ResRoomInfo resRoomInfo = ResRoomInfo.builder()
+                    .hotelRoomPk(hotelRoomInfoEntity.getHotelRoomPk())
+                    .hotelPk(hotelRoomInfoEntity.getHotelEntity().getHotelPk())
+                    .sizePk(hotelRoomInfoEntity.getDogSizeEntity().getSizePk())
+                    .hotelRoomNm(hotelRoomInfoEntity.getHotelRoomNm())
+                    .roomPic(hotelRoomInfoEntity.getRoomPic()).build();
+            hotelRoomAndDogInfoVoList.add(HotelRoomAndDogInfoVo.builder()
+                    .resRoomInfo(resRoomInfo)
+                    .resDogInfo(resDogInfo)
+                    .build());
+        }
+        return hotelRoomAndDogInfoVoList;
+
+
+
     }
 
     //재웅
