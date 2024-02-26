@@ -1,9 +1,12 @@
 package com.green.hoteldog.common.repository;
 
 import com.green.hoteldog.common.entity.HotelAdvertiseEntity;
+import com.green.hoteldog.common.entity.HotelEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.Optional;
 
 public interface HotelAdvertiseRepository extends JpaRepository<HotelAdvertiseEntity, Long> {
 
@@ -25,6 +28,7 @@ public interface HotelAdvertiseRepository extends JpaRepository<HotelAdvertiseEn
     //영웅
 
     //재웅
+    Optional<HotelAdvertiseEntity> findByHotelEntity(HotelEntity hotelEntity);
     //재웅
 
 }

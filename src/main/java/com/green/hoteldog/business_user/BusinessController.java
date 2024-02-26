@@ -80,6 +80,12 @@ public class BusinessController {
         return service.putHotelRoomInfo(dto);
     }
 
+    @GetMapping("/reservation/HotelRoomAndDogInfo")
+    public List<HotelRoomAndDogInfoVo> getHotelRoomAndDogInfo(long resPk){
+
+        return service.getHotelRoomAndDogInfo(resPk);
+    }
+
 
     //재웅
 
