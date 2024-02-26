@@ -590,7 +590,7 @@ public class HotelService {
         return monthDateList;
     }
 
-    // 호텔 더미데이터 작성
+    /*// 호텔 더미데이터 작성
     @Transactional(rollbackFor = Exception.class)
     public ResVo hotelRegistration(List<MultipartFile> pics, HotelInsDto dto) {
         dto.setUserPk((int)authenticationFacade.getLoginUserPk());
@@ -668,5 +668,5 @@ public class HotelService {
         mapper.insHotelRoomInfoDate(dateInfoDto);
         return new ResVo(1);
 
-    }
+    }*/
 }

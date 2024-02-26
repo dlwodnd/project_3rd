@@ -14,6 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserWhereEntity {
     @Id
+    @Column(name = "user_pk")
+    private Long id;
+
+
+    @MapsId
     @OneToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_pk",referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
     private UserEntity userEntity;

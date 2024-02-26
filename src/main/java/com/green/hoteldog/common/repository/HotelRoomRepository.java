@@ -1,7 +1,10 @@
 package com.green.hoteldog.common.repository;
 
+import com.green.hoteldog.common.entity.HotelEntity;
 import com.green.hoteldog.common.entity.HotelRoomInfoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 public interface HotelRoomRepository extends JpaRepository<HotelRoomInfoEntity, Long> {
     //승민
@@ -14,6 +17,7 @@ public interface HotelRoomRepository extends JpaRepository<HotelRoomInfoEntity, 
     //영웅
 
     //재웅
+    List<HotelRoomInfoEntity> findHotelRoomInfoEntitiesByHotelEntity(HotelEntity hotelEntity);
     //재웅
 
 }

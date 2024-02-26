@@ -30,11 +30,11 @@ public interface HotelMapper {
     Integer isMoreHotelReview(int hotelPk);
     List<HotelRoomResInfoByMonth> getHotelRoomResInfo(int hotelPk, String startDate, String endDate);
     List<HotelRoomResInfoByMonth> getHotelFilterRoomResInfo(int hotelPk,String startDate, String endDate,int howMany,int large );
-    Integer insHotel(HotelInsDto dto);
+    /*Integer insHotel(HotelInsDto dto);
     Integer insHotelWhere(HotelAddressDto dto);
     Integer insHotelPics(HotelInsPicDto dto);
     Integer delHotelPic(HotelInsPicDto dto);
     Integer insHotelOption(HotelInsDto dto);
     Integer insHotelRoomInfo(InsHotelRoomDto dto);
-    Integer insHotelRoomInfoDate(InsHotelRoomDateInfoDto dto);
+    Integer insHotelRoomInfoDate(InsHotelRoomDateInfoDto dto);*/
 }

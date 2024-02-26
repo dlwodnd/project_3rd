@@ -18,7 +18,7 @@ public class HotelPicEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotelPicPk;
 
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
     @JoinColumn(name = "hotel_pk",referencedColumnName = "hotelPk",columnDefinition = "BIGINT UNSIGNED")
     private HotelEntity hotelEntity;
 
