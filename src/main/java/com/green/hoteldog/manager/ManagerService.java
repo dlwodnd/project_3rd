@@ -80,15 +80,15 @@ public class ManagerService {
     }
 
     // 승인 대기 호텔목록 가져오는 메서드
-    public List<HotelListVo> getManagementHotelByBusinessEntity_AccountStatus() {
-        List<HotelEntity> hotelEntities = hotelRepository.findByBusinessEntity_AccountStatus(2);
+    public List<HotelListVo> getManagementHotelByBusinessEntity_AccountStatus(Pageable pageable) {
+        List<HotelEntity> hotelEntities = hotelRepository.findHotelEntityByApproval(0, pageable);
         return hotelEntities.stream()
                 .map(hotelEntity -> HotelListVo.hotelListVo(hotelEntity))
                 .collect(Collectors.toList());
     }
 
-    public List<ApprovalAdListVo> getApprovalAdList() {
-        List<PaymentAdEntity> paymentAdEntities = paymentAdRepository.findAll();
+    public List<ApprovalAdListVo> getApprovalAdList(Pageable pagleable) {
+        List<PaymentAdEntity> paymentAdEntities = paymentAdRepository.findByHotelAdvertiseEntity_SignStatus(1, pagleable);
         return paymentAdEntities.stream()
                 .map(paymentAdEntity -> ApprovalAdListVo.approvalAdListVo(paymentAdEntity))
                 .collect(Collectors.toList());

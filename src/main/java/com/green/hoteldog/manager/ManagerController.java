@@ -6,6 +6,7 @@ import com.green.hoteldog.manager.model.UserListVo;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
@@ -65,15 +66,15 @@ public class ManagerController {
     @GetMapping("/hotelAccountStatus")
     @Operation(summary = "승인 대길 호텔", description = "광고 승인 목록처리")
 
-    public List<HotelListVo> getManagementApprovalHotelList() {
-        return service.getManagementHotelByBusinessEntity_AccountStatus();
+    public List<HotelListVo> getManagementApprovalHotelList(@PageableDefault(page = 1,size = 2) Pageable pageable) {
+        return service.getManagementHotelByBusinessEntity_AccountStatus(pageable);
     }
 
     @GetMapping("/adHotelList/approval")
     @Operation(summary = "광고 승인목록", description = "광고 승인 목록처리")
 
-    public List<ApprovalAdListVo> getApprovalAdList() {
-        return service.getApprovalAdList();
+    public List<ApprovalAdListVo> getApprovalAdList(@PageableDefault(page = 1,size = 2) Pageable pageable) {
+        return service.getApprovalAdList( pageable);
     }
 
     @PatchMapping("/approval")

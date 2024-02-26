@@ -15,6 +15,7 @@ public class ApprovalAdListVo {
     private LocalDateTime hotelAdvertiseFromDate;
 
 
+
     public static ApprovalAdListVo approvalAdListVo(PaymentAdEntity paymentAdEntity) {
         ApprovalAdListVo approvalAdListVo = new ApprovalAdListVo();
         approvalAdListVo.setHotelPk(paymentAdEntity.getHotelAdvertiseEntity().getHotelEntity().getHotelPk());
