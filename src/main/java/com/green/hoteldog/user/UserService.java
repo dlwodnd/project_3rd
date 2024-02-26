@@ -1,6 +1,6 @@
 package com.green.hoteldog.user;
 
-import com.green.hoteldog.business_user.model.BusinessUserSignupDto;
+import com.green.hoteldog.user.models.BusinessUserSignupDto;
 import com.green.hoteldog.business_user.model.HotelInsDto;
 import com.green.hoteldog.common.AppProperties;
 import com.green.hoteldog.common.Const;
@@ -286,9 +286,10 @@ public class UserService {
         BusinessEntity businessEntity = new BusinessEntity();
         businessEntity.setUserEntity(userEntity);
         businessEntity.setAccountNumber("B" + RandomCodeUtils.getRandomCode(6));
-        businessEntity.setAccountNumber(businessUserDto.getAccountNumber());
-        businessEntity.setBankNm(businessUserDto.getBankNm());
+        businessEntity.setAccountNumber("0000");
+        businessEntity.setBankNm("0000");
         businessEntity.setAccountStatus(0L);
+        businessEntity.setBusinessName(businessUserDto.getBusinessName());
         businessRepository.save(businessEntity);
         //사업자 엔티티 등록
 

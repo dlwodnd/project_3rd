@@ -1,6 +1,6 @@
 package com.green.hoteldog.user;
 
-import com.green.hoteldog.business_user.model.BusinessUserSignupDto;
+import com.green.hoteldog.user.models.BusinessUserSignupDto;
 import com.green.hoteldog.business_user.model.HotelInsDto;
 import com.green.hoteldog.common.utils.RedisUtil;
 import com.green.hoteldog.common.ResVo;
