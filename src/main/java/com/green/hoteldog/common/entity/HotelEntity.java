@@ -62,6 +62,7 @@ public class HotelEntity extends BaseEntity {
     @Column(nullable = false)
     private String businessCertificate;
 
+
     //승민
     //승민
 
@@ -86,4 +87,5 @@ public class HotelEntity extends BaseEntity {
     private Set<HotelOptionInfoEntity> hotelOptionInfoEntity = new HashSet<>();
 
     //재웅
+
 }

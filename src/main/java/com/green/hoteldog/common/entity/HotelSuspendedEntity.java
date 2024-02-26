@@ -1,6 +1,7 @@
 package com.green.hoteldog.common.entity;
 
 import com.green.hoteldog.common.entity.base.CreatedAtBaseEntity;
+import com.green.hoteldog.manager.model.ApprovalAdListVo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,14 +20,20 @@ public class HotelSuspendedEntity extends CreatedAtBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long suspendedPk;
 
-    @OneToOne(optional = false,fetch = FetchType.LAZY)
+    @OneToOne(optional = false,fetch = FetchType.EAGER)
     @JoinColumn(name = "hotel_pk",referencedColumnName = "hotelPk",columnDefinition = "BIGINT UNSIGNED")
     private HotelEntity hotelEntity;
 
     @Column(nullable = false)
     private String suspendedReason;
 
-    //승민
+    public Long getSignStatus() {
+        return hotelEntity.getSignStatus();
+    }
+    
+
+
+        //승민
     //승민
 
     //승준
@@ -37,4 +44,5 @@ public class HotelSuspendedEntity extends CreatedAtBaseEntity {
 
     //재웅
     //재웅
+
 }

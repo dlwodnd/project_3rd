@@ -28,6 +28,7 @@ public class ManagerService {
     private final HotelAdvertiseRepository hotelAdvertiseRepository;
     private final PaymentAdRepository paymentAdRepository;
     private final HotelAdvertiseRepository hotelAdvertiseEntityRepository;
+    private final HotelSuspendedRepository hotelSuspendedRepository;
 
     // 모든유저
 //    public List <UserEntity> allUsers(List<UserEntity> nomalUsers){
@@ -94,14 +95,33 @@ public class ManagerService {
 
     // 호텔 광고 승인
     @Transactional
-    public  void updateHotelAdvertiseEntityBySignStatus( long hotelPk){
+    public void updateHotelAdvertiseEntityBySignStatus(long hotelPk) {
         hotelAdvertiseEntityRepository.updateHotelAdvertiseEntityBySignStatus(1, hotelPk);
 
     }
+
     // 호텔 광고 거절
     @Transactional
-   public void updateHotelAdvertiseEntityBySignStatusAndCancelReason( String cancelReason, long hotelPk){
+    public void updateHotelAdvertiseEntityBySignStatusAndCancelReason(String cancelReason, long hotelPk) {
         hotelAdvertiseEntityRepository.updateHotelAdvertiseEntityBySignStatusAndCancelReason(0, cancelReason, hotelPk);
+    }
+    //호텔 등록 승인
+    @Transactional
+    public void updateHotelEntityByApproval(long hotelPk) {
+        hotelRepository.updateHotelEntityByApproval(1, hotelPk);
+    }
+
+    //호텔 중지 신청 승인
+    @Transactional
+    public void updateHotelSuspendedEntityBySignStatus(long hotelPk) {
+        hotelSuspendedRepository.updateHotelSignStatus(1L, hotelPk);
+    }
+
+
+    //호텔 중지 신청 거절
+    @Transactional
+    public void updateHotelSuspendedEntityBySignStatusAndSuspendedReason( String suspendedReason, long hotelPk){
+        hotelSuspendedRepository.updateHotelSuspendedEntityBySignStatusAndSuspendedReason(0L, suspendedReason, hotelPk);
     }
 
 
