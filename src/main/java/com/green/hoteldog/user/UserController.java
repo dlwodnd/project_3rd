@@ -47,7 +47,7 @@ public class UserController {
         return vo;
     }
 
-    //--------------------------------------------------유저 로그인-------------------------------------------------------
+    //-------------------------------------------------- 일반 유저 로그인-------------------------------------------------------
     @PostMapping("/signin")
     @Operation(summary = "유저 로그인", description = "유저 로그인 처리")
     public UserSigninVo userSignin(HttpServletResponse response, HttpServletRequest request, @RequestBody @Valid UserSigninDto dto) {
@@ -82,10 +82,16 @@ public class UserController {
     }
 
     //-----------------------------------------------------3차 추가 기능-------------------------------------------------
-
+    // 사업자 유저 로그인
+    @PostMapping("/business-signin")
+    public BusinessSigninVo businessSignin(HttpServletResponse response, HttpServletRequest request, @RequestBody @Valid UserSigninDto dto) {
+        return service.businessSignin(response, request, dto);
+    }
     // 유저 회원 탈퇴
 
     // 일괄 환불 출력 기능
 
     // 일괄 환불 기능
+
+
 }

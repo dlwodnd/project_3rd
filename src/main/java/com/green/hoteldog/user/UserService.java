@@ -189,4 +189,13 @@ public class UserService {
         vo.setAccessToken(at);
         return vo;
     }
+    // 사업자 유저 로그인
+    public UserSigninVo businessSignin(HttpServletResponse response, HttpServletRequest request, UserSigninDto dto) {
+        Optional<UserEntity> userEntityOptional = userRepository.findByUserEmail(dto.getUserEmail());
+
+        UserEntity userEntity = userEntityOptional.orElseThrow(() -> new CustomException(UserErrorCode.UNKNOWN_EMAIL_ADDRESS));
+
+        if (!passwordEncoder.matches(dto.getUpw(), userEntity.getUpw())) {
+            throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
+        }
 }
