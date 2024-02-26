@@ -85,7 +85,7 @@ public class ManagerController {
     @Operation(summary = "광고 승인 거절", description = "광고 승인 거절 처리")
 
     public void updateHotelAdvertiseEntityBySignStatusAndCancelReason( String cancelReason, long hotelPk){
-        service.updateHotelAdvertiseEntityBySignStatusAndCancelReason( cancelReason, hotelPk);
+        service.updateHotelAdvertiseEntityBySignStatusAndCancelReason(cancelReason, hotelPk);
     }
 
 
@@ -105,6 +105,19 @@ public class ManagerController {
 
     @PatchMapping("/suspendRefuse")
     @Operation(summary = "호텔 중지 신청 거절", description = "호텔 중지 신청 거절 사유까지 처리")
+    public void updateHotelAdvertiseEntityBySignStatusAndCancelReason(@RequestParam("suspendedReason") String suspendedReason, @RequestParam("hotelPk") Long hotelPk) {
+        service.updateHotelAdvertiseEntityBySignStatusAndCancel( suspendedReason, hotelPk);
+    }
+
+
+
+
+
+
+
+
+    @PatchMapping("/suspendRefusee")
+    @Operation(summary = "호텔 중지 신청 거절1", description = "호텔 중지 신청 거절 사유까지 처리")
     public void updateHotelSuspendedEntityBySignStatusAndSuspendedReason( String suspendedReason,@RequestParam long hotelPk){
         service.updateHotelSuspendedEntityBySignStatusAndSuspendedReason( suspendedReason, hotelPk);
     }
