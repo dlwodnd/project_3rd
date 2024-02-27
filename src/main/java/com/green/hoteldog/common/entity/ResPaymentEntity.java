@@ -31,7 +31,7 @@ public class ResPaymentEntity {
     private Long paymentStatus;
 
     @Column(nullable = false)
-    private String paymentAmount;
+    private long paymentAmount;
 
     @Column(nullable = false)
     private String resPaymentNum;

@@ -1,9 +1,12 @@
 package com.green.hoteldog.common.repository;
 
 import com.green.hoteldog.common.entity.ReservationEntity;
+import com.green.hoteldog.common.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> {
+import java.util.List;
+
+public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> ,ReservationQDslRepository{
 
     //승민
     //승민
@@ -15,6 +18,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     //영웅
 
     //재웅
+    List<ReservationEntity> findByUserEntityAndResStatus(UserEntity userEntity,long resStatus);
     //재웅
 
 

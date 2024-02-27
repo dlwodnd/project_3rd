@@ -3,7 +3,7 @@ package com.green.hoteldog.common.repository;
 import com.green.hoteldog.common.entity.ResDogInfoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ResDogInfoRepository extends JpaRepository<ResDogInfoEntity, Long> {
+public interface ResDogInfoRepository extends JpaRepository<ResDogInfoEntity, Long>  {
 
     //승민
     //승민

@@ -88,12 +88,14 @@ public class UserController {
 
     //-----------------------------------------------------3차 추가 기능-------------------------------------------------
     // 사업자 유저 로그인
-    @PostMapping("/businessSignin")
+    @PostMapping("/business/signin")
+    @Operation(summary = "사업자 로그인", description = "사업자 로그인 처리")
     public BusinessSigninVo businessSignin(HttpServletResponse response, HttpServletRequest request, @RequestBody @Valid UserSigninDto dto) {
         return service.businessSignin(response, request, dto);
     }
     // 사업자 유저 회원가입
     @PostMapping("/business/signup")
+    @Operation(summary = "사업자 회원가입", description = "사업자 회원가입 처리")
     public ResVo postBusinessUser(@RequestPart BusinessUserSignupDto businessUserDto,
                                   @RequestPart HotelInsDto hotelDto,
                                   @RequestPart MultipartFile businessCertificationFile,
@@ -105,6 +107,11 @@ public class UserController {
     // 유저 회원 탈퇴
 
     // 일괄 환불 출력 기능
+    @GetMapping("/reservation/refund")
+    @Operation(summary = "일괄 환불 출력", description = "일괄 환불 출력")
+    public List<ResRefundInfoVo> getRefundList() {
+        return service.getRefundList();
+    }
 
     // 일괄 환불 기능
 

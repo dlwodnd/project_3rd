@@ -30,9 +30,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -53,6 +56,7 @@ public class UserService {
     private final DogSizeRepository dogSizeRepository;
     private final HotelRepository hotelRepository;
     private final HotelRoomRepository hotelRoomRepository;
+    private final ReservationRepository reservationRepository;
 
     //--------------------------------------------------유저 회원가입-----------------------------------------------------
     @Transactional(rollbackFor = {Exception.class})
@@ -394,6 +398,49 @@ public class UserService {
 
 
         return new ResVo(1);
+    }
+    @Transactional
+    public List<ResRefundInfoVo> getRefundList(){
+        UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        List<ReservationEntity> reservationEntityList = reservationRepository.findByUserEntityAndResStatus(userEntity,0);
+        List<ResPaymentEntity> resPaymentEntityList = reservationRepository.getResPaymentList(reservationEntityList);
+        return reservationEntityList.isEmpty() ? new ArrayList<>() : reservationEntityList.stream()
+                .map(item -> {
+                    long paymentAmount = getPaymentAmount(resPaymentEntityList, item);
+                    long refundAmount = getRefundAmount(item, paymentAmount);
+                    return ResRefundInfoVo.builder()
+                        .resPk(item.getResPk())
+                        .hotelNm(item.getHotelEntity().getHotelNm())
+                        .resNum(item.getResNum())
+                        .toDate(item.getToDate().toString())
+                        .fromDate(item.getFromDate().toString())
+                        .paymentAmount(paymentAmount)
+                        .refundAmount(refundAmount)
+                        .build();}).collect(Collectors.toList());
+    }
+
+    public long getPaymentAmount (List<ResPaymentEntity> resPaymentEntityList, ReservationEntity reservationEntity){
+        for (ResPaymentEntity resPaymentEntity : resPaymentEntityList){
+            if (resPaymentEntity.getReservationEntity().getResPk().equals(reservationEntity.getResPk())){
+                return resPaymentEntity.getPaymentAmount();
+            }
+        }
+        return 0;
+    }
+    public long getRefundAmount (ReservationEntity reservationEntity , long paymentAmount){
+        Period dateDiff = Period.between(reservationEntity.getToDate().toLocalDate(), LocalDate.now());
+        if (dateDiff.getDays() >= 7){
+            return paymentAmount;
+        }
+        else if (dateDiff.getDays() > 3){
+            return paymentAmount * 80 / 100;
+        }
+        else if (dateDiff.getDays() > 1){
+            return paymentAmount * 50 / 100;
+        }
+        else {
+            return 0;
+        }
     }
 
 }

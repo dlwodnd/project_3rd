@@ -6,6 +6,7 @@ import com.green.hoteldog.common.entity.HotelEntity;
 import com.green.hoteldog.exceptions.BoardErrorCode;
 import com.green.hoteldog.exceptions.CustomException;
 import com.green.hoteldog.user.models.UserSignupDto;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +54,7 @@ public class BusinessController {
 
     //사업자 유저 호텔 등록
     @PostMapping("/registration")
+    @Operation(summary = "사업자 유저 호텔 등록", description = "사업자 유저가 호텔을 등록합니다.")
     public ResVo postHotel(@RequestPart HotelInsDto dto,
                            @RequestPart MultipartFile businessCertificationFile,
                            @RequestPart List<MultipartFile> hotelPics){
@@ -66,12 +68,14 @@ public class BusinessController {
 
     //사업자 유저가 등록한 호텔 정보
     @GetMapping
+    @Operation(summary = "사업자 유저 호텔 정보", description = "사업자 유저가 등록한 호텔 정보를 불러옵니다.")
     public BusinessUserHotelVo getBusinessUserHotel(){
         return service.getBusinessUserHotel();
     }
 
     //사업자 유저가 등록한 호텔 방 수정
     @PutMapping("/hotelRoom")
+    @Operation(summary = "사업자 유저 호텔 방 수정", description = "사업자 유저가 등록한 호텔 방 정보를 수정합니다.")
     public ResVo putHotelRoom(@RequestPart(required = false) MultipartFile roomPic,
                               @RequestPart BusinessHotelRoomPutDto dto){
         dto.setRoomPic(roomPic);
@@ -83,6 +87,7 @@ public class BusinessController {
 
     //사업자 유저 호텔에 예약된 강아지 방 정보 리스트
     @GetMapping("/reservation/HotelRoomAndDogInfo")
+    @Operation(summary = "사업자 유저 호텔에 예약된 강아지 방 정보 리스트", description = "사업자 유저가 등록한 호텔에 예약된 강아지 방 정보 리스트를 불러옵니다.")
     public List<HotelRoomAndDogInfoVo> getHotelRoomAndDogInfo(long resPk){
 
         return service.getHotelRoomAndDogInfo(resPk);
