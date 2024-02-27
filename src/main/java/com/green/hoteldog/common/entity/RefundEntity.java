@@ -1,7 +1,10 @@
 package com.green.hoteldog.common.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -10,17 +13,14 @@ import java.time.LocalDateTime;
 @Table(name = "t_refund")
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RefundEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long refundPk;
-
-
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
-    @JoinColumn(name = "policy_pk",referencedColumnName = "policyPk",columnDefinition = "BIGINT UNSIGNED")
-    private RefundPolicyEntity refundPolicyEntity;
-
 
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "user_pk",referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
@@ -44,7 +44,7 @@ public class RefundEntity {
     private LocalDateTime refundDate;
 
     @Column(nullable = false)
-    private String refundAmount;
+    private long refundAmount;
 
     //승민
     //승민

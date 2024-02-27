@@ -3,6 +3,8 @@ package com.green.hoteldog.common.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @Entity
 @Table(name = "t_res_room_date")
@@ -13,14 +15,14 @@ public class HotelResRoomEntity {
     private Long hotelRoomByDatePk;
 
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
-    @JoinColumn(name = "hotel_pk",referencedColumnName = "hotelPk",columnDefinition = "BIGINT UNSIGNED")
-    private HotelEntity hotelEntity;
+    @JoinColumn(name = "hotel_room_pk",referencedColumnName = "hotelRoomPk",columnDefinition = "BIGINT UNSIGNED")
+    private HotelRoomInfoEntity hotelRoomInfoEntity;
 
     @Column(nullable = false,columnDefinition = "BIGINT UNSIGNED")
     private Long roomLeftEa;
 
     @Column(nullable = false)
-    private String roomDate;
+    private LocalDate roomDate;
 
     //승민
     //승민

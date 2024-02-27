@@ -13,6 +13,7 @@ public enum UserErrorCode implements ErrorCode{
     UNKNOWN_EMAIL_ADDRESS(HttpStatus.NOT_FOUND,"등록되지 않은 이메일입니다."),
     NOT_BUSINESS_USER(HttpStatus.NOT_FOUND,"사업자 유저가 아닙니다."),
     WITHDRAWAL_USER(HttpStatus.NOT_FOUND,"회원 탈퇴 신청한 유저입니다."),
+    NOT_EXISTS_RESERVATION(HttpStatus.NOT_FOUND,"예약 정보가 없습니다."),
     MISS_MATCH_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호를 확인 해 주세요");
 
 

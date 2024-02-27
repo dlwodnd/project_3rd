@@ -114,6 +114,11 @@ public class UserController {
     }
 
     // 일괄 환불 기능
+    @PostMapping("/reservation/refund")
+    @Operation(summary = "일괄 환불", description = "일괄 환불")
+    public ResVo postRefund(@RequestBody List<ResRefundDto> list) {
+        return service.postRefund(list);
+    }
 
 
 }

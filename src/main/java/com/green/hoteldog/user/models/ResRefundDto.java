@@ -9,13 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResRefundInfoVo {
+public class ResRefundDto {
     private long resPk;
-    private long hotelPk;
-    private String hotelNm;
-    private String resNum;
-    private String toDate;
-    private String fromDate;
-    private long paymentAmount;
     private long refundAmount;
+
 }

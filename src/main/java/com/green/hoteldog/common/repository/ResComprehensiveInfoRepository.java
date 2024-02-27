@@ -19,6 +19,7 @@ public interface ResComprehensiveInfoRepository extends JpaRepository<ResCompreh
     //영웅
 
     //재웅
+    List<ResComprehensiveInfoEntity> findAllByReservationEntityIn(List<ReservationEntity> reservationEntityList);
     List<ResComprehensiveInfoEntity> findAllByReservationEntity(ReservationEntity reservationEntity);
     //재웅
 

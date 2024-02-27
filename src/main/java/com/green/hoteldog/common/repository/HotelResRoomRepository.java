@@ -3,7 +3,7 @@ package com.green.hoteldog.common.repository;
 import com.green.hoteldog.common.entity.HotelResRoomEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface HotelResRoomRepository extends JpaRepository<HotelResRoomEntity, Long> {
+public interface HotelResRoomRepository extends JpaRepository<HotelResRoomEntity, Long> , HotelResRoomQDslRepository{
 
     //승민
     //승민

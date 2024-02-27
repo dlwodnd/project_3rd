@@ -57,6 +57,10 @@ public class UserService {
     private final HotelRepository hotelRepository;
     private final HotelRoomRepository hotelRoomRepository;
     private final ReservationRepository reservationRepository;
+    private final ResPaymentRepository resPaymentRepository;
+    private final RefundRepository refundRepository;
+    private final ResComprehensiveInfoRepository resComprehensiveInfoRepository;
+    private final HotelResRoomRepository hotelResRoomRepository;
 
     //--------------------------------------------------유저 회원가입-----------------------------------------------------
     @Transactional(rollbackFor = {Exception.class})
@@ -207,10 +211,11 @@ public class UserService {
         MyUserDetails myUserDetails = (MyUserDetails) tokenProvider.getUserDetailsFromToken(token);
         MyPrincipal myprincipal = myUserDetails.getMyPrincipal();
         String at = tokenProvider.generateAccessToken(myprincipal);
-        vo.setUserPk((int)facade.getLoginUserPk());
+        vo.setUserPk((int) facade.getLoginUserPk());
         vo.setAccessToken(at);
         return vo;
     }
+
     // 사업자 유저 로그인
     public BusinessSigninVo businessSignin(HttpServletResponse response, HttpServletRequest request, UserSigninDto dto) {
         Optional<UserEntity> userEntityOptional = userRepository.findByUserEmail(dto.getUserEmail());
@@ -254,9 +259,10 @@ public class UserService {
                 .userRole(userEntity.getUserRole().name())
                 .build();
     }
+
     //사업자 유저 회원가입
     @Transactional
-    public ResVo insBusinessUser(BusinessUserSignupDto businessUserDto, HotelInsDto hotelDto){
+    public ResVo insBusinessUser(BusinessUserSignupDto businessUserDto, HotelInsDto hotelDto) {
 
         //유저 엔티티 등록
         UserEntity userEntity = UserEntity.builder()
@@ -311,7 +317,7 @@ public class UserService {
                 .hotelNum("H" + RandomCodeUtils.getRandomCode(6))
                 .build();
         String target = "/manager/hotel/" + businessEntity.getBusinessPk();
-        String hotelCertificationFile = myFileUtils.transferTo(hotelDto.getBusinessCertificationFile(),target);
+        String hotelCertificationFile = myFileUtils.transferTo(hotelDto.getBusinessCertificationFile(), target);
         hotelEntity.setBusinessCertificate(hotelCertificationFile);
         hotelRepository.save(hotelEntity);
 
@@ -330,9 +336,9 @@ public class UserService {
         hotelEntity.setHotelWhereEntity(hotelWhereEntity);
 
         List<HotelPicEntity> hotelPicEntityList = new ArrayList<>();
-        for(MultipartFile file : hotelDto.getHotelPics()){
+        for (MultipartFile file : hotelDto.getHotelPics()) {
             target = "/hotel/" + hotelEntity.getHotelPk();
-            String hotelPicFile = myFileUtils.transferTo(file,target);
+            String hotelPicFile = myFileUtils.transferTo(file, target);
             HotelPicEntity hotelPicsEntity = HotelPicEntity.builder()
                     .hotelEntity(hotelEntity)
                     .pic(hotelPicFile)
@@ -344,7 +350,7 @@ public class UserService {
         List<HotelOptionEntity> hotelOptionEntityList = hotelOptionRepository.findAllById(hotelDto.getHotelOption());
 
         List<HotelOptionInfoEntity> hotelOptionInfoEntityList = new ArrayList<>();
-        for(HotelOptionEntity hotelOptionEntity : hotelOptionEntityList){
+        for (HotelOptionEntity hotelOptionEntity : hotelOptionEntityList) {
             HotelOptionComposite hotelOptionComposite = HotelOptionComposite.builder()
                     .hotelPk(hotelEntity.getHotelPk())
                     .optionPk(hotelOptionEntity.getOptionPk()).build();
@@ -399,46 +405,89 @@ public class UserService {
 
         return new ResVo(1);
     }
+
     @Transactional
-    public List<ResRefundInfoVo> getRefundList(){
+    public List<ResRefundInfoVo> getRefundList() {
         UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        List<ReservationEntity> reservationEntityList = reservationRepository.findByUserEntityAndResStatus(userEntity,0);
+        List<ReservationEntity> reservationEntityList = reservationRepository.findByUserEntityAndResStatus(userEntity, 0);
         List<ResPaymentEntity> resPaymentEntityList = reservationRepository.getResPaymentList(reservationEntityList);
+        List<ResComprehensiveInfoEntity> resComprehensiveInfoEntityList = resComprehensiveInfoRepository.findAllByReservationEntityIn(reservationEntityList);
+
         return reservationEntityList.isEmpty() ? new ArrayList<>() : reservationEntityList.stream()
                 .map(item -> {
                     long paymentAmount = getPaymentAmount(resPaymentEntityList, item);
                     long refundAmount = getRefundAmount(item, paymentAmount);
                     return ResRefundInfoVo.builder()
-                        .resPk(item.getResPk())
-                        .hotelNm(item.getHotelEntity().getHotelNm())
-                        .resNum(item.getResNum())
-                        .toDate(item.getToDate().toString())
-                        .fromDate(item.getFromDate().toString())
-                        .paymentAmount(paymentAmount)
-                        .refundAmount(refundAmount)
-                        .build();}).collect(Collectors.toList());
+                            .hotelPk(item.getHotelEntity().getHotelPk())
+                            .resPk(item.getResPk())
+                            .hotelNm(item.getHotelEntity().getHotelNm())
+                            .resNum(item.getResNum())
+                            .toDate(item.getToDate().toString())
+                            .fromDate(item.getFromDate().toString())
+                            .paymentAmount(paymentAmount)
+                            .refundAmount(refundAmount)
+                            .build();
+                }).collect(Collectors.toList());
+    }
+    @Transactional
+    public ResVo postRefund(List<ResRefundDto> list){
+        UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        List<ResPaymentEntity> resPaymentEntityList = resPaymentRepository.findAllByUserEntityAndPaymentStatus(userEntity , 1);
+        List<ReservationEntity> reservationEntityList = reservationRepository.findByUserEntityAndResStatus(userEntity, 0);
+        List<HotelRoomDateProcDto> hotelRoomDateProcDtoList = new ArrayList<>();
+
+        List<RefundEntity> refundEntityList = new ArrayList<>();
+        for(ResRefundDto resRefundDto : list){
+            RefundEntity refundEntity = RefundEntity.builder()
+                    .userEntity(userEntity)
+                    .reservationEntity(reservationRepository.findById(resRefundDto.getResPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_EXISTS_RESERVATION)))
+                    .refundNum("C" + RandomCodeUtils.getRandomCode(6))
+                    .refundAmount(resRefundDto.getRefundAmount()).build();
+            refundEntityList.add(refundEntity);
+        }
+        refundRepository.saveAll(refundEntityList);
+        for(ResPaymentEntity resPaymentEntity : resPaymentEntityList){
+            resPaymentEntity.setPaymentStatus(2L);
+        }
+        for(ReservationEntity reservationEntity : reservationEntityList){
+            resComprehensiveInfoRepository.findAllByReservationEntity(reservationEntity).forEach(item -> {
+                HotelRoomDateProcDto hotelRoomDateProcDto = HotelRoomDateProcDto.builder()
+                        .hotelRoomInfoEntity(item.getHotelRoomInfoEntity())
+                        .fromDate(reservationEntity.getFromDate().toLocalDate())
+                        .toDate(reservationEntity.getToDate().toLocalDate())
+                        .build();
+                hotelRoomDateProcDtoList.add(hotelRoomDateProcDto);
+            });
+            reservationEntity.setResStatus(2L);
+        }
+        hotelResRoomRepository.updateHotelResRoomRefundCount(hotelRoomDateProcDtoList);
+
+
+        return new ResVo(1);
     }
 
-    public long getPaymentAmount (List<ResPaymentEntity> resPaymentEntityList, ReservationEntity reservationEntity){
-        for (ResPaymentEntity resPaymentEntity : resPaymentEntityList){
-            if (resPaymentEntity.getReservationEntity().getResPk().equals(reservationEntity.getResPk())){
+    //유저가 결제한 가격 가져오기
+    public long getPaymentAmount(List<ResPaymentEntity> resPaymentEntityList, ReservationEntity reservationEntity) {
+        for (ResPaymentEntity resPaymentEntity : resPaymentEntityList) {
+            if (resPaymentEntity.getReservationEntity().getResPk().equals(reservationEntity.getResPk())) {
+                if (resPaymentEntity.getPaymentStatus() == 0 || resPaymentEntity.getPaymentStatus() == 2) {
+                    return 0;
+                }
                 return resPaymentEntity.getPaymentAmount();
             }
         }
         return 0;
     }
-    public long getRefundAmount (ReservationEntity reservationEntity , long paymentAmount){
-        Period dateDiff = Period.between(reservationEntity.getToDate().toLocalDate(), LocalDate.now());
-        if (dateDiff.getDays() >= 7){
+    //환불 금액 계산기
+    public long getRefundAmount(ReservationEntity reservationEntity, long paymentAmount) {
+        Period dateDiff = Period.between( LocalDate.now(),reservationEntity.getToDate().toLocalDate());
+        if (dateDiff.getDays() >= 7) {
             return paymentAmount;
-        }
-        else if (dateDiff.getDays() > 3){
+        } else if (dateDiff.getDays() > 3) {
             return paymentAmount * 80 / 100;
-        }
-        else if (dateDiff.getDays() > 1){
+        } else if (dateDiff.getDays() > 1) {
             return paymentAmount * 50 / 100;
-        }
-        else {
+        } else {
             return 0;
         }
     }
