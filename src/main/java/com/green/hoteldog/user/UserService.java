@@ -1,5 +1,6 @@
 package com.green.hoteldog.user;
 
+import com.green.hoteldog.common.utils.CommonUtils;
 import com.green.hoteldog.user.models.BusinessUserSignupDto;
 import com.green.hoteldog.business_user.model.HotelInsDto;
 import com.green.hoteldog.common.AppProperties;
@@ -401,7 +402,18 @@ public class UserService {
         hotelRoomInfoEntityList.add(groupRoomInfo);
         hotelRoomRepository.saveAll(hotelRoomInfoEntityList);
         //호텔 방 자동 등록
-
+        List<LocalDate> getDatesThisYear = CommonUtils.getDatesThisYear();
+        List<HotelResRoomEntity> hotelResRoomEntityList = new ArrayList<>();
+        for(HotelRoomInfoEntity hotelRoomInfoEntity : hotelRoomInfoEntityList){
+            HotelResRoomEntity hotelResRoomEntity = new HotelResRoomEntity();
+            for(LocalDate localDate : getDatesThisYear){
+                hotelResRoomEntity.setHotelRoomInfoEntity(hotelRoomInfoEntity);
+                hotelResRoomEntity.setRoomLeftEa(0L);
+                hotelResRoomEntity.setRoomDate(localDate);
+                hotelResRoomEntityList.add(hotelResRoomEntity);
+            }
+        }
+        hotelResRoomRepository.saveAll(hotelResRoomEntityList);
 
         return new ResVo(1);
     }

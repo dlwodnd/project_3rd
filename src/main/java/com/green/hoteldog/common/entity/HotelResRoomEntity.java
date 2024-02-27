@@ -1,13 +1,19 @@
 package com.green.hoteldog.common.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
 @Entity
 @Table(name = "t_res_room_date")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class HotelResRoomEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
