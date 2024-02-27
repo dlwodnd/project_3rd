@@ -5,13 +5,11 @@ import com.green.hoteldog.common.Const;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.common.entity.*;
 import com.green.hoteldog.common.entity.composite.HotelOptionComposite;
-import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
 import com.green.hoteldog.common.repository.*;
 import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.utils.RandomCodeUtils;
 import com.green.hoteldog.exceptions.*;
 import com.green.hoteldog.security.AuthenticationFacade;
-import com.green.hoteldog.user.models.UserSignupDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -323,7 +321,7 @@ public class BusinessService {
             ResDogInfo resDogInfo = ResDogInfo.builder()
                     .dogResDogPk(resDogInfoEntity.getResDogPk())
                     .dogNm(resDogInfoEntity.getDogNm())
-                    .dogAge(resDogInfoEntity.getDogAge())
+                    .dogAge(resDogInfoEntity.getAge())
                     .sizePk(resDogInfoEntity.getDogSizeEntity().getSizePk())
                     .information(resDogInfoEntity.getInformation())
                     .build();

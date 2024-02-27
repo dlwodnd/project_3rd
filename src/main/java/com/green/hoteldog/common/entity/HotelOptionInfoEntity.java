@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(name = "t_hotel_option_info")
+@Table(name = "t_hotel_option")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

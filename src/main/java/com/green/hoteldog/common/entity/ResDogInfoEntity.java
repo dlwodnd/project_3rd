@@ -21,7 +21,7 @@ public class ResDogInfoEntity extends CreatedAtBaseEntity {
     private String dogNm;
 
     @Column
-    private Long dogAge;
+    private Long age;
 
     @Column(columnDefinition = "VARCHAR(1000)")
     private String information;
