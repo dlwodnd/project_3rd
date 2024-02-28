@@ -26,6 +26,7 @@ public class BusinessUserHotelVo {
     private HotelAddressInfo hotelAddressInfo;
     private long approval;
     private List<HotelOptionInfoVo> optionList;
+    private String businessCertificate;
 
     private List<HotelRoomInfo> hotelRoomInfoList;
 

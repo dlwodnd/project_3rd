@@ -246,6 +246,7 @@ public class BusinessService {
                     .hotelFullAddress(hotelEntity.getHotelWhereEntity().getAddressName() + " " + hotelEntity.getHotelWhereEntity().getDetailAddress())
                     .hotelPics(hotelEntity.getHotelPicEntity().stream().map(HotelPicEntity::getPic).collect(Collectors.toList()))
                     .optionList(hotelOptionInfoVoList)
+                    .businessCertificate(hotelEntity.getBusinessCertificate())
                     .hotelAddressInfo(HotelAddressInfo.builder()
                             .hotelPk(hotelEntity.getHotelPk())
                             .x(hotelEntity.getHotelWhereEntity().getX())
