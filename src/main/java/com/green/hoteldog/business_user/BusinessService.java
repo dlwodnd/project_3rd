@@ -5,6 +5,7 @@ import com.green.hoteldog.common.Const;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.common.entity.*;
 import com.green.hoteldog.common.entity.composite.HotelOptionComposite;
+import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
 import com.green.hoteldog.common.repository.*;
 import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.utils.RandomCodeUtils;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +44,7 @@ public class BusinessService {
     private final ResComprehensiveInfoRepository resComprehensiveInfoRepository;
     private final ReservationRepository reservationRepository;
     private final HotelResRoomRepository hotelResRoomRepository;
+    private final WithdrawalUserRepository withdrawalUserRepository;
 
     // 호텔 상태 전환 (1 - 운영 상태, 2 - 운영 중지 상태)
     @Transactional
@@ -370,6 +373,33 @@ public class BusinessService {
             return new ResVo(1);
         }
         return null;
+    }
+    @Transactional
+    public ResVo postBusinessUserWithdrawal(String upw){
+        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        if (!userEntity.getUpw().equals(upw)){
+            throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
+        }
+        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        if(!reservationRepository.findAllByHotelEntityAndResStatusLessThan(hotelEntity,2L).isEmpty()){
+            throw new CustomException(WithdrawalErrorCode.NOT_CHECK_OUT_RESERVATIONS_REMAIN);
+        }
+
+
+        LocalDateTime today = LocalDateTime.now();
+        WithdrawalUserEntity withdrawalUserEntity = WithdrawalUserEntity.builder()
+                .userEntity(userEntity)
+                .approvalDate(today)
+                .applyDate(today.plusDays(30))
+                .build();
+        withdrawalUserRepository.save(withdrawalUserEntity);
+        userEntity.setUserStatus(1L);
+        userEntity.setUserRole(UserRoleEnum.WITHDRAWAL);
+
+
+
+        return new ResVo(1);
     }
 
     //재웅

@@ -513,12 +513,13 @@ public class UserService {
     public ResVo userWithdrawal(String upw) {
         UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
         List<ReservationEntity> reservationEntityList = reservationRepository.findByUserEntityAndResStatus(userEntity, 0);
-        if (!reservationEntityList.isEmpty()) {
-            throw new CustomException(WithdrawalErrorCode.NON_REFUNDABLE_RESERVATIONS_REMAIN);
-        }
         if (!passwordEncoder.matches(upw, userEntity.getUpw())) {
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
         }
+        if (!reservationEntityList.isEmpty()) {
+            throw new CustomException(WithdrawalErrorCode.NON_REFUNDABLE_RESERVATIONS_REMAIN);
+        }
+
         LocalDateTime today = LocalDateTime.now();
         WithdrawalUserEntity withdrawalUserEntity = WithdrawalUserEntity.builder()
                 .userEntity(userEntity)

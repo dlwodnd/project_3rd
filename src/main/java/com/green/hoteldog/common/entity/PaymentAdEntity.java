@@ -18,8 +18,8 @@ public class PaymentAdEntity extends CreatedAtBaseEntity {
     private Long paymentPk;
 
     @ManyToOne(optional = false,fetch = FetchType.EAGER)
-    @JoinColumn(name = "business_pk",referencedColumnName = "businessPk",columnDefinition = "BIGINT UNSIGNED")
-    private BusinessEntity businessEntity;
+    @JoinColumn(name = "hotel_pk",referencedColumnName = "hotelPk",columnDefinition = "BIGINT UNSIGNED")
+    private HotelEntity hotelEntity;
 
     @ManyToOne(optional = false,fetch = FetchType.EAGER)
     @JoinColumn(name = "hotel_advertise_pk",referencedColumnName = "hotelAdvertisePk",columnDefinition = "BIGINT UNSIGNED")

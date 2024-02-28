@@ -105,6 +105,17 @@ public class HotelEntity extends BaseEntity {
     @ToString.Exclude
     @OneToOne(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,orphanRemoval = true)
     private HotelSuspendedEntity hotelSuspendedEntity;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,orphanRemoval = true)
+    private Set<PaymentAdEntity> paymentAdEntitySet = new HashSet<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,orphanRemoval = true)
+    private Set<ReservationEntity> reservationEntitySet = new HashSet<>();
+
+
+
     //재웅
 
 }

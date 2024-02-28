@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.green.hoteldog.common.entity.base.CreatedAtBaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -44,5 +47,12 @@ public class BusinessEntity extends CreatedAtBaseEntity {
     //영웅
 
     //재웅
+    @ToString.Exclude
+    @OneToOne(mappedBy = "businessEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
+    private HotelEntity hotelEntity;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "businessEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
+    private List<PaymentAdEntity> paymentAdEntityList;
     //재웅
 }

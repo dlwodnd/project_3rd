@@ -2,9 +2,11 @@ package com.green.hoteldog.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -49,5 +51,8 @@ public class HotelAdvertiseEntity {
     //영웅
 
     //재웅
+    @ToString.Exclude
+    @OneToMany(mappedBy = "hotelAdvertiseEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
+    private List<PaymentAdEntity> paymentAdEntityList;
     //재웅
 }

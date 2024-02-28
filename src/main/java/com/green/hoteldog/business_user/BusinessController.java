@@ -101,6 +101,14 @@ public class BusinessController {
         return service.toggleHotelRoomActive(hotelRoomPk);
     }
 
+    //사업자 유저 회원 탈퇴
+    @PostMapping("/withdrawal")
+    @Operation(summary = "사업자 유저 회원 탈퇴", description = "사업자 유저 회원 탈퇴")
+    public ResVo postBusinessUserWithdrawal(@RequestBody String upw){
+
+        return service.postBusinessUserWithdrawal(upw);
+    }
+
     //재웅
 
     // ---------------------------------------------------------------------------------------------------

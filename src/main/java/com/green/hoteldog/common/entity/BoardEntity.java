@@ -3,6 +3,9 @@ package com.green.hoteldog.common.entity;
 import com.green.hoteldog.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -43,5 +46,13 @@ public class BoardEntity extends BaseEntity {
     //영웅
 
     //재웅
+    @ToString.Exclude
+    @OneToMany(mappedBy = "boardEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
+    private List<BoardCommentEntity> boardCommentEntityList;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "boardEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
+    private List<BoardPicsEntity> boardPicsEntityList;
+
     //재웅
 }
