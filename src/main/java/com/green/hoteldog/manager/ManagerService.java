@@ -55,13 +55,14 @@ public class ManagerService {
 
     // 주어진 user_pk 목록에 해당하는 사용자 목록을 가져오는 메서드
 
-
-    public List<UserListVo.BusinessVo> getUsersPks(List<Long> userPks) {
-        List<BusinessEntity> users = businessEntityRepository.findByUserEntity_UserPkIn(userPks);
+    public List<UserListVo.BusinessVo> getUsersPks(List<Long> userPks, Pageable pageable) {
+        List<BusinessEntity> users = businessEntityRepository.findByUserEntity_UserPkIn(userPks, pageable);
         return users.stream()
                 .map(BusinessEntity -> UserListVo.BusinessVo.UserList(BusinessEntity))
                 .collect(Collectors.toList());
     }
+
+
 
 
     // 유저를 승인대기에서 비지니스로 바꿈
@@ -73,7 +74,7 @@ public class ManagerService {
 
     // 호텔 목록을 가져오는 메서드
     public List<HotelListVo> getManagementHotelList(Pageable pageable) {
-        List<HotelEntity> hotelEntities = hotelRepository.findAll();
+        List<HotelEntity> hotelEntities = hotelRepository.findAllByOrderByCreatedAtDesc(pageable);
         return hotelEntities.stream()
                 .map(hotelEntity -> HotelListVo.hotelListVo(hotelEntity))
                 .collect(Collectors.toList());
@@ -81,14 +82,15 @@ public class ManagerService {
 
     // 승인 대기 호텔목록 가져오는 메서드
     public List<HotelListVo> getManagementHotelByBusinessEntity_AccountStatus(Pageable pageable) {
-        List<HotelEntity> hotelEntities = hotelRepository.findHotelEntityByApproval(0, pageable);
+        List<HotelEntity> hotelEntities = hotelRepository.findHotelEntityByApprovalOrderByCreatedAtDesc(0, pageable);
         return hotelEntities.stream()
                 .map(hotelEntity -> HotelListVo.hotelListVo(hotelEntity))
                 .collect(Collectors.toList());
     }
 
+    // 광고 승인 목록
     public List<ApprovalAdListVo> getApprovalAdList(Pageable pagleable) {
-        List<PaymentAdEntity> paymentAdEntities = paymentAdRepository.findByHotelAdvertiseEntity_SignStatus(1, pagleable);
+        List<PaymentAdEntity> paymentAdEntities = paymentAdRepository.findByHotelAdvertiseEntitySignStatus(1, pagleable);
         return paymentAdEntities.stream()
                 .map(paymentAdEntity -> ApprovalAdListVo.approvalAdListVo(paymentAdEntity))
                 .collect(Collectors.toList());
@@ -128,8 +130,8 @@ public class ManagerService {
 
 
     //호텔 중지 신청 거절
-    @Transactional
-    public void updateHotelSuspendedEntityBySignStatusAndSuspendedReason( String suspendedReason, long hotelPk){
-        hotelSuspendedRepository.updateHotelSuspendedEntityBySignStatusAndSuspendedReason(0L, suspendedReason, hotelPk);
-    }
+//    @Transactional
+//    public void updateHotelSuspendedEntityBySignStatusAndSuspendedReason( String suspendedReason, long hotelPk){
+//        hotelSuspendedRepository.updateHotelSuspendedEntityBySignStatusAndSuspendedReason(0L, suspendedReason, hotelPk);
+//    }
 }

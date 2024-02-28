@@ -16,7 +16,10 @@ public interface HotelRepository extends JpaRepository<HotelEntity, Long> {
 
     //승민
     //승민
-    List<HotelEntity> findHotelEntityByApproval(int Approval, Pageable pageable);
+    //전체 호텔 모록 가져옴
+    List<HotelEntity>  findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    List<HotelEntity> findHotelEntityByApprovalOrderByCreatedAtDesc(int Approval, Pageable pageable);
 
     @Modifying
     @Query("UPDATE HotelEntity h SET h.approval = :approval WHERE h.hotelPk = :hotelPk")
