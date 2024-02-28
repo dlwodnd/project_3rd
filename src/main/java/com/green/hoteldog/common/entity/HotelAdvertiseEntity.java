@@ -15,7 +15,7 @@ public class HotelAdvertiseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotelAdvertisePk;
 
-    @ManyToOne(optional = false,fetch = FetchType.EAGER)
+    @OneToOne(optional = false,fetch = FetchType.EAGER)
     @JoinColumn(name = "hotel_pk",referencedColumnName = "hotelPk",columnDefinition = "BIGINT UNSIGNED")
     private HotelEntity hotelEntity;
 

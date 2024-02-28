@@ -143,6 +143,7 @@ public class BusinessService {
                 .hotelDetailInfo(dto.getHotelDetailInfo())
                 .businessNum(dto.getBusinessNum())
                 .hotelCall(dto.getHotelCall())
+                .hotelFullAddress(dto.getHotelAddressInfo().getAddressName() + " " + dto.getHotelAddressInfo().getDetailAddress())
                 .advertise(0L)
                 .approval(0L)
                 .signStatus(0L)
@@ -348,6 +349,28 @@ public class BusinessService {
         }
         return hotelRoomAndDogInfoVoList;
     }
+    @Transactional
+    public ResVo toggleHotelRoomActive(long hotelRoomPk) {
+        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelRoomInfoEntity hotelRoomInfoEntity = hotelRoomRepository.findById(hotelRoomPk).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
+        if (hotelRoomInfoEntity.getHotelRoomEa() == null || hotelRoomInfoEntity.getHotelRoomCost() == null || hotelRoomInfoEntity.getMaximum() == null || hotelRoomInfoEntity.getRoomPic() == null) {
+            throw new CustomException(HotelErrorCode.REQUIRED_VALUE_IS_NULL);
+        }
+        if (hotelRoomInfoEntity.getHotelEntity().getBusinessEntity().getBusinessPk() != businessEntity.getBusinessPk()) {
+            throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
+        }
+        if (hotelRoomInfoEntity.getRoomAble() == 1) {
+            hotelRoomInfoEntity.setRoomAble(0L);
+            return new ResVo(2);
+        }
+        if (hotelRoomInfoEntity.getRoomAble() == 0){
+            hotelRoomInfoEntity.setRoomAble(1L);
+            return new ResVo(1);
+        }
+        return null;
+    }
+
     //재웅
     // ---------------------------------------------------------------------------------------------------
     //승준

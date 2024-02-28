@@ -2,11 +2,10 @@ package com.green.hoteldog.common.entity;
 
 import com.green.hoteldog.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -67,5 +66,10 @@ public class HotelRoomInfoEntity extends BaseEntity {
     //영웅
 
     //재웅
+    @ToString.Exclude
+    @OneToMany(mappedBy = "hotelRoomInfoEntity",fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST},orphanRemoval = true)
+    private List<HotelResRoomEntity> hotelResRoomEntities;
+
+
     //재웅
 }

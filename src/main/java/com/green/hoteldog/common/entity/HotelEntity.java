@@ -41,6 +41,9 @@ public class HotelEntity extends BaseEntity {
     @Column(nullable = false)
     private String hotelCall;
 
+    @Column(nullable = false)
+    private String hotelFullAddress;
+
 
     @ColumnDefault("'0'")
     private Long advertise;
@@ -76,17 +79,32 @@ public class HotelEntity extends BaseEntity {
     //재웅
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,orphanRemoval = true)
     private List<HotelPicEntity> hotelPicEntity = new ArrayList<>();
 
     @ToString.Exclude
-    @OneToOne(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,orphanRemoval = true)
     private HotelWhereEntity hotelWhereEntity;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,orphanRemoval = true)
     private Set<HotelOptionInfoEntity> hotelOptionInfoEntity = new HashSet<>();
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,orphanRemoval = true)
+    private Set<HotelRoomInfoEntity> hotelRoomInfoEntity = new HashSet<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,orphanRemoval = true)
+    private Set<HotelFavoritesEntity> hotelFavoritesEntity = new HashSet<>();
+
+    @ToString.Exclude
+    @OneToOne(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,orphanRemoval = true)
+    private HotelAdvertiseEntity hotelAdvertiseEntity;
+
+    @ToString.Exclude
+    @OneToOne(mappedBy = "hotelEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY,orphanRemoval = true)
+    private HotelSuspendedEntity hotelSuspendedEntity;
     //재웅
 
 }

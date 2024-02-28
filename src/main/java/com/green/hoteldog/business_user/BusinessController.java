@@ -92,6 +92,15 @@ public class BusinessController {
 
         return service.getHotelRoomAndDogInfo(resPk);
     }
+
+    //호텔 방 활성화 & 비활성화 토글
+    @PatchMapping("/hotelRoom")
+    @Operation(summary = "호텔 방 활성화 & 비활성화 토글", description = "호텔 방 활성화 & 비활성화 토글")
+    public ResVo toggleHotelRoomActive(@RequestBody long hotelRoomPk){
+
+        return service.toggleHotelRoomActive(hotelRoomPk);
+    }
+
     //재웅
 
     // ---------------------------------------------------------------------------------------------------

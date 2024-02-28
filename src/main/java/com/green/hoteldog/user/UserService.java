@@ -1,6 +1,7 @@
 package com.green.hoteldog.user;
 
 import com.green.hoteldog.common.utils.CommonUtils;
+import com.green.hoteldog.exceptions.WithdrawalErrorCode;
 import com.green.hoteldog.user.models.BusinessUserSignupDto;
 import com.green.hoteldog.business_user.model.HotelInsDto;
 import com.green.hoteldog.common.AppProperties;
@@ -479,32 +480,7 @@ public class UserService {
 
         return new ResVo(1);
     }
-    @Transactional
-    public ResVo userWithdrawal(String upw) {
-        UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        if (!passwordEncoder.matches(upw, userEntity.getUpw())) {
-            throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
-        }
-        LocalDateTime today = LocalDateTime.now();
-        WithdrawalUserEntity withdrawalUserEntity = WithdrawalUserEntity.builder()
-                .userEntity(userEntity)
-                .approvalDate(today)
-                .applyDate(today.plusDays(30))
-                .build();
-        withdrawalUserRepository.save(withdrawalUserEntity);
-        userEntity.setUserStatus(1L);
-        userEntity.setUserRole(UserRoleEnum.WITHDRAWAL);
-        return new ResVo(1);
-    }
-    @Transactional
-    public ResVo userWithdrawalCancel() {
-        UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        WithdrawalUserEntity withdrawalUserEntity = withdrawalUserRepository.findById(userEntity.getUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_EXISTS_WITHDRAWAL_USER));
-        withdrawalUserRepository.deleteById(withdrawalUserEntity.getUserEntity().getUserPk());
-        userEntity.setUserStatus(0L);
-        userEntity.setUserRole(UserRoleEnum.USER);
-        return new ResVo(1);
-    }
+
 
     //유저가 결제한 가격 가져오기
     public long getPaymentAmount(List<ResPaymentEntity> resPaymentEntityList, ReservationEntity reservationEntity) {
@@ -530,6 +506,39 @@ public class UserService {
         } else {
             return 0;
         }
+    }
+
+    //유저 회원 탈퇴 진행
+    @Transactional
+    public ResVo userWithdrawal(String upw) {
+        UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        List<ReservationEntity> reservationEntityList = reservationRepository.findByUserEntityAndResStatus(userEntity, 0);
+        if (!reservationEntityList.isEmpty()) {
+            throw new CustomException(WithdrawalErrorCode.NON_REFUNDABLE_RESERVATIONS_REMAIN);
+        }
+        if (!passwordEncoder.matches(upw, userEntity.getUpw())) {
+            throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
+        }
+        LocalDateTime today = LocalDateTime.now();
+        WithdrawalUserEntity withdrawalUserEntity = WithdrawalUserEntity.builder()
+                .userEntity(userEntity)
+                .approvalDate(today)
+                .applyDate(today.plusDays(30))
+                .build();
+        withdrawalUserRepository.save(withdrawalUserEntity);
+        userEntity.setUserStatus(1L);
+        userEntity.setUserRole(UserRoleEnum.WITHDRAWAL);
+        return new ResVo(1);
+    }
+    //유저 탈퇴 철회
+    @Transactional
+    public ResVo userWithdrawalCancel() {
+        UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        WithdrawalUserEntity withdrawalUserEntity = withdrawalUserRepository.findById(userEntity.getUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_EXISTS_WITHDRAWAL_USER));
+        withdrawalUserRepository.deleteById(withdrawalUserEntity.getUserEntity().getUserPk());
+        userEntity.setUserStatus(0L);
+        userEntity.setUserRole(UserRoleEnum.USER);
+        return new ResVo(1);
     }
 
 }

@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 
 public enum HotelErrorCode implements ErrorCode{
+    REQUIRED_VALUE_IS_NULL
+            (HttpStatus.BAD_REQUEST,"필수 값이 없습니다."),
     NON_EXIST_HOTEL_PK
             (HttpStatus.NOT_FOUND,"존재하지 않는 호텔 PK"),
     NON_EXIST_ROOM_DATE
