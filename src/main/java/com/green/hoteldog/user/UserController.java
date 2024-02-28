@@ -105,6 +105,18 @@ public class UserController {
         return service.insBusinessUser(businessUserDto, hotelDto);
     }
     // 유저 회원 탈퇴
+    @PostMapping("/withdrawal")
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 처리")
+    public ResVo postUserWithdrawal(@RequestBody String upw) {
+        return service.userWithdrawal(upw);
+    }
+
+    // 유저 회원 탈퇴 철회
+    @PostMapping("/withdrawal/cancel")
+    @Operation(summary = "회원 탈퇴 철회", description = "회원 탈퇴 철회 처리")
+    public ResVo postUserWithdrawalCancel() {
+        return service.userWithdrawalCancel();
+    }
 
     // 일괄 환불 출력 기능
     @GetMapping("/reservation/refund")

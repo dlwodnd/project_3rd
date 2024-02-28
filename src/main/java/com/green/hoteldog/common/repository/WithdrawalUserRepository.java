@@ -18,6 +18,7 @@ public interface WithdrawalUserRepository extends JpaRepository<WithdrawalUserEn
     //영웅
 
     //재웅
+    WithdrawalUserEntity findByUserEntity(UserEntity userEntity);
     //재웅
 
 }

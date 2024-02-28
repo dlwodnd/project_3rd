@@ -1,7 +1,10 @@
 package com.green.hoteldog.common.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -9,6 +12,9 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "t_withdrawal_user")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class WithdrawalUserEntity {
     @Id
     @Column(name = "user_pk")

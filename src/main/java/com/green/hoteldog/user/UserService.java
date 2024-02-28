@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,7 @@ public class UserService {
     private final RefundRepository refundRepository;
     private final ResComprehensiveInfoRepository resComprehensiveInfoRepository;
     private final HotelResRoomRepository hotelResRoomRepository;
+
 
     //--------------------------------------------------유저 회원가입-----------------------------------------------------
     @Transactional(rollbackFor = {Exception.class})
@@ -405,15 +407,15 @@ public class UserService {
         List<LocalDate> getDatesThisYear = CommonUtils.getDatesThisYear();
         List<HotelResRoomEntity> hotelResRoomEntityList = new ArrayList<>();
         for(HotelRoomInfoEntity hotelRoomInfoEntity : hotelRoomInfoEntityList){
-            HotelResRoomEntity hotelResRoomEntity = new HotelResRoomEntity();
             for(LocalDate localDate : getDatesThisYear){
+                HotelResRoomEntity hotelResRoomEntity = new HotelResRoomEntity();
                 hotelResRoomEntity.setHotelRoomInfoEntity(hotelRoomInfoEntity);
                 hotelResRoomEntity.setRoomLeftEa(0L);
                 hotelResRoomEntity.setRoomDate(localDate);
-                hotelResRoomEntityList.add(hotelResRoomEntity);
+                hotelResRoomRepository.save(hotelResRoomEntity);
             }
         }
-        hotelResRoomRepository.saveAll(hotelResRoomEntityList);
+
 
         return new ResVo(1);
     }
@@ -475,6 +477,32 @@ public class UserService {
         hotelResRoomRepository.updateHotelResRoomRefundCount(hotelRoomDateProcDtoList);
 
 
+        return new ResVo(1);
+    }
+    @Transactional
+    public ResVo userWithdrawal(String upw) {
+        UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        if (!passwordEncoder.matches(upw, userEntity.getUpw())) {
+            throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
+        }
+        LocalDateTime today = LocalDateTime.now();
+        WithdrawalUserEntity withdrawalUserEntity = WithdrawalUserEntity.builder()
+                .userEntity(userEntity)
+                .approvalDate(today)
+                .applyDate(today.plusDays(30))
+                .build();
+        withdrawalUserRepository.save(withdrawalUserEntity);
+        userEntity.setUserStatus(1L);
+        userEntity.setUserRole(UserRoleEnum.WITHDRAWAL);
+        return new ResVo(1);
+    }
+    @Transactional
+    public ResVo userWithdrawalCancel() {
+        UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        WithdrawalUserEntity withdrawalUserEntity = withdrawalUserRepository.findById(userEntity.getUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_EXISTS_WITHDRAWAL_USER));
+        withdrawalUserRepository.deleteById(withdrawalUserEntity.getUserEntity().getUserPk());
+        userEntity.setUserStatus(0L);
+        userEntity.setUserRole(UserRoleEnum.USER);
         return new ResVo(1);
     }
 

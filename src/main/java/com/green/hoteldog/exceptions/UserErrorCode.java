@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum UserErrorCode implements ErrorCode{
+    NOT_EXISTS_WITHDRAWAL_USER(HttpStatus.NOT_FOUND,"탈퇴한 유저가 아닙니다."),
     NOT_CERTIFICATION_EMAIL(HttpStatus.BAD_REQUEST,"인증이 안된 이메일 입니다."),
     ALREADY_USED_EMAIL(HttpStatus.BAD_REQUEST,"이미 등록된 이메일입니다."),
     ALREADY_USED_NICKNAME(HttpStatus.BAD_REQUEST,"이미 등록된 닉네임입니다"),

@@ -41,7 +41,7 @@ public class BusinessService {
     private final HotelAdvertiseRepository hotelAdvertiseRepository;
     private final ResComprehensiveInfoRepository resComprehensiveInfoRepository;
     private final ReservationRepository reservationRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final HotelResRoomRepository hotelResRoomRepository;
 
     // 호텔 상태 전환 (1 - 운영 상태, 2 - 운영 중지 상태)
     @Transactional
@@ -286,6 +286,7 @@ public class BusinessService {
         BusinessEntity businessEntity = optionalBusinessEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
 
         Optional<HotelRoomInfoEntity> optionalHotelRoomInfoEntity = hotelRoomRepository.findById(dto.getHotelRoomPk());
+
         HotelRoomInfoEntity hotelRoomInfoEntity = optionalHotelRoomInfoEntity.orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
         String hotelRoomPic = null;
         if(dto.getRoomPic() != null && !dto.getRoomPic().isEmpty()){
@@ -294,11 +295,20 @@ public class BusinessService {
             hotelRoomPic = myFileUtils.transferTo(dto.getRoomPic(),target);
             hotelRoomInfoEntity.setRoomPic(hotelRoomPic);
         }
+        long changeRoomEa = dto.getHotelRoomEa() - hotelRoomInfoEntity.getHotelRoomEa();
         hotelRoomInfoEntity.setHotelRoomNm(dto.getHotelRoomNm());
         hotelRoomInfoEntity.setHotelRoomCost(dto.getHotelRoomCost());
         hotelRoomInfoEntity.setHotelRoomEa(dto.getHotelRoomEa());
         hotelRoomInfoEntity.setMaximum(dto.getMaximum());
         hotelRoomInfoEntity.setDogSizeEntity(dogSizeRepository.getReferenceById(dto.getSizePk()));
+        hotelResRoomRepository.findAllByHotelRoomInfoEntity(hotelRoomInfoEntity).forEach(hotelResRoomEntity -> {
+            if(hotelResRoomEntity.getRoomLeftEa() + changeRoomEa < 0){
+                hotelResRoomEntity.setRoomLeftEa(0L);
+            }
+            else {
+                hotelResRoomEntity.setRoomLeftEa(hotelResRoomEntity.getRoomLeftEa() + changeRoomEa);
+            }
+        });
 
         return new ResVo(1);
     }
