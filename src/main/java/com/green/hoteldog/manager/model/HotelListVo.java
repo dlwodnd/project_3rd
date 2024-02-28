@@ -10,9 +10,12 @@ public class HotelListVo {
 
     private String hotelNum;
     private String hotelNm;
-    private String userNickname;
-    private String userAddress;
-    private String phoneNum;
+    private String businessName;
+    private String hotelFullAddress;
+    private String hotelCall;
+    private Long advertise;
+    private Long approval;
+
 
 
 
@@ -23,9 +26,12 @@ public class HotelListVo {
 
         hotelDto.setHotelNum(hotelEntity.getHotelNum());
         hotelDto.setHotelNm(hotelEntity.getHotelNm());
-        hotelDto.setUserNickname(hotelEntity.getBusinessEntity().getUserEntity().getNickname());
-        hotelDto.setUserAddress(hotelEntity.getBusinessEntity().getUserEntity().getUserAddress());
-        hotelDto.setPhoneNum(hotelEntity.getBusinessEntity().getUserEntity().getPhoneNum());
+
+        hotelDto.setBusinessName(hotelEntity.getBusinessEntity().getBusinessName());
+        hotelDto.setHotelFullAddress(hotelEntity.getHotelFullAddress());
+        hotelDto.setHotelCall(hotelEntity.getHotelCall());
+        hotelDto.setAdvertise(hotelEntity.getAdvertise());
+        hotelDto.setApproval(hotelEntity.getApproval());
 
 
         return hotelDto;

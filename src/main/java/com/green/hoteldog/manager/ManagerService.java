@@ -56,7 +56,7 @@ public class ManagerService {
     // 주어진 user_pk 목록에 해당하는 사용자 목록을 가져오는 메서드
 
     public List<UserListVo.BusinessVo> getUsersPks(List<Long> userPks, Pageable pageable) {
-        List<BusinessEntity> users = businessEntityRepository.findByUserEntity_UserPkIn(userPks, pageable);
+        List<BusinessEntity> users = businessEntityRepository.findByUserEntity_UserPkInOrderByCreatedAtDesc(userPks, pageable);
         return users.stream()
                 .map(BusinessEntity -> UserListVo.BusinessVo.UserList(BusinessEntity))
                 .collect(Collectors.toList());
