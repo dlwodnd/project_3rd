@@ -1,6 +1,7 @@
 package com.green.hoteldog.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.green.hoteldog.common.entity.base.CreatedAtBaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
@@ -8,7 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Data
 @Entity
 @Table(name = "t_business")
-public class BusinessEntity  {
+public class BusinessEntity extends CreatedAtBaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
