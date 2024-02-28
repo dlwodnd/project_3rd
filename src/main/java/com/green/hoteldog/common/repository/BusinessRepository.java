@@ -2,8 +2,7 @@ package com.green.hoteldog.common.repository;
 
 import com.green.hoteldog.common.entity.BusinessEntity;
 import com.green.hoteldog.common.entity.UserEntity;
-import io.lettuce.core.dynamic.annotation.Param;
-import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,7 +18,7 @@ public interface BusinessRepository extends JpaRepository<BusinessEntity, Long> 
     List<BusinessEntity> findByAccountStatusNot(int accountStatus);
 
     //승민
-    List<BusinessEntity> findByUserEntity_UserPkIn(List<Long> userPks);
+    List<BusinessEntity> findByUserEntity_UserPkIn(List<Long> userPks, Pageable pageable);
 
 //    @Modifying
 //    @Query("UPDATE BusinessEntity b SET b.accountStatus = :accountStatus WHERE b.userEntity.userPk = :userPk")

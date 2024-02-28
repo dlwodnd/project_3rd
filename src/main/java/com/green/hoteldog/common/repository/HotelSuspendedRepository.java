@@ -22,10 +22,10 @@ public interface HotelSuspendedRepository extends JpaRepository<HotelSuspendedEn
 
 
 
-    // 호텔 중지 신청 거절
-    @Modifying
-    @Query("UPDATE HotelSuspendedEntity h set h.hotelEntity.signStatus = :signStatus , h.suspendedReason = :suspendedReason where h.hotelEntity.hotelPk = :hotelPk")
-    void updateHotelSuspendedEntityBySignStatusAndSuspendedReason(@Param("signStatus") Long signStatus, String suspendedReason, @Param("hotelPk") Long hotelPk);
+//     호텔 중지 신청 거절
+//    @Modifying
+//    @Query("UPDATE HotelSuspendedEntity h set h.hotelEntity.signStatus = :signStatus , h.suspendedReason = :suspendedReason where h.hotelEntity.hotelPk = :hotelPk")
+//    void updateHotelSuspendedEntityBySignStatusAndSuspendedReason(@Param("signStatus") Long signStatus, String suspendedReason, @Param("hotelPk") Long hotelPk);
 
 
     //승준
