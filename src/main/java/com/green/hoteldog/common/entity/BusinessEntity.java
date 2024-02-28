@@ -51,8 +51,8 @@ public class BusinessEntity extends CreatedAtBaseEntity {
     @OneToOne(mappedBy = "businessEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
     private HotelEntity hotelEntity;
 
-    @ToString.Exclude
+    /*@ToString.Exclude
     @OneToMany(mappedBy = "businessEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
-    private List<PaymentAdEntity> paymentAdEntityList;
+    private List<PaymentAdEntity> paymentAdEntityList;*/
     //재웅
 }

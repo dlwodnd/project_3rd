@@ -22,7 +22,7 @@ public class HotelPaymentAdVo {
     public static HotelPaymentAdVo hotelPaymentAdVo(PaymentAdEntity paymentAdEntity) {
         HotelPaymentAdVo hotelPaymentAdVo = new HotelPaymentAdVo();
         hotelPaymentAdVo.setPaymentPk(paymentAdEntity.getPaymentPk());
-        hotelPaymentAdVo.setBusinessEntity(paymentAdEntity.getBusinessEntity());
+        hotelPaymentAdVo.setBusinessEntity(paymentAdEntity.getHotelEntity().getBusinessEntity());
         hotelPaymentAdVo.setHotelAdvertiseEntity(paymentAdEntity.getHotelAdvertiseEntity());
         hotelPaymentAdVo.setPaymentStatus(paymentAdEntity.getPaymentStatus());
         hotelPaymentAdVo.setPaymentDate(paymentAdEntity.getPaymentDate());
