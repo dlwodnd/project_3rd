@@ -16,6 +16,7 @@ public class UserListVo2 {
         private String nickname;
         private String userAddress;
         private String phoneNum;
+    private int maxPage;
 
         public static UserListVo2 UserList2(UserEntity userEntity) {
             UserListVo2 userListVo2 = new UserListVo2();
@@ -25,6 +26,7 @@ public class UserListVo2 {
             userListVo2.setNickname(userEntity.getNickname());
             userListVo2.setUserAddress(userEntity.getUserAddress());
             userListVo2.setPhoneNum(userEntity.getPhoneNum());
+            userListVo2.setMaxPage(1);
             return userListVo2;
     }
 }

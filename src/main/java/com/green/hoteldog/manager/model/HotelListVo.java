@@ -15,6 +15,7 @@ public class HotelListVo {
     private String hotelCall;
     private Long advertise;
     private Long approval;
+    private int maxPage; // 추가: 최대 페이지 수
 
 
 
@@ -32,7 +33,7 @@ public class HotelListVo {
         hotelDto.setHotelCall(hotelEntity.getHotelCall());
         hotelDto.setAdvertise(hotelEntity.getAdvertise());
         hotelDto.setApproval(hotelEntity.getApproval());
-
+        hotelDto.setMaxPage(1);
 
         return hotelDto;
     }

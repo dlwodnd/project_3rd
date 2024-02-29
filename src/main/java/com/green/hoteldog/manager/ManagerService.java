@@ -53,6 +53,7 @@ public class ManagerService {
     // 주어진 user_pk 목록에 해당하는 사용자 목록을 가져오는 메서드
 
     public List<UserListVo.BusinessVo> getUsersPks(List<Long> userPks, Pageable pageable) {
+
         List<BusinessEntity> users = businessEntityRepository.findByUserEntity_UserPkInOrderByCreatedAtDesc(userPks, pageable);
         return users.stream()
                 .map(BusinessEntity -> UserListVo.BusinessVo.UserList(BusinessEntity))
@@ -60,6 +61,10 @@ public class ManagerService {
     }
 
     public List<UserListVo2>getUsers(UserRoleEnum userRole, Pageable pageable){
+        UserListVo2 vo2 = new UserListVo2();
+        long totalRecords =  managerRepository.count();
+        int maxPage = (int) Math.ceil((double) totalRecords / pageable.getPageSize());
+        vo2.setMaxPage(maxPage);
         List<UserEntity> users = managerRepository.findByUserRoleOrderByCreatedAtDesc(UserRoleEnum.USER, pageable);
         return users.stream()
                 .map(UserEntity -> UserListVo2.UserList2(UserEntity))
@@ -67,6 +72,10 @@ public class ManagerService {
     }
 
     public List<UserListVo2>businessUsers(UserRoleEnum userRole, Pageable pageable){
+        UserListVo2 vo2 = new UserListVo2();
+        long totalRecords =  managerRepository.count();
+        int maxPage = (int) Math.ceil((double) totalRecords / pageable.getPageSize());
+        vo2.setMaxPage(maxPage);
         List<UserEntity> users = managerRepository.findByUserRoleOrderByCreatedAtDesc(UserRoleEnum.BUSINESS_USER, pageable);
         return users.stream()
                 .map(UserEntity -> UserListVo2.UserList2(UserEntity))
@@ -84,7 +93,10 @@ public class ManagerService {
 
     // 호텔 목록을 가져오는 메서드
     public List<HotelListVo> getManagementHotelList(Pageable pageable) {
-
+        HotelListVo hotelListVo = new HotelListVo();
+        long totalRecords =  hotelRepository.count();
+        int maxPage = (int) Math.ceil((double) totalRecords / pageable.getPageSize());
+        hotelListVo.setMaxPage(maxPage);
         List<HotelEntity> hotelEntities = hotelRepository.findAllByOrderByCreatedAtDesc(pageable);
         return hotelEntities.stream()
                 .map(hotelEntity -> HotelListVo.hotelListVo(hotelEntity))
@@ -93,6 +105,10 @@ public class ManagerService {
 
     // 승인 대기 호텔목록 가져오는 메서드
     public List<HotelListVo> getManagementHotelByBusinessEntity_AccountStatus(Pageable pageable) {
+        HotelListVo hotelListVo = new HotelListVo();
+        long totalRecords =  hotelRepository.count();
+        int maxPage = (int) Math.ceil((double) totalRecords / pageable.getPageSize());
+        hotelListVo.setMaxPage(maxPage);
         List<HotelEntity> hotelEntities = hotelRepository.findHotelEntityByApprovalOrderByCreatedAtDesc(0, pageable);
         return hotelEntities.stream()
                 .map(hotelEntity -> HotelListVo.hotelListVo(hotelEntity))
