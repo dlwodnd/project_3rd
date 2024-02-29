@@ -15,9 +15,6 @@ public  class BusinessVo {
         BusinessVo businessDto = new BusinessVo();
         businessDto.setBusinessPk(businessEntity.getBusinessPk());
         businessDto.setUserDto(UserVo.toDto(businessEntity.getUserEntity()));
-        businessDto.setAccountNumber(businessEntity.getAccountNumber());
-        businessDto.setBankNm(businessEntity.getBankNm());
-        businessDto.setAccountStatus(businessEntity.getAccountStatus());
         return businessDto;
     }
 }

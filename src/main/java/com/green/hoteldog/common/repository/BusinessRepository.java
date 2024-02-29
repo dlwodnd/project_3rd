@@ -13,10 +13,10 @@ import java.util.Optional;
 public interface BusinessRepository extends JpaRepository<BusinessEntity, Long> {
 
     //승민
-    List<BusinessEntity> findByAccountStatus(int accountStatus);
+    /*List<BusinessEntity> findByAccountStatus(int accountStatus);
 
     List<BusinessEntity> findByAccountStatusNot(int accountStatus);
-
+*/
     //승민
     List<BusinessEntity> findByUserEntity_UserPkInOrderByCreatedAtDesc(List<Long> userPks, Pageable pageable);
 
@@ -25,9 +25,9 @@ public interface BusinessRepository extends JpaRepository<BusinessEntity, Long> 
 //    void updateBusinessEntityByAccountStatus(@Param("accountStatus") int accountStatus, @Param("userPk") long userPk);
 
     //비지니스 유저로 바꾸는거
-    @Modifying
+    /*@Modifying
     @Query("UPDATE BusinessEntity b SET b.accountStatus = :accountStatus WHERE b.businessPk = :businessPk")
-    void updateBusinessEntityByAccountStatus(int accountStatus, long businessPk);
+    void updateBusinessEntityByAccountStatus(int accountStatus, long businessPk);*/
 
 
       //승준

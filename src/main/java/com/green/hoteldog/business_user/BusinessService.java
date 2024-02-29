@@ -86,7 +86,7 @@ public class BusinessService {
                                 .roomAble((long) 1)
                                 .build()).collect(Collectors.toList());
                 List<HotelRoomInfoEntity> savedEntity = hotelRoomRepository.saveAll(UpdRoomInfoEntity);
-                if (savedEntity.size() == 0){
+                if (savedEntity.isEmpty()){
                     throw new CustomException(HotelErrorCode.UNKNOWN_DATE_FORM); // 멘트 나중에 수정
                 }
             }catch (Exception e){
@@ -98,24 +98,13 @@ public class BusinessService {
     }
 
     // 광고 신청
-    public ResVo postHotelAdvertiseApplication(HotelAdvertiseApplicationDto dto){
-        // 1. 유저가 사업자유저인지 체크
-        dto.builder().userPk(authenticationFacade.getLoginUserPk()).build();
-
-        // 2. 광고테이블 인서트, 결제 테이블 인서트
-
-
-        // 3. 결제 완료 후 광고테이블 결제여부 업데이트
+    public ResVo postHotelAdvertiseApplication(){
+        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
 
 
-        return new ResVo(0);
-    }
 
-    // 호텔 방 등록
-    public ResVo postHotelRoom(List<HotelRoomInsDto> dto){
-        // 1. 해당 호텔이 있는지 체크
-
-        // 2. 등록
         return new ResVo(0);
     }
 
@@ -271,8 +260,6 @@ public class BusinessService {
                             .maximum(hotelRoomInfoEntity.getMaximum())
                             .discountPer(hotelRoomInfoEntity.getDiscountPer())
                             .createdAt(hotelRoomInfoEntity.getCreatedAt().toString())
-                            .discountSignStatus(hotelRoomInfoEntity.getDiscountSignStatus())
-                            .cancelReason(hotelRoomInfoEntity.getCancelReason())
                             .build()).collect(Collectors.toList())
                     ).build();
         }

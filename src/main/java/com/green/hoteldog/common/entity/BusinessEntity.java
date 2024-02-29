@@ -26,17 +26,6 @@ public class BusinessEntity extends CreatedAtBaseEntity {
     @Column(nullable = false)
     private String businessName;
 
-    @Column(nullable = false)
-    private String accountNumber;
-
-    @Column(nullable = false)
-    private String bankNm;
-
-    @Column(nullable = false)
-    @ColumnDefault("'0'")
-    private Long accountStatus;
-
-
     //승민
     //승민
 

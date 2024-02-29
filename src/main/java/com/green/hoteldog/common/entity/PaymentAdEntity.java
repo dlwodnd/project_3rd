@@ -34,7 +34,24 @@ public class PaymentAdEntity extends CreatedAtBaseEntity {
     private LocalDateTime paymentDate;
 
     @Column(nullable = false)
+    private String paymentAmount;
+
+    @Column(nullable = false)
     private String paymentAdNum;
+
+    @Column(nullable = false)
+    private String cardNum;
+
+    @Column(nullable = false)
+    private String cardValidThru;
+
+    @Column(nullable = false)
+    private String cardUserName;
+
+    @Column(nullable = false)
+    private String userBirth;
+
+
 
     //승민
     //승민

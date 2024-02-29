@@ -49,12 +49,7 @@ public class HotelRoomInfoEntity extends BaseEntity {
     @Column
     private String discountPer;
 
-    @Column(columnDefinition = "BIGINT UNSIGNED")
-    @ColumnDefault("'0'")
-    private Long discountSignStatus;
 
-    @Column
-    private String cancelReason;
 
     //승민
     //승민

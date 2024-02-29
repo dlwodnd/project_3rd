@@ -258,8 +258,6 @@ public class UserService {
                 .userPk(userEntity.getUserPk())
                 .accessToken(at)
                 .nickname(userEntity.getNickname())
-                .bankNm(businessEntity.getBankNm())
-                .accountNumber(businessEntity.getAccountNumber())
                 .userRole(userEntity.getUserRole().name())
                 .build();
     }
@@ -299,10 +297,6 @@ public class UserService {
         //사업자 엔티티 등록
         BusinessEntity businessEntity = new BusinessEntity();
         businessEntity.setUserEntity(userEntity);
-        businessEntity.setAccountNumber("B" + RandomCodeUtils.getRandomCode(6));
-        businessEntity.setAccountNumber("0000");
-        businessEntity.setBankNm("0000");
-        businessEntity.setAccountStatus(0L);
         businessEntity.setBusinessName(businessUserDto.getBusinessName());
         businessRepository.save(businessEntity);
         //사업자 엔티티 등록

@@ -13,10 +13,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HotelAdvertiseApplicationDto {
-    @JsonIgnore
-    private long userPk;
-    private long hotelPk;
-    private LocalDate fromDate;
-    private LocalDate toDate;
-    private long cost; // 가격
+    private String cardNum;
+    private String cardValidThru;
+    private String cardUserName;
+    private String userBirth;
 }

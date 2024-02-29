@@ -31,14 +31,8 @@ public class BusinessController {
 
     // 광고 신청
     @GetMapping("/advertise")
-    public ResVo postHotelAdvertiseApplication(HotelAdvertiseApplicationDto dto){
-        return service.postHotelAdvertiseApplication(dto);
-    }
-
-    // 호텔 방 등록
-    @PostMapping("/hotelRoom")
-    public ResVo postHotelRoom(List<HotelRoomInsDto> dto){
-        return service.postHotelRoom(dto);
+    public ResVo postHotelAdvertiseApplication(){
+        return service.postHotelAdvertiseApplication();
     }
 
     // 예약 리스트 출력

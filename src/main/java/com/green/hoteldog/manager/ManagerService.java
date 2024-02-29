@@ -39,18 +39,20 @@ public class ManagerService {
 
     // t_buisiness 테이블에서 account_status가 1인 사용자의 user_pk 목록을 가져오는 메서드
     public List<Long> getBusinessUserPks() {
-        return businessEntityRepository.findByAccountStatus(1)
+        /*return businessEntityRepository.findByAccountStatus(1)
                 .stream()
                 .map(businessEntity -> businessEntity.getUserEntity().getUserPk())
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+        return null;
     }
 
     // t_buisiness 테이블에서 account_status가 1이 아닌 사용자의 user_pk 목록을 가져오는 메서드
     public List<Long> getNormalUserPks() {
-        return businessEntityRepository.findByAccountStatusNot(1)
+        /*return businessEntityRepository.findByAccountStatusNot(1)
                 .stream()
                 .map(businessEntity -> businessEntity.getUserEntity().getUserPk())
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+        return null;
     }
 
     // 주어진 user_pk 목록에 해당하는 사용자 목록을 가져오는 메서드
@@ -68,7 +70,7 @@ public class ManagerService {
     // 유저를 승인대기에서 비지니스로 바꿈
     @Transactional
     public void updateAccountStatusTo1(long businessPk) {
-        businessEntityRepository.updateBusinessEntityByAccountStatus(1, businessPk);
+        /*businessEntityRepository.updateBusinessEntityByAccountStatus(1, businessPk);*/
     }
 
 
