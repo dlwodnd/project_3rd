@@ -1,8 +1,11 @@
 package com.green.hoteldog.manager;
 
+import com.green.hoteldog.common.entity.UserEntity;
+import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
 import com.green.hoteldog.manager.model.ApprovalAdListVo;
 import com.green.hoteldog.manager.model.HotelListVo;
 import com.green.hoteldog.manager.model.UserListVo;
+import com.green.hoteldog.manager.model.UserListVo2;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,23 +32,39 @@ public class ManagerController {
 //}
 
 
+//    @GetMapping("/userList")
+//    @Operation(summary = "유저목록", description = "사업자 유저 1 일반유저 0 보냄됨")
+//    public List<UserListVo.BusinessVo> getUserList(@RequestParam(required = false) Integer accountStatus ,@PageableDefault(page = 1,size = 2) Pageable pageable) {
+//        if (accountStatus != null && accountStatus == 1) {
+//            // accountStatus가 1인 경우 사업자 유저 목록 반환
+//            List<Long> businessUserPks = service.getBusinessUserPks();
+//            List<UserListVo.BusinessVo> businessUsers = service.getUsersPks(businessUserPks,pageable);
+//            return businessUsers;
+//        } else if (accountStatus != null && accountStatus != 1) {
+//            List<Long> normalUserPks = service.getNormalUserPks();
+//            List<UserListVo.BusinessVo> normalUsers = service.getUsersPks(normalUserPks,pageable);
+//            // 그 외의 경우에는 모든 유저 목록 반환
+//            return normalUsers;
+//        }
+//        return null;
+//    }
+
     @GetMapping("/userList")
     @Operation(summary = "유저목록", description = "사업자 유저 1 일반유저 0 보냄됨")
-    public List<UserListVo.BusinessVo> getUserList(@RequestParam(required = false) Integer accountStatus ,@PageableDefault(page = 1,size = 2) Pageable pageable) {
-        if (accountStatus != null && accountStatus == 1) {
+    public List<UserListVo2> getUserList(@RequestParam(required = false) UserRoleEnum userRole, @PageableDefault(page = 1, size = 2) Pageable pageable) {
+        if (userRole != null && userRole == UserRoleEnum.USER) {
             // accountStatus가 1인 경우 사업자 유저 목록 반환
-            List<Long> businessUserPks = service.getBusinessUserPks();
-            List<UserListVo.BusinessVo> businessUsers = service.getUsersPks(businessUserPks,pageable);
-            return businessUsers;
-        } else if (accountStatus != null && accountStatus != 1) {
-            List<Long> normalUserPks = service.getNormalUserPks();
-            List<UserListVo.BusinessVo> normalUsers = service.getUsersPks(normalUserPks,pageable);
-            // 그 외의 경우에는 모든 유저 목록 반환
+            List<UserListVo2> normalUsers = service.getUsers(UserRoleEnum.USER, pageable);
             return normalUsers;
+
+        } else if (userRole != null && userRole == UserRoleEnum.BUSINESS_USER) {
+            List<UserListVo2> businessUsers = service.businessUsers(UserRoleEnum.BUSINESS_USER, pageable);
+
+            // 그 외의 경우에는 모든 유저 목록 반환
+            return businessUsers;
         }
         return null;
     }
-
    // 대기 유저 사업자유저 전환
    @Operation(summary = "대기 유저 사업자유저 전환", description = "보내야될 비지니스 pk와  대기자가 0인AccountStatus를 1보내면됨 ")
 

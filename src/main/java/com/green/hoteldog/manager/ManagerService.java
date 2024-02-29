@@ -1,15 +1,10 @@
 package com.green.hoteldog.manager;
 
-import com.green.hoteldog.common.entity.BusinessEntity;
-import com.green.hoteldog.common.entity.HotelAdvertiseEntity;
-import com.green.hoteldog.common.entity.HotelEntity;
+import com.green.hoteldog.common.entity.*;
 
-import com.green.hoteldog.common.entity.PaymentAdEntity;
+import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
 import com.green.hoteldog.common.repository.*;
-import com.green.hoteldog.manager.model.ApprovalAdListVo;
-import com.green.hoteldog.manager.model.HotelListVo;
-import com.green.hoteldog.manager.model.HotelVo;
-import com.green.hoteldog.manager.model.UserListVo;
+import com.green.hoteldog.manager.model.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +59,19 @@ public class ManagerService {
                 .collect(Collectors.toList());
     }
 
+    public List<UserListVo2>getUsers(UserRoleEnum userRole, Pageable pageable){
+        List<UserEntity> users = managerRepository.findByUserRoleOrderByCreatedAtDesc(UserRoleEnum.USER, pageable);
+        return users.stream()
+                .map(UserEntity -> UserListVo2.UserList2(UserEntity))
+                .collect(Collectors.toList());
+    }
+
+    public List<UserListVo2>businessUsers(UserRoleEnum userRole, Pageable pageable){
+        List<UserEntity> users = managerRepository.findByUserRoleOrderByCreatedAtDesc(UserRoleEnum.BUSINESS_USER, pageable);
+        return users.stream()
+                .map(UserEntity -> UserListVo2.UserList2(UserEntity))
+                .collect(Collectors.toList());
+    }
 
 
 
