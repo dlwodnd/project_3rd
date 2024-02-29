@@ -7,6 +7,8 @@ import com.green.hoteldog.exceptions.CustomException;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,12 +20,11 @@ import java.util.List;
 @RequestMapping("/api/business")
 public class BusinessController {
     private final BusinessService service;
-    //영웅
+
 
     // 호텔 상태 전환
     @PostMapping("/state")
     public ResVo insHotelStateChange(@RequestBody HotelSateChangeInsDto dto){
-        if (dto.getStateChange() == 0){return new ResVo(0);}
         return service.insHotelStateChange(dto);
     }
 
@@ -35,14 +36,15 @@ public class BusinessController {
 
     // 예약 리스트 출력
     @GetMapping("/reservation")
-    public List<ReservationListSelVo> getHotelReservationList(){
-        return service.getHotelReservationList();
+    public List<ReservationListSelVo> getHotelReservationList(@RequestParam @PageableDefault(page = 1,size = 10) Pageable pageable){
+        return service.getHotelReservationList(pageable);
     }
-    // 영웅
 
-    // ---------------------------------------------------------------------------------------------------
+    @GetMapping("/reservation/today")
+    public List<ReservationListSelVo> getHotelReservationListToday(){
+        return null;
+    }
 
-    //재웅
 
     //사업자 유저 호텔 등록
     @PostMapping("/registration")
@@ -56,6 +58,17 @@ public class BusinessController {
         dto.setBusinessCertificationFile(businessCertificationFile);
         dto.setHotelPics(hotelPics);
         return service.insHotel(dto);
+    }
+    //사업자 유저 호텔 정보 수정
+    @PutMapping("/hotel")
+    @Operation(summary = "사업자 유저 호텔 정보 수정", description = "사업자 유저가 등록한 호텔 정보를 수정합니다.")
+    public ResVo putHotel(@RequestPart HotelUpdateDto dto,
+                          @RequestPart(required = false) List<MultipartFile> hotelPics){
+        if(hotelPics.size() > 5){
+            throw new CustomException(BoardErrorCode.PICS_SIZE_OVER);
+        }
+        dto.setHotelPics(hotelPics);
+        return service.putHotel(dto);
     }
 
     //사업자 유저가 등록한 호텔 정보
@@ -100,10 +113,33 @@ public class BusinessController {
 
         return service.postBusinessUserWithdrawal(upw);
     }
+    //사업자 호텔에 등록된 예약 승인처리
+    @PatchMapping("/reservation/approval")
+    @Operation(summary = "사업자 호텔에 등록된 예약 체크인 처리", description = "사업자 호텔에 등록된 예약 체크인 처리")
+    public ResVo patchReservationApproval(@RequestBody List<Long> resPkList){
+        return service.reservationApproval(resPkList);
+    }
 
-    //재웅
+    //사업자 호텔에 등록된 예약 취소처리
+    @PostMapping("/reservation/cancel")
+    @Operation(summary = "사업자 호텔에 등록된 예약 체크인 처리", description = "사업자 호텔에 등록된 예약 체크인 처리")
+    public ResVo patchReservationCheckIn(@RequestBody ResCancelDto dto){
+        return service.reservationCancel(dto);
+    }
 
-    // ---------------------------------------------------------------------------------------------------
-    //승준
-    //승준
+    //사업자 호텔에 등록된 예약 체크인 처리
+    @PatchMapping("/reservation/checkIn")
+    @Operation(summary = "사업자 호텔에 등록된 예약 체크인 처리", description = "사업자 호텔에 등록된 예약 체크인 처리")
+    public ResVo patchReservationCheckIn(@RequestBody List<Long> resPkList){
+        return service.reservationCheckIn(resPkList);
+    }
+
+    //사업자 호텔에 등록된 예약 체크아웃 처리
+    @PatchMapping("/reservation/checkOut")
+    @Operation(summary = "사업자 호텔에 등록된 예약 체크인 처리", description = "사업자 호텔에 등록된 예약 체크인 처리")
+    public ResVo patchReservationCheckOut(@RequestBody List<Long> resPkList){
+        return service.reservationCheckOut(resPkList);
+    }
+
+
 }

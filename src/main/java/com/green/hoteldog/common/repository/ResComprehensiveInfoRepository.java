@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ResComprehensiveInfoRepository extends JpaRepository<ResComprehensiveInfoEntity, ResComprehensiveInfoComposite> {
+public interface ResComprehensiveInfoRepository extends JpaRepository<ResComprehensiveInfoEntity, ResComprehensiveInfoComposite> , ResComprehensiveInfoQDslRepository{
 
     //승민
     //승민
@@ -21,6 +21,7 @@ public interface ResComprehensiveInfoRepository extends JpaRepository<ResCompreh
     //재웅
     List<ResComprehensiveInfoEntity> findAllByReservationEntityIn(List<ReservationEntity> reservationEntityList);
     List<ResComprehensiveInfoEntity> findAllByReservationEntity(ReservationEntity reservationEntity);
+    ResComprehensiveInfoEntity findByReservationEntity(ReservationEntity reservationEntity);
 
     //재웅
 

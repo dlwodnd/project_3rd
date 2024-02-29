@@ -19,6 +19,7 @@ public interface HotelPicRepository extends JpaRepository<HotelPicEntity, Long> 
 
     //재웅
     List<HotelPicEntity> findHotelPicEntitiesByHotelEntity(HotelEntity hotelEntity);
+    void deleteAllByHotelEntity(HotelEntity hotelEntity);
 
     //재웅
 

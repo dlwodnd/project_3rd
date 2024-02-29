@@ -13,7 +13,7 @@ public class ResPaymentEntity {
     private Long resPaymentPk;
 
 
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    @OneToOne(optional = false,fetch = FetchType.LAZY)
     @JoinColumn(name = "res_pk",referencedColumnName = "resPk",columnDefinition = "BIGINT UNSIGNED")
     private ReservationEntity reservationEntity;
 

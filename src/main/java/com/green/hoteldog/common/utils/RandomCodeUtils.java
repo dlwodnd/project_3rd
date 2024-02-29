@@ -8,6 +8,7 @@ public class RandomCodeUtils {
     public static String getRandomCode(int length) {
         LocalDateTime date = LocalDateTime.now();
         String code = "" + date.getYear() + date.getMonthValue() + date.getDayOfMonth();
+        code = code.substring(2);
         for (int i = 0; i < length; i++) {
             int random = (int) (Math.random() * 10);
             code += random;

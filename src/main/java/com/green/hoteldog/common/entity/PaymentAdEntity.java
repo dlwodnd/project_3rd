@@ -40,7 +40,7 @@ public class PaymentAdEntity extends CreatedAtBaseEntity {
     private LocalDateTime paymentDate;
 
     @Column(nullable = false)
-    private String paymentAmount;
+    private Long paymentAmount;
 
     @Column(nullable = false)
     private String paymentAdNum;
