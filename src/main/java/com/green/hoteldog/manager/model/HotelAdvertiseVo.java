@@ -31,8 +31,6 @@ public class HotelAdvertiseVo {
         hotelAdvertiseVo.setHotelAdvertiseToDate(hotelAdvertiseEntity.getHotelAdvertiseToDate());
         hotelAdvertiseVo.setHotelAdvertiseFromDate(hotelAdvertiseEntity.getHotelAdvertiseEndDate());
         hotelAdvertiseVo.setPaymentStatus(hotelAdvertiseEntity.getPaymentStatus());
-        hotelAdvertiseVo.setSignStatus(hotelAdvertiseEntity.getSignStatus());
-        hotelAdvertiseVo.setCancelReason(hotelAdvertiseEntity.getCancelReason());
         hotelAdvertiseVo.setHotelAdvertiseNum(hotelAdvertiseEntity.getHotelAdvertiseNum());
         return hotelAdvertiseVo;
     }

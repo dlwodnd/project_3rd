@@ -462,8 +462,8 @@ public class UserService {
             resComprehensiveInfoRepository.findAllByReservationEntity(reservationEntity).forEach(item -> {
                 HotelRoomDateProcDto hotelRoomDateProcDto = HotelRoomDateProcDto.builder()
                         .hotelRoomInfoEntity(item.getHotelRoomInfoEntity())
-                        .fromDate(reservationEntity.getFromDate().toLocalDate())
-                        .toDate(reservationEntity.getToDate().toLocalDate())
+                        .fromDate(reservationEntity.getFromDate())
+                        .toDate(reservationEntity.getToDate())
                         .build();
                 hotelRoomDateProcDtoList.add(hotelRoomDateProcDto);
             });
@@ -490,7 +490,7 @@ public class UserService {
     }
     //환불 금액 계산기
     public long getRefundAmount(ReservationEntity reservationEntity, long paymentAmount) {
-        Period dateDiff = Period.between( LocalDate.now(),reservationEntity.getToDate().toLocalDate());
+        Period dateDiff = Period.between( LocalDate.now(),reservationEntity.getToDate());
         if (dateDiff.getDays() >= 7) {
             return paymentAmount;
         } else if (dateDiff.getDays() > 3) {
