@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -25,10 +26,10 @@ public class ReservationEntity extends BaseEntity {
     private HotelEntity hotelEntity;
 
     @Column(nullable = false)
-    private LocalDateTime fromDate;
+    private LocalDate fromDate;
 
     @Column(nullable = false)
-    private LocalDateTime toDate;
+    private LocalDate toDate;
 
 
     @ColumnDefault("'0'")

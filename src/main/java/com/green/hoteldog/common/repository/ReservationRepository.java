@@ -21,6 +21,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     //재웅
     List<ReservationEntity> findByUserEntityAndResStatus(UserEntity userEntity,long resStatus);
     List<ReservationEntity> findAllByHotelEntityAndResStatusLessThan(HotelEntity hotelEntity,long resStatus);
+    List<ReservationEntity> findAllByHotelEntity(HotelEntity hotelEntity);
     //재웅
 
 

@@ -2,10 +2,8 @@ package com.green.hoteldog.business_user;
 
 import com.green.hoteldog.business_user.model.*;
 import com.green.hoteldog.common.ResVo;
-import com.green.hoteldog.common.entity.HotelEntity;
 import com.green.hoteldog.exceptions.BoardErrorCode;
 import com.green.hoteldog.exceptions.CustomException;
-import com.green.hoteldog.user.models.UserSignupDto;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,14 +29,14 @@ public class BusinessController {
 
     // 광고 신청
     @GetMapping("/advertise")
-    public ResVo postHotelAdvertiseApplication(){
-        return service.postHotelAdvertiseApplication();
+    public ResVo postHotelAdvertiseApplication(@RequestBody HotelAdvertiseApplicationDto dto){
+        return service.postHotelAdvertiseApplication(dto);
     }
 
     // 예약 리스트 출력
     @GetMapping("/reservation")
-    public List<ReservaionListSelVo> getHotelReservationList(int hotelPk){
-        return service.getHotelReservationList(hotelPk);
+    public List<ReservationListSelVo> getHotelReservationList(){
+        return service.getHotelReservationList();
     }
     // 영웅
 

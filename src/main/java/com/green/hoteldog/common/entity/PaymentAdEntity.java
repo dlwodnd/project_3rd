@@ -2,7 +2,10 @@ package com.green.hoteldog.common.entity;
 
 import com.green.hoteldog.common.entity.base.CreatedAtBaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -11,6 +14,9 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "t_payment_ad")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaymentAdEntity extends CreatedAtBaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")

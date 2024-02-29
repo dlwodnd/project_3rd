@@ -1,16 +1,19 @@
 package com.green.hoteldog.common.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "t_hotel_advertise")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class HotelAdvertiseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
@@ -33,10 +36,7 @@ public class HotelAdvertiseEntity {
 
     @Column(nullable = false)
     @ColumnDefault("'0'")
-    private Long signStatus;
-
-    @Column(nullable = false)
-    private String cancelReason;
+    private Long adStatus;
 
     @Column(nullable = false)
     private String hotelAdvertiseNum;
