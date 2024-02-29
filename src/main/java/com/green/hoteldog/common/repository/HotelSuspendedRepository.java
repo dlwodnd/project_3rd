@@ -11,7 +11,12 @@ public interface HotelSuspendedRepository extends JpaRepository<HotelSuspendedEn
     //승민
     // 호텔 중지 신청 승인
     @Modifying
-    @Query("UPDATE HotelEntity h set h.signStatus = :signStatus where h.hotelPk = :hotelPk")
+    @Query("UPDATE HotelEntity h set h.signStatus = :signStatus ,h.approval=:approval where h.hotelPk = :hotelPk")
+    void updateHotelSignStatus1(@Param("signStatus") Long signStatus,@Param("approval") Long approval, @Param("hotelPk") Long hotelPk);
+
+
+    @Modifying
+    @Query("UPDATE HotelEntity h set h.signStatus = :signStatus  where h.hotelPk = :hotelPk")
     void updateHotelSignStatus(@Param("signStatus") Long signStatus, @Param("hotelPk") Long hotelPk);
 
 

@@ -16,13 +16,13 @@ public interface HotelAdvertiseRepository extends JpaRepository<HotelAdvertiseEn
     //승민
     //승민
 
-    @Modifying
-    @Query("UPDATE HotelAdvertiseEntity h set h.signStatus = :signStatus where h.hotelEntity.hotelPk = :hotelPk")
-    void updateHotelAdvertiseEntityBySignStatus(int signStatus, long hotelPk);
-
-    @Modifying
-    @Query("UPDATE HotelAdvertiseEntity h set h.signStatus = :signStatus ,h.cancelReason = :cancelReason where h.hotelEntity.hotelPk = :hotelPk")
-    void updateHotelAdvertiseEntityBySignStatusAndCancelReason(int signStatus, String cancelReason, long hotelPk);
+//    @Modifying
+//    @Query("UPDATE HotelAdvertiseEntity h set h.signStatus = :signStatus where h.hotelEntity.hotelPk = :hotelPk")
+//    void updateHotelAdvertiseEntityBySignStatus(int signStatus, long hotelPk);
+//
+//    @Modifying
+//    @Query("UPDATE HotelAdvertiseEntity h set h.signStatus = :signStatus ,h.cancelReason = :cancelReason where h.hotelEntity.hotelPk = :hotelPk")
+//    void updateHotelAdvertiseEntityBySignStatusAndCancelReason(int signStatus, String cancelReason, long hotelPk);
 
 
     //승준

@@ -13,7 +13,7 @@ public interface PaymentAdRepository extends JpaRepository<PaymentAdEntity, Long
 
     //승민
     //승민
-    List<PaymentAdEntity> findByHotelAdvertiseEntitySignStatus(int signStatus, Pageable pageable);
+//    List<PaymentAdEntity> findByHotelAdvertiseEntitySignStatus(int signStatus, Pageable pageable);
 
 
     //승준

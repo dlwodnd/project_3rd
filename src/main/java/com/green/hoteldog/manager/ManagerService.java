@@ -84,6 +84,7 @@ public class ManagerService {
 
     // 호텔 목록을 가져오는 메서드
     public List<HotelListVo> getManagementHotelList(Pageable pageable) {
+
         List<HotelEntity> hotelEntities = hotelRepository.findAllByOrderByCreatedAtDesc(pageable);
         return hotelEntities.stream()
                 .map(hotelEntity -> HotelListVo.hotelListVo(hotelEntity))
@@ -98,26 +99,26 @@ public class ManagerService {
                 .collect(Collectors.toList());
     }
 
-    // 광고 승인 목록
-    public List<ApprovalAdListVo> getApprovalAdList(Pageable pagleable) {
-        List<PaymentAdEntity> paymentAdEntities = paymentAdRepository.findByHotelAdvertiseEntitySignStatus(1, pagleable);
-        return paymentAdEntities.stream()
-                .map(paymentAdEntity -> ApprovalAdListVo.approvalAdListVo(paymentAdEntity))
-                .collect(Collectors.toList());
-    }
+//    // 광고 승인 목록
+//    public List<ApprovalAdListVo> getApprovalAdList(Pageable pagleable) {
+//        List<PaymentAdEntity> paymentAdEntities = paymentAdRepository.findByHotelAdvertiseEntitySignStatus(1, pagleable);
+//        return paymentAdEntities.stream()
+//                .map(paymentAdEntity -> ApprovalAdListVo.approvalAdListVo(paymentAdEntity))
+//                .collect(Collectors.toList());
+//    }
 
-    // 호텔 광고 승인
-    @Transactional
-    public void updateHotelAdvertiseEntityBySignStatus(long hotelPk) {
-        hotelAdvertiseEntityRepository.updateHotelAdvertiseEntityBySignStatus(1, hotelPk);
-
-    }
-
-    // 호텔 광고 거절
-    @Transactional
-    public void updateHotelAdvertiseEntityBySignStatusAndCancelReason(String cancelReason, long hotelPk) {
-        hotelAdvertiseEntityRepository.updateHotelAdvertiseEntityBySignStatusAndCancelReason(0, cancelReason, hotelPk);
-    }
+//    // 호텔 광고 승인
+//    @Transactional
+//    public void updateHotelAdvertiseEntityBySignStatus(long hotelPk) {
+//        hotelAdvertiseEntityRepository.updateHotelAdvertiseEntityBySignStatus(1, hotelPk);
+//
+//    }
+//
+//    // 호텔 광고 거절
+//    @Transactional
+//    public void updateHotelAdvertiseEntityBySignStatusAndCancelReason(String cancelReason, long hotelPk) {
+//        hotelAdvertiseEntityRepository.updateHotelAdvertiseEntityBySignStatusAndCancelReason(0, cancelReason, hotelPk);
+//    }
     //호텔 등록 승인
     @Transactional
     public void updateHotelEntityByApproval(long hotelPk) {
@@ -127,17 +128,20 @@ public class ManagerService {
     //호텔 중지 신청 승인
     @Transactional
     public void updateHotelSuspendedEntityBySignStatus(long hotelPk) {
-        hotelSuspendedRepository.updateHotelSignStatus(1L, hotelPk);
+        hotelSuspendedRepository.updateHotelSignStatus1(0L,2L, hotelPk);
     }
 
 
     //호텔 중지 신청 거절
     @Transactional
     public void updateHotelAdvertiseEntityBySignStatusAndCancel(String suspendedReason, long hotelPk) {
-        hotelSuspendedRepository.updateHotelSignStatus(0L, hotelPk);
+        hotelSuspendedRepository.updateHotelSignStatus(2L, hotelPk);
         hotelSuspendedRepository.updateHotelSuspendedEntityBySuspendedReason(suspendedReason, hotelPk);
     }
 
+    public int maxPage(int columnCount, int rowCount) {
+        return (int) Math.ceil((double) columnCount / rowCount);
+    }
 
     //호텔 중지 신청 거절
 //    @Transactional

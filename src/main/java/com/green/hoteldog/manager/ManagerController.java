@@ -90,25 +90,25 @@ public class ManagerController {
     }
 
     // 광고 승인 목록
-    @GetMapping("/adHotelList/approval")
-    @Operation(summary = "광고 승인목록", description = "광고 승인 목록처리")
-    public List<ApprovalAdListVo> getApprovalAdList(@PageableDefault(page = 1,size = 2) Pageable pageable) {
-        return service.getApprovalAdList( pageable);
-    }
+//    @GetMapping("/adHotelList/approval")
+//    @Operation(summary = "광고 승인목록", description = "광고 승인 목록처리")
+//    public List<ApprovalAdListVo> getApprovalAdList(@PageableDefault(page = 1,size = 2) Pageable pageable) {
+//        return service.getApprovalAdList( pageable);
+//    }
 
-    @PatchMapping("/approval")
-    @Operation(summary = "광고 승인", description = "광고 승인할 호텔pk보내면됨")
-
-    public void approvalAd(@RequestParam long hotelPk) {
-        service.updateHotelAdvertiseEntityBySignStatus( hotelPk);
-    }
-
-    @PatchMapping("/adRefuse")
-    @Operation(summary = "광고 승인 거절", description = "광고 승인 거절 cancelReason 사유와 hotel pk보내면됨")
-
-    public void updateHotelAdvertiseEntityBySignStatusAndCancelReason( String cancelReason, long hotelPk){
-        service.updateHotelAdvertiseEntityBySignStatusAndCancelReason(cancelReason, hotelPk);
-    }
+//    @PatchMapping("/approval")
+//    @Operation(summary = "광고 승인", description = "광고 승인할 호텔pk보내면됨")
+//
+//    public void approvalAd(@RequestParam long hotelPk) {
+//        service.updateHotelAdvertiseEntityBySignStatus( hotelPk);
+//    }
+//
+//    @PatchMapping("/adRefuse")
+//    @Operation(summary = "광고 승인 거절", description = "광고 승인 거절 cancelReason 사유와 hotel pk보내면됨")
+//
+//    public void updateHotelAdvertiseEntityBySignStatusAndCancelReason( String cancelReason, long hotelPk){
+//        service.updateHotelAdvertiseEntityBySignStatusAndCancelReason(cancelReason, hotelPk);
+//    }
 
 
     @PatchMapping("/hotelApproval")
