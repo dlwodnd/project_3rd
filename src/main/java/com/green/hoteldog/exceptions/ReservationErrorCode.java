@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ReservationErrorCode implements ErrorCode{
+    NOT_CANCELABLE
+            (HttpStatus.BAD_REQUEST, "취소할 수 없는 예약입니다."),
+    NOT_WAITING_APPROVAL
+            (HttpStatus.BAD_REQUEST, "승인 대기중인 예약이 아닙니다."),
     UNKNOWN_USER_PK
             (HttpStatus.BAD_REQUEST,"로그인 후 이용 해주세요."),
     RESERVATION_TABLE_REGISTRATION_FAILED

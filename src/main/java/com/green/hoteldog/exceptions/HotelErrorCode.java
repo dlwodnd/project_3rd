@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 
 public enum HotelErrorCode implements ErrorCode{
+    WAITING_SUSPEND_APPROVAL
+            (HttpStatus.BAD_REQUEST,"호텔 중지 승인 대기중 입니다"),
+    WAITING_HOTEL_APPROVAL
+            (HttpStatus.BAD_REQUEST,"호텔 승인 대기중 입니다"),
     NOT_EXIST_HOTEL
             (HttpStatus.NOT_FOUND,"존재하지 않는 호텔 입니다"),
     REQUIRED_VALUE_IS_NULL

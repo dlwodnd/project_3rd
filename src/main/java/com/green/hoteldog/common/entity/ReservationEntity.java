@@ -3,10 +3,13 @@ package com.green.hoteldog.common.entity;
 import com.green.hoteldog.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -51,5 +54,8 @@ public class ReservationEntity extends BaseEntity {
     //영웅
 
     //재웅
+    @ToString.Exclude
+    @OneToOne(mappedBy = "reservationEntity", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private ResPaymentEntity resPaymentEntity;
     //재웅
 }

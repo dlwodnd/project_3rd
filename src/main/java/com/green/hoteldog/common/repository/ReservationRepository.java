@@ -5,6 +5,7 @@ import com.green.hoteldog.common.entity.ReservationEntity;
 import com.green.hoteldog.common.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> ,ReservationQDslRepository{
@@ -22,6 +23,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     List<ReservationEntity> findByUserEntityAndResStatus(UserEntity userEntity,long resStatus);
     List<ReservationEntity> findAllByHotelEntityAndResStatusLessThan(HotelEntity hotelEntity,long resStatus);
     List<ReservationEntity> findAllByHotelEntity(HotelEntity hotelEntity);
+    List<ReservationEntity> findAllByHotelEntityAndFromDate(HotelEntity hotelEntity, LocalDate localDate);
     //재웅
 
 

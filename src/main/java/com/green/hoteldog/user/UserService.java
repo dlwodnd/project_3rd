@@ -72,7 +72,7 @@ public class UserService {
         log.info("UserSignupDto : {}", dto);
         UserEntity userEntity = UserEntity.builder()
                 .userStatus(0L)
-                .userNum("U" + RandomCodeUtils.getRandomCode(6))
+                .userNum("U" + RandomCodeUtils.getRandomCode(5))
                 .userEmail(dto.getEmailResponseVo().getEmail())
                 .upw(passwordEncoder.encode(dto.getUpw()))
                 .nickname(dto.getNickname())
@@ -270,7 +270,7 @@ public class UserService {
         UserEntity userEntity = UserEntity.builder()
                 .userStatus(0L)
                 .userRole(UserRoleEnum.BUSINESS_USER)
-                .userNum("U" + RandomCodeUtils.getRandomCode(6))
+                .userNum("U" + RandomCodeUtils.getRandomCode(5))
                 .userEmail(businessUserDto.getEmailResponseVo().getEmail())
                 .upw(passwordEncoder.encode(businessUserDto.getUpw()))
                 .nickname(businessUserDto.getNickname())
@@ -312,7 +312,7 @@ public class UserService {
                 .advertise(0L)
                 .approval(0L)
                 .signStatus(0L)
-                .hotelNum("H" + RandomCodeUtils.getRandomCode(6))
+                .hotelNum("H" + RandomCodeUtils.getRandomCode(5))
                 .build();
         String target = "/manager/hotel/" + businessEntity.getBusinessPk();
         String hotelCertificationFile = myFileUtils.transferTo(hotelDto.getBusinessCertificationFile(), target);
@@ -450,7 +450,8 @@ public class UserService {
             RefundEntity refundEntity = RefundEntity.builder()
                     .userEntity(userEntity)
                     .reservationEntity(reservationRepository.findById(resRefundDto.getResPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_EXISTS_RESERVATION)))
-                    .refundNum("C" + RandomCodeUtils.getRandomCode(6))
+                    .refundNum("C" + RandomCodeUtils.getRandomCode(5))
+                    .refundDate(LocalDateTime.now())
                     .refundAmount(resRefundDto.getRefundAmount()).build();
             refundEntityList.add(refundEntity);
         }
@@ -467,9 +468,9 @@ public class UserService {
                         .build();
                 hotelRoomDateProcDtoList.add(hotelRoomDateProcDto);
             });
-            reservationEntity.setResStatus(2L);
+            reservationEntity.setResStatus(4L);
         }
-        hotelResRoomRepository.updateHotelResRoomRefundCount(hotelRoomDateProcDtoList);
+        hotelResRoomRepository.updateAllHotelResRoomRefundCount(hotelRoomDateProcDtoList);
 
 
         return new ResVo(1);

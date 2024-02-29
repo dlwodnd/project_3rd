@@ -14,7 +14,7 @@ public class HotelResRoomQDslRepositoryImpl implements HotelResRoomQDslRepositor
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public long updateHotelResRoomRefundCount(List<HotelRoomDateProcDto> hotelRoomDateProcDtoList) {
+    public long updateAllHotelResRoomRefundCount(List<HotelRoomDateProcDto> hotelRoomDateProcDtoList) {
         for (HotelRoomDateProcDto hotelRoomDateProcDto : hotelRoomDateProcDtoList) {
             jpaQueryFactory
                     .update(hotelResRoomEntity)
@@ -23,6 +23,17 @@ public class HotelResRoomQDslRepositoryImpl implements HotelResRoomQDslRepositor
                             , hotelResRoomEntity.roomDate.between(hotelRoomDateProcDto.getFromDate(), hotelRoomDateProcDto.getToDate().plusDays(1)))
                     .execute();
         }
+        return 0;
+    }
+
+    @Override
+    public long updateHotelResRoomRefundCount(HotelRoomDateProcDto hotelRoomDateProcDto) {
+        jpaQueryFactory
+                .update(hotelResRoomEntity)
+                .set(hotelResRoomEntity.roomLeftEa, hotelResRoomEntity.roomLeftEa.add(1))
+                .where(hotelResRoomEntity.hotelRoomByDatePk.eq(hotelRoomDateProcDto.getHotelRoomInfoEntity().getHotelRoomPk())
+                        , hotelResRoomEntity.roomDate.between(hotelRoomDateProcDto.getFromDate(), hotelRoomDateProcDto.getToDate().plusDays(1)))
+                .execute();
         return 0;
     }
 }

@@ -20,5 +20,6 @@ public interface HotelOptionInfoRepository extends JpaRepository<HotelOptionInfo
 
     //재웅
     List<HotelOptionInfoEntity> findAllByHotelEntity(HotelEntity hotelEntity);
+    void deleteAllByHotelEntity(HotelEntity hotelEntity);
     //재웅
 }
