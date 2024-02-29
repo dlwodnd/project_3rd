@@ -1,6 +1,8 @@
 package com.green.hoteldog.common.repository;
 
 import com.green.hoteldog.common.entity.UserEntity;
+import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -17,6 +19,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     // 일반유저
     List<UserEntity> findAllByUserPkNotInOrderByCreatedAtDesc(List<Long> userPks);
 
+    List<UserEntity>findByUserRoleOrderByCreatedAtDesc(UserRoleEnum userRole, Pageable pageable);
     // 일반유저
     Optional<UserEntity> findByUserEmail(String email);
     UserEntity findByNickname(String nickname);
