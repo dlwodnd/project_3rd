@@ -1,10 +1,13 @@
 package com.green.hoteldog.common.repository;
 
+import com.green.hoteldog.hotel.model.HotelRoomInfoVo;
 import com.green.hoteldog.user.models.HotelRoomDateProcDto;
 
 import java.util.List;
 
 public interface HotelResRoomQDslRepository {
-    long updateAllHotelResRoomRefundCount(List<HotelRoomDateProcDto> hotelRoomDateProcDtoList);
-    long updateHotelResRoomRefundCount(HotelRoomDateProcDto hotelRoomDateProcDto);
+    void updateAllHotelResRoomRefundCount(List<HotelRoomDateProcDto> hotelRoomDateProcDtoList);
+    void updateHotelResRoomRefundCount(HotelRoomDateProcDto hotelRoomDateProcDto);
+
+    List<HotelRoomInfoVo> findResAbleHotelRoomInfo(long dogCount);
 }

@@ -6,6 +6,7 @@ import com.green.hoteldog.exceptions.CommonErrorCode;
 import com.green.hoteldog.exceptions.CustomException;
 import com.green.hoteldog.exceptions.HotelErrorCode;
 import com.green.hoteldog.hotel.model.*;
+import com.green.hoteldog.reservation.model.HotelReservationInsDto;
 import com.green.hoteldog.security.AuthenticationFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -74,7 +75,7 @@ public class HotelController {
         return service.getHotelList(dto);
     }
 
-    //-------------------------------------------------호텔 상세페이지 출력------------------------------------------------
+    /*//-------------------------------------------------호텔 상세페이지 출력------------------------------------------------
     @GetMapping
     @Operation(summary = "호텔 상세페이지 전체화면", description = "호텔 상세페이지 전체화면 부분")
     public HotelInfo getHotelDetail(@RequestParam("hotel_pk") int hotelPk) {
@@ -93,9 +94,16 @@ public class HotelController {
                                                  LocalDate endDate) {
 
         return service.whenYouChooseDates(hotelPk, startDate, endDate);
+    }*/
+
+    // 호텔 상세페이지 출력
+    @GetMapping("/info")
+    public HotelDetailInfoVo getHotelDetail(@RequestBody HotelDetailInfoDto dto,
+                                      @RequestBody List<HotelReservationInsDto> dtoList) {
+        return service.getHotelDetailInfo(dto,dtoList);
     }
 
-    //--------------------------------------호텔 상세페이지에서 날짜 선택, 강아지 선택했을때-----------------------------------
+   /* //--------------------------------------호텔 상세페이지에서 날짜 선택, 강아지 선택했을때-----------------------------------
     @GetMapping("/info/dogs")
     @Operation(summary = "호텔 상세페이지->날짜선택->강아지 선택 시"
             , description = "상세페이지에서 날짜 선택하고 강아지 선택 할 시에 나오는 방 리스트<br>등록한 강아지들의 사이즈Pk만 입력.")
@@ -104,7 +112,9 @@ public class HotelController {
                                                         LocalDate endDate,
                                                         @RequestParam List<Integer> dogs) {
         return service.whenYouChooseDatesAndDogs(hotelPk, startDate, endDate, dogs);
-    }
+    }*/
+
+
 
     //-----------------------------------------------------호텔 북마크----------------------------------------------------
     @GetMapping("/mark")

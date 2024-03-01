@@ -1,8 +1,11 @@
 package com.green.hoteldog.common.repository;
 
+import com.green.hoteldog.common.entity.ReviewEntity;
 import com.green.hoteldog.common.entity.ReviewFavEntity;
 import com.green.hoteldog.common.entity.composite.ReviewFavComposite;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 public interface ReviewFavRepository extends JpaRepository<ReviewFavEntity, ReviewFavComposite> {
 
@@ -16,6 +19,7 @@ public interface ReviewFavRepository extends JpaRepository<ReviewFavEntity, Revi
     //영웅
 
     //재웅
+    List<ReviewFavEntity> findAllByReviewPk(ReviewEntity reviewPk);
     //재웅
 
 }

@@ -40,7 +40,7 @@
             LEFT JOIN t_hotel_favorites H
             ON A.hotel_pk = H.hotel_pk AND H.user_pk = #{userPk}
         </if>
-        WHERE A.advertise = 1
+        WHERE A.advertise = 1 AND A.approval = 1
         GROUP BY A.hotel_pk
         ORDER BY RAND()
         LIMIT 3
@@ -75,6 +75,7 @@
         ON A.hotel_pk = E.hotel_pk
         LEFT JOIN t_hotel_where F
         ON A.hotel_pk = F.hotel_pk
+        WHERE A.approval = 1
         GROUP BY A.hotel_pk
         <choose>
             <when test="filterType == 0">
@@ -135,7 +136,7 @@
         ON A.user_pk = H.user_pk
         LEFT JOIN t_hotel_favorites I
         ON A.hotel_pk = I.hotel_pk AND I.user_pk = #{userPk}
-        WHERE G.region_1depth_name = #{address}
+        WHERE G.region_1depth_name = #{address} AND A.approval = 1
         GROUP BY A.hotel_pk
         <choose>
             <when test="filterType == 0">
@@ -183,7 +184,7 @@
         FROM t_hotel A
         JOIN t_hotel_room_info B
         ON A.hotel_pk = B.hotel_pk
-        WHERE B.size_pk IN
+        WHERE A.approval = 1 AND B.size_pk IN
         <foreach collection="dogSizePks" item="item" separator="," open="(" close=")">
             #{item}
         </foreach>
@@ -250,7 +251,7 @@
         ON A.user_pk = H.user_pk
         LEFT JOIN t_hotel_favorites I
         ON A.hotel_pk = I.hotel_pk AND I.user_pk = #{userPk}
-        WHERE A.hotel_nm
+        WHERE A.approval = 1 AND A.hotel_nm
         REGEXP replace(<foreach collection="tokensToStrList" item="item" separator="|" open="'" close="'">${item}</foreach>, ' ', '')
         GROUP BY A.hotel_pk
         <choose>
@@ -303,7 +304,7 @@
             LEFT JOIN t_hotel_favorites I
             ON A.hotel_pk = I.hotel_pk AND I.user_pk = #{userPk}
         </if>
-        WHERE A.hotel_nm = #{search}
+        WHERE A.hotel_nm = #{search} AND A.approval = 1
         GROUP BY A.hotel_pk
         <choose>
             <when test="filterType == 0">
@@ -374,6 +375,7 @@
             ON A.hotel_pk = K.hotel_pk AND K.user_pk = #{userPk}
         </if>
         <where>
+
             <if test="address != null">
                 G.region_1depth_name = #{address}
             </if>
@@ -386,6 +388,7 @@
                     #{item}
                 </foreach>
             </if>
+            AND A.approval = 1
         </where>
         GROUP BY A.hotel_pk
         <choose>
@@ -567,6 +570,7 @@
         ON A.user_pk = G.user_pk
         JOIN t_hotel_favorites H
         ON A.hotel_pk = H.hotel_pk AND H.user_pk = #{userPk}
+        WHERE A.approval = 1
         GROUP BY A.hotel_pk
         ORDER BY H.created_at DESC
         LIMIT #{pages}, #{perPage}

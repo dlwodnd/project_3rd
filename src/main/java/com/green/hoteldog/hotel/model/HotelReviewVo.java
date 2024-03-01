@@ -4,35 +4,33 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 @Schema(name = "유저별 호텔 리뷰")
+@Builder
 public class HotelReviewVo {
     @NotNull
-    @JsonIgnore
-    private int hotelPk;
-    @NotNull
-    @JsonIgnore
-    private int userPk;
+    private long reviewPk;
     @NotNull
     @JsonProperty(value = "nick_name")
-    @Schema(name = "리뷰 작성한 유저 닉네임",type = "String")
+    @Schema(title = "닉네임")
     private String nickName;
-    @Schema(name = "유저가 작성한 호텔 리뷰 글",type = "String")
+    @Schema(title = "코멘트")
     private String comment;
     @NotNull
-    @Schema(name = "호텔 리뷰 별점",type = "int",description = "1~10")
-    private int score;
-    @JsonProperty(value = "created_at")
-    @Schema(name = "리뷰 작성 시점")
-    private String createdAt;
+    @Schema(title = "별점 (1~10)")
+    private long score;
+    @JsonProperty(value = "updated_at")
+    @Schema(title = "리뷰 작성일")
+    private String updatedAt;
+    @JsonProperty(value = "fav_count")
+    @Schema(title = "좋아요 수")
+    private long favCount;
     @Schema(name = "리뷰 사진들",type = "List<String>")
     private List<String> pics;
-    @Schema(name = "작성한 리뷰의 좋아요 갯수")
-    @JsonProperty(value = "review_fav_count")
-    private int reviewFavCount=0;
 }
 

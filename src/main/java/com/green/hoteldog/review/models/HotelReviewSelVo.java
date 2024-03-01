@@ -21,13 +21,13 @@ public class HotelReviewSelVo {
     @Schema(title = "코멘트")
     private String comment;
     @Schema(title = "별점 (1~10)")
-    private int score;
+    private long score;
     @JsonProperty(value = "updated_at")
     @Schema(title = "리뷰 작성일")
     private String updatedAt;
     @JsonProperty(value = "fav_count")
     @Schema(title = "좋아요 수")
-    private int favCount;
+    private long favCount;
     @Schema(title = "사진 3장")
     private List<String> pics = new ArrayList<>(); // 사진
 }

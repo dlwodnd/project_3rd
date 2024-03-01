@@ -20,6 +20,7 @@ public interface HotelRoomRepository extends JpaRepository<HotelRoomInfoEntity, 
     //재웅
     List<HotelRoomInfoEntity> findHotelRoomInfoEntitiesByHotelEntity(HotelEntity hotelEntity);
     List<HotelRoomInfoEntity> findAllByHotelEntityOrderByHotelResRoomEntitiesAsc(HotelEntity hotelEntity);
+    List<HotelRoomInfoEntity> findByHotelEntity(HotelEntity hotelEntity);
     //재웅
 
 }

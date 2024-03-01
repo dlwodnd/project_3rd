@@ -3,6 +3,8 @@ package com.green.hoteldog.hotel;
 
 import com.green.hoteldog.common.AppProperties;
 import com.green.hoteldog.common.Const;
+import com.green.hoteldog.common.entity.*;
+import com.green.hoteldog.common.repository.*;
 import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.exceptions.AuthorizedErrorCode;
@@ -10,6 +12,7 @@ import com.green.hoteldog.exceptions.CommonErrorCode;
 import com.green.hoteldog.exceptions.CustomException;
 import com.green.hoteldog.exceptions.HotelErrorCode;
 import com.green.hoteldog.hotel.model.*;
+import com.green.hoteldog.reservation.model.HotelReservationInsDto;
 import com.green.hoteldog.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +38,19 @@ public class HotelService {
     private final AppProperties appProperties;
     private final AuthenticationFacade authenticationFacade;
     private final MyFileUtils myFileUtils;
+    private final UserRepository userRepository;
+    private final HotelRepository hotelRepository;
+    private final HotelRoomRepository hotelRoomRepository;
+    private final HotelPicRepository hotelPicRepository;
+    private final HotelOptionRepository hotelOptionRepository;
+    private final HotelOptionInfoRepository hotelOptionInfoRepository;
+    private final HotelResRoomRepository hotelResRoomRepository;
+    private final ReviewRepository reviewRepository;
+    private final ReviewFavRepository reviewFavRepository;
+    private final ReviewPicRepository reviewPicRepository;
+
+
+
 
 
     //-----------------------------------------------호텔 광고 리스트 셀렉트------------------------------------------------
@@ -276,8 +292,8 @@ public class HotelService {
 
     }
 
-    //--------------------------------------------호텔 상세페이지----------------------------------------------------------
-    public HotelInfo getHotelDetail(int hotelPk) {
+    //--------------------------------------------호텔 상세페이지----------------------------------------------------------(폐기)
+    /*public HotelInfo getHotelDetail(int hotelPk) {
         if (hotelPk > 0) {
             int userPk = (int)authenticationFacade.getLoginUserPk();
             log.info("userPk : {}", userPk);
@@ -446,8 +462,8 @@ public class HotelService {
             for (HotelRoomInfoVo roomInfoVo1 : roomInfoVo) {
                 HotelRooooommInfo ea = new HotelRooooommInfo();
                 ea.setHotelRoomNm(roomInfoVo1.getHotelRoomNm());
-                ea.setRoomLeftEa(roomInfoVo1.getHotelRoomEa());
-                ea.setHotelRoomCost(roomInfoVo1.getHotelRoomCost());
+                ea.setRoomLeftEa((int)roomInfoVo1.getHotelRoomEa());
+                ea.setHotelRoomCost((int) roomInfoVo1.getHotelRoomCost());
                 ea.setPic(roomInfoVo1.getPic());
                 rooooommInfos.add(ea);
             }
@@ -518,8 +534,8 @@ public class HotelService {
             for (HotelRoomInfoVo roomInfoVo1 : roomInfoVo) {
                 HotelRooooommInfo ea = new HotelRooooommInfo();
                 ea.setHotelRoomNm(roomInfoVo1.getHotelRoomNm());
-                ea.setRoomLeftEa(roomInfoVo1.getHotelRoomEa());
-                ea.setHotelRoomCost(roomInfoVo1.getHotelRoomCost());
+                ea.setRoomLeftEa((int) roomInfoVo1.getHotelRoomEa());
+                ea.setHotelRoomCost((int) roomInfoVo1.getHotelRoomCost());
                 ea.setPic(roomInfoVo1.getPic());
                 rooooommInfos.add(ea);
             }
@@ -563,6 +579,51 @@ public class HotelService {
             }
             return infoByMonths;
         }
+    }
+    (폐기)*/
+
+    // 호텔 상세페이지 출력
+    public HotelDetailInfoVo getHotelDetailInfo(HotelDetailInfoDto dto, List<HotelReservationInsDto> dtoList){
+        userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        HotelEntity hotelEntity = hotelRepository.findById(dto.getHotelPk()).orElseThrow(() -> new CustomException(HotelErrorCode.NON_EXIST_HOTEL_PK));
+        List<HotelOptionInfoEntity> optionList = hotelOptionInfoRepository.findAllByHotelEntity(hotelEntity);
+
+        int dogCount = 0;
+        int isMoreReview = 0;
+        if(!dtoList.isEmpty()){
+            dogCount = dtoList.size();
+        }
+        List<HotelRoomInfoVo> list = hotelResRoomRepository.findResAbleHotelRoomInfo(dogCount);
+        List<ReviewEntity> reviewList = reviewRepository.findByHotelEntity(hotelEntity);
+        if (reviewList.size() > 1){
+            reviewList.remove(2);
+            isMoreReview = 1;
+        }
+        ReviewEntity reviewEntity = reviewList.get(0);
+
+        return HotelDetailInfoVo.builder()
+                .hotelPk(hotelEntity.getHotelPk())
+                .hotelNm(hotelEntity.getHotelNm())
+                .hotelAddress(hotelEntity.getHotelFullAddress())
+                .hotelCall(hotelEntity.getHotelCall())
+                .hotelDetailInfo(hotelEntity.getHotelDetailInfo())
+                .businessNum(hotelEntity.getBusinessNum())
+                .pics(hotelEntity.getHotelPicEntity().stream().map(HotelPicEntity::getPic).collect(Collectors.toList()))
+                .roomList(list)
+                .hotelOption(optionList.stream().map(item -> HotelOptionInfoVo.builder()
+                        .optionPk(item.getHotelOptionEntity().getOptionPk())
+                        .optionNm(item.getHotelOptionEntity().getOptionNm())
+                        .build()).collect(Collectors.toList()))
+                .review(HotelReviewVo.builder()
+                        .reviewPk(reviewEntity.getReviewPk())
+                        .comment(reviewEntity.getComment())
+                        .score(reviewEntity.getScore())
+                        .nickName(reviewEntity.getReservationEntity().getUserEntity().getNickname())
+                        .updatedAt(reviewEntity.getUpdatedAt().toString())
+                        .favCount(reviewFavRepository.findAllByReviewPk(reviewEntity).size())
+                        .pics(reviewPicRepository.findAllByReviewEntity(reviewEntity).stream().map(ReviewPicEntity::getPic).collect(Collectors.toList())).build())
+                .isMoreReview(isMoreReview)
+                .build();
     }
 
     //---------------------------------------------2달 생성--------------------------------------------------------------
