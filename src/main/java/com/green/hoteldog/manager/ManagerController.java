@@ -67,7 +67,6 @@ public class ManagerController {
     }
    // 대기 유저 사업자유저 전환
    @Operation(summary = "대기 유저 사업자유저 전환", description = "보내야될 비지니스 pk와  대기자가 0인AccountStatus를 1보내면됨 ")
-
    @PutMapping("/BusinessTransform")
    public void BusinessTransform(@RequestParam long businessPk) {
        service.updateAccountStatusTo1(businessPk);

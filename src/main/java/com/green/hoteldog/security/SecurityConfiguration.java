@@ -57,7 +57,9 @@ public class SecurityConfiguration {
                                         ,"/api/manager/**").hasRole("ADMIN")
                                 .requestMatchers(
                                         "/api/business/**"
-                                        ,"/api/business").hasRole("BUSINESS_USER").anyRequest().permitAll()
+                                        ,"/api/business").hasRole("BUSINESS_USER")
+                                .anyRequest().permitAll()
+
                 ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(except -> {
                     except.authenticationEntryPoint(new JwtAuthenticationEntryPoint())

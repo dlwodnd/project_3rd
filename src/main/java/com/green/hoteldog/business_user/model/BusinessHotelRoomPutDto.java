@@ -24,7 +24,6 @@ public class BusinessHotelRoomPutDto {
 
     private long hotelRoomCost;
 
-    private long maximum;
 
     private String discountPer;
 

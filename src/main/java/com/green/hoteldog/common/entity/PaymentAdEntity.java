@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -49,13 +50,13 @@ public class PaymentAdEntity extends CreatedAtBaseEntity {
     private String cardNum;
 
     @Column(nullable = false)
-    private String cardValidThru;
+    private LocalDate cardValidThru;
 
     @Column(nullable = false)
     private String cardUserName;
 
     @Column(nullable = false)
-    private String userBirth;
+    private LocalDate userBirth;
 
 
 

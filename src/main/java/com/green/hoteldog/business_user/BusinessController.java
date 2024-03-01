@@ -1,12 +1,16 @@
 package com.green.hoteldog.business_user;
 
 import com.green.hoteldog.business_user.model.*;
+import com.green.hoteldog.common.Const;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.exceptions.BoardErrorCode;
 import com.green.hoteldog.exceptions.CustomException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +40,20 @@ public class BusinessController {
 
     // 예약 리스트 출력
     @GetMapping("/reservation")
-    public List<ReservationListSelVo> getHotelReservationList(@RequestParam @PageableDefault(page = 1,size = 10) Pageable pageable){
+    public ReservationInfoVo getHotelReservationList(@RequestParam @PageableDefault(page = 1,size = 10) Pageable pageable){
         return service.getHotelReservationList(pageable);
     }
-
+    // 오늘 예약 정보 리스트
     @GetMapping("/reservation/today")
-    public List<ReservationListSelVo> getHotelReservationListToday(){
-        return null;
+    @Parameters({
+            @Parameter(name = "page", description = "페이지 번호", required = true)
+    })
+    public ReservationTodayInfoVo getHotelReservationListToday(@RequestParam int page){
+        if(page < 1){
+            page = 1;
+        }
+        Pageable pageable = PageRequest.of(page, Const.COMMON_PAGE_SIZE);
+        return service.getHotelReservationTodayList(pageable);
     }
 
 
@@ -93,6 +104,9 @@ public class BusinessController {
     //사업자 유저 호텔에 예약된 강아지 방 정보 리스트
     @GetMapping("/reservation/HotelRoomAndDogInfo")
     @Operation(summary = "사업자 유저 호텔에 예약된 강아지 방 정보 리스트", description = "사업자 유저가 등록한 호텔에 예약된 강아지 방 정보 리스트를 불러옵니다.")
+    @Parameters({
+            @Parameter(name = "resPk", description = "예약 pk", required = true)
+    })
     public List<HotelRoomAndDogInfoVo> getHotelRoomAndDogInfo(long resPk){
 
         return service.getHotelRoomAndDogInfo(resPk);
@@ -101,22 +115,22 @@ public class BusinessController {
     //호텔 방 활성화 & 비활성화 토글
     @PatchMapping("/hotelRoom")
     @Operation(summary = "호텔 방 활성화 & 비활성화 토글", description = "호텔 방 활성화 & 비활성화 토글")
-    public ResVo toggleHotelRoomActive(@RequestBody long hotelRoomPk){
+    public ResVo toggleHotelRoomActive(@RequestBody HotelRoomToggleDto dto){
 
-        return service.toggleHotelRoomActive(hotelRoomPk);
+        return service.toggleHotelRoomActive(dto);
     }
 
     //사업자 유저 회원 탈퇴
     @PostMapping("/withdrawal")
     @Operation(summary = "사업자 유저 회원 탈퇴", description = "사업자 유저 회원 탈퇴")
-    public ResVo postBusinessUserWithdrawal(@RequestBody String upw){
-
-        return service.postBusinessUserWithdrawal(upw);
+    public ResVo postBusinessUserWithdrawal(){
+        return service.postBusinessUserWithdrawal();
     }
     //사업자 호텔에 등록된 예약 승인처리
     @PatchMapping("/reservation/approval")
     @Operation(summary = "사업자 호텔에 등록된 예약 체크인 처리", description = "사업자 호텔에 등록된 예약 체크인 처리")
-    public ResVo patchReservationApproval(@RequestBody List<Long> resPkList){
+    @Parameter(name = "resPkList", description = "예약 pk 리스트", required = true)
+    public ResVo patchReservationApproval(List<Long> resPkList){
         return service.reservationApproval(resPkList);
     }
 
@@ -129,6 +143,7 @@ public class BusinessController {
 
     //사업자 호텔에 등록된 예약 체크인 처리
     @PatchMapping("/reservation/checkIn")
+    @Parameter(name = "resPkList", description = "예약 pk 리스트", required = true)
     @Operation(summary = "사업자 호텔에 등록된 예약 체크인 처리", description = "사업자 호텔에 등록된 예약 체크인 처리")
     public ResVo patchReservationCheckIn(@RequestBody List<Long> resPkList){
         return service.reservationCheckIn(resPkList);
@@ -136,6 +151,7 @@ public class BusinessController {
 
     //사업자 호텔에 등록된 예약 체크아웃 처리
     @PatchMapping("/reservation/checkOut")
+    @Parameter(name = "resPkList", description = "예약 pk 리스트", required = true)
     @Operation(summary = "사업자 호텔에 등록된 예약 체크인 처리", description = "사업자 호텔에 등록된 예약 체크인 처리")
     public ResVo patchReservationCheckOut(@RequestBody List<Long> resPkList){
         return service.reservationCheckOut(resPkList);

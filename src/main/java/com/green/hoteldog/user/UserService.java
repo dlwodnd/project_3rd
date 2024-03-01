@@ -102,14 +102,14 @@ public class UserService {
         Optional<UserEntity> userEntityOptional = userRepository.findByUserEmail(dto.getUserEmail());
 
         UserEntity userEntity = userEntityOptional.orElseThrow(() -> new CustomException(UserErrorCode.UNKNOWN_EMAIL_ADDRESS));
-
+        if (userEntity.getUserRole().equals(UserRoleEnum.WITHDRAWAL)) {
+            throw new CustomException(UserErrorCode.WITHDRAWAL_USER);
+        }
         if (!passwordEncoder.matches(dto.getUpw(), userEntity.getUpw())) {
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
         }
         Optional<WithdrawalUserEntity> withdrawalUserEntityOptional = withdrawalUserRepository.findById(userEntity.getUserPk());
-        if (withdrawalUserEntityOptional.isPresent()) {
-            throw new CustomException(UserErrorCode.WITHDRAWAL_USER);
-        }
+
 
         MyPrincipal myPrincipal = MyPrincipal.builder()
                 .userPk(userEntity.getUserPk())
@@ -225,6 +225,9 @@ public class UserService {
         Optional<UserEntity> userEntityOptional = userRepository.findByUserEmail(dto.getUserEmail());
 
         UserEntity userEntity = userEntityOptional.orElseThrow(() -> new CustomException(UserErrorCode.UNKNOWN_EMAIL_ADDRESS));
+        if(userEntity.getUserRole().equals(UserRoleEnum.WITHDRAWAL)){
+            throw new CustomException(UserErrorCode.WITHDRAWAL_USER);
+        }
 
         Optional<BusinessEntity> businessEntityOptional = businessRepository.findByUserEntity(userEntity);
 
@@ -234,10 +237,7 @@ public class UserService {
         if (!passwordEncoder.matches(dto.getUpw(), userEntity.getUpw())) {
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
         }
-        Optional<WithdrawalUserEntity> withdrawalUserEntityOptional = withdrawalUserRepository.findById(userEntity.getUserPk());
-        if (withdrawalUserEntityOptional.isPresent()) {
-            throw new CustomException(UserErrorCode.WITHDRAWAL_USER);
-        }
+
 
         MyPrincipal myPrincipal = MyPrincipal.builder()
                 .userPk(userEntity.getUserPk())
@@ -306,6 +306,7 @@ public class UserService {
                 .hotelNm(hotelDto.getHotelNm())
                 .businessEntity(businessEntity)
                 .hotelDetailInfo(hotelDto.getHotelDetailInfo())
+                .hotelFullAddress(hotelDto.getHotelAddressInfo().getAddressName() + " " + hotelDto.getHotelAddressInfo().getDetailAddress())
                 .businessNum(hotelDto.getBusinessNum())
                 .hotelCall(hotelDto.getHotelCall())
                 .businessCertificate("x")
@@ -371,32 +372,42 @@ public class UserService {
                 .dogSizeEntity(dogSizeRepository.findById(1L).get())
                 .hotelEntity(hotelEntity)
                 .hotelRoomNm("소형견(7kg 이하)")
+                .discountPer("0")
+                .hotelRoomCost(0L)
+                .maximum(1L)
+                .hotelRoomEa(0L)
                 .build();
         hotelRoomInfoEntityList.add(smallRoomInfo);
         HotelRoomInfoEntity mediumRoomInfo = HotelRoomInfoEntity.builder()
                 .dogSizeEntity(dogSizeRepository.findById(2L).get())
+                .maximum(1L)
+                .discountPer("0")
+                .hotelRoomCost(0L)
+                .hotelRoomEa(0L)
                 .hotelEntity(hotelEntity)
                 .hotelRoomNm("중형견(15kg 이하)")
                 .build();
         hotelRoomInfoEntityList.add(mediumRoomInfo);
         HotelRoomInfoEntity largeRoomInfo = HotelRoomInfoEntity.builder()
                 .dogSizeEntity(dogSizeRepository.findById(3L).get())
+                .maximum(1L)
+                .discountPer("0")
+                .hotelRoomCost(0L)
+                .hotelRoomEa(0L)
                 .hotelEntity(hotelEntity)
                 .hotelRoomNm("대형견(40kg 이하)")
                 .build();
         hotelRoomInfoEntityList.add(largeRoomInfo);
         HotelRoomInfoEntity superLargeRoomInfo = HotelRoomInfoEntity.builder()
                 .dogSizeEntity(dogSizeRepository.findById(4L).get())
+                .maximum(1L)
+                .hotelRoomEa(0L)
+                .hotelRoomCost(0L)
+                .discountPer("0")
                 .hotelEntity(hotelEntity)
                 .hotelRoomNm("초대형견(40kg 초과)")
                 .build();
         hotelRoomInfoEntityList.add(superLargeRoomInfo);
-        HotelRoomInfoEntity groupRoomInfo = HotelRoomInfoEntity.builder()
-                .dogSizeEntity(dogSizeRepository.findById(4L).get())
-                .hotelEntity(hotelEntity)
-                .hotelRoomNm("단체방")
-                .build();
-        hotelRoomInfoEntityList.add(groupRoomInfo);
         hotelRoomRepository.saveAll(hotelRoomInfoEntityList);
         //호텔 방 자동 등록
         List<LocalDate> getDatesThisYear = CommonUtils.getDatesThisYear();
@@ -505,12 +516,13 @@ public class UserService {
 
     //유저 회원 탈퇴 진행
     @Transactional
-    public ResVo userWithdrawal(String upw) {
+    public ResVo userWithdrawal() {
         UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        List<ReservationEntity> reservationEntityList = reservationRepository.findByUserEntityAndResStatus(userEntity, 0);
-        if (!passwordEncoder.matches(upw, userEntity.getUpw())) {
-            throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
+        if(businessRepository.findByUserEntity(userEntity).isPresent()){
+            throw new CustomException(WithdrawalErrorCode.BUSINESS_USER_EXISTS);
         }
+        List<ReservationEntity> reservationEntityList = reservationRepository.findByUserEntityAndResStatus(userEntity, 0);
+
         if (!reservationEntityList.isEmpty()) {
             throw new CustomException(WithdrawalErrorCode.NON_REFUNDABLE_RESERVATIONS_REMAIN);
         }

@@ -13,6 +13,7 @@ import com.green.hoteldog.security.AuthenticationFacade;
 import com.green.hoteldog.user.models.HotelRoomDateProcDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -161,61 +162,34 @@ public class BusinessService {
 
     // 예약 리스트 출력
     @Transactional
-    public List<ReservationListSelVo> getHotelReservationList(Pageable pageable) {
+    public ReservationInfoVo getHotelReservationList(Pageable pageable) {
         UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
         BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         List<ReservationEntity> reservationEntityList = reservationRepository.findAllByHotelEntity(hotelEntity);
+        Page<ReservationInfo> reservationInfoPage = reservationRepository.getReservationInfoList(pageable, reservationEntityList);
 
-
-        return reservationEntityList.isEmpty() ? new ArrayList<>() : reservationEntityList.stream().map(item -> {
-            ResPaymentEntity resPaymentEntity = resPaymentRepository.findByReservationEntity(item);
-            return ReservationListSelVo.builder()
-                    .resPk(item.getResPk())
-                    .resNum(item.getResNum())
-                    .resStatus(item.getResStatus())
-                    .nickNm(item.getUserEntity().getNickname())
-                    .hotelNm(item.getHotelEntity().getHotelNm())
-                    .fromDate(item.getFromDate().toString())
-                    .toDate(item.getToDate().toString())
-                    .userPhoneNum(item.getUserEntity().getPhoneNum())
-                    .payment(resPaymentEntity.getPaymentAmount())
-                    .build();
-        }).collect(Collectors.toList());
+        return ReservationInfoVo.builder()
+                .reservationInfoList(reservationInfoPage.getContent())
+                .totalPage(reservationInfoPage.getTotalPages())
+                .build();
 
     }
     //하루 방 예약정보
     @Transactional
-    public List<ReservationTodayInfoVo> getHotelReservationTodayList() {
-        /*UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+    public ReservationTodayInfoVo getHotelReservationTodayList(Pageable pageable) {
+        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
         BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         List<ReservationEntity> reservationEntityList = reservationRepository.findAllByHotelEntityAndFromDate(hotelEntity, LocalDate.now());
-        List<HotelRoomInfoEntity> hotelRoomInfoEntityList = hotelRoomRepository.findAllByHotelEntityOrderByHotelResRoomEntitiesAsc(hotelEntity);
-        hotelRoomInfoEntityList.stream().map(item -> {
-            List<HotelResRoomEntity> hotelResRoomEntityList = hotelResRoomRepository.findAllByHotelRoomInfoEntity(item);
-            return hotelResRoomEntityList.stream().map(hotelResRoomEntity -> {
-                if (hotelResRoomEntity.getRoomLeftEa() < 5) {
-                    return ReservationTodayInfoVo.builder()
-                            .resPk(hotelResRoomEntity.getReservationEntity().getResPk())
-                            .resNum(hotelResRoomEntity.getReservationEntity().getResNum())
-                            .nickNm(hotelResRoomEntity.getReservationEntity().getUserEntity().getNickname())
-                            .hotelRoomPk(hotelResRoomEntity.getHotelRoomInfoEntity().getHotelRoomPk())
-                            .hotelRoomNm(hotelResRoomEntity.getHotelRoomInfoEntity().getHotelRoomNm())
-                            .resDogPk(hotelResRoomEntity.getResDogInfoEntity().getResDogPk())
-                            .fromDate(hotelResRoomEntity.getReservationEntity().getFromDate().toString())
-                            .toDate(hotelResRoomEntity.getReservationEntity().getToDate().toString())
-                            .userPhoneNum(hotelResRoomEntity.getReservationEntity().getUserEntity().getPhoneNum())
-                            .payment(hotelResRoomEntity.getResPaymentEntity().getPaymentAmount())
-                            .resStatus(hotelResRoomEntity.getReservationEntity().getResStatus())
-                            .build();
-                }
-                return null;
-            }).filter(Objects::nonNull).collect(Collectors.toList());
-        }).collect(Collectors.toList());*/
+        Page<ReservationTodayInfo> reservationTodayInfoPage = reservationRepository.getReservationTodayInfoList(pageable, reservationEntityList);
 
 
-        return null;
+
+        return ReservationTodayInfoVo.builder()
+                .reservationTodayInfoList(reservationTodayInfoPage.getContent())
+                .totalPage(reservationTodayInfoPage.getTotalPages())
+                .build();
     }
     //사업자 유저 호텔 정보 수정
     @Transactional
@@ -390,6 +364,7 @@ public class BusinessService {
                             .build())
                     .hotelRoomInfoList(hotelRoomInfoEntityList.stream().map(hotelRoomInfoEntity -> HotelRoomInfo.builder()
                             .hotelRoomPk(hotelRoomInfoEntity.getHotelRoomPk())
+                            .sizePk(hotelRoomInfoEntity.getDogSizeEntity().getSizePk())
                             .hotelRoomNm(hotelRoomInfoEntity.getHotelRoomNm())
                             .roomAble(hotelRoomInfoEntity.getRoomAble())
                             .hotelRoomCost(getDiscountCost(hotelRoomInfoEntity.getHotelRoomCost(), hotelRoomInfoEntity.getDiscountPer()))
@@ -430,7 +405,6 @@ public class BusinessService {
         hotelRoomInfoEntity.setHotelRoomNm(dto.getHotelRoomNm());
         hotelRoomInfoEntity.setHotelRoomCost(dto.getHotelRoomCost());
         hotelRoomInfoEntity.setHotelRoomEa(dto.getHotelRoomEa());
-        hotelRoomInfoEntity.setMaximum(dto.getMaximum());
         hotelRoomInfoEntity.setDogSizeEntity(dogSizeRepository.getReferenceById(dto.getSizePk()));
         hotelRoomInfoEntity.setDiscountPer(dto.getDiscountPer());
         hotelResRoomRepository.findAllByHotelRoomInfoEntity(hotelRoomInfoEntity).forEach(hotelResRoomEntity -> {
@@ -482,10 +456,10 @@ public class BusinessService {
     }
     //호텔 방 활성화 & 비활성화 토글
     @Transactional
-    public ResVo toggleHotelRoomActive(long hotelRoomPk) {
+    public ResVo toggleHotelRoomActive(HotelRoomToggleDto dto){
         UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
         BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelRoomInfoEntity hotelRoomInfoEntity = hotelRoomRepository.findById(hotelRoomPk).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
+        HotelRoomInfoEntity hotelRoomInfoEntity = hotelRoomRepository.findById(dto.getHotelRoomPk()).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
         if (hotelRoomInfoEntity.getHotelRoomEa() == null || hotelRoomInfoEntity.getHotelRoomCost() == null || hotelRoomInfoEntity.getMaximum() == null || hotelRoomInfoEntity.getRoomPic() == null) {
             throw new CustomException(HotelErrorCode.REQUIRED_VALUE_IS_NULL);
         }
@@ -505,15 +479,18 @@ public class BusinessService {
 
     //사업자 유저 회원탈퇴
     @Transactional
-    public ResVo postBusinessUserWithdrawal(String upw) {
+    public ResVo postBusinessUserWithdrawal() {
         UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        if (!userEntity.getUpw().equals(upw)) {
+        /*if (!userEntity.getUpw().equals(upw)) {
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
-        }
+        }*/
         BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         if (!reservationRepository.findAllByHotelEntityAndResStatusLessThan(hotelEntity, 2L).isEmpty()) {
             throw new CustomException(WithdrawalErrorCode.NOT_CHECK_OUT_RESERVATIONS_REMAIN);
+        }
+        if (hotelEntity.getApproval() == 1){
+            throw new CustomException(WithdrawalErrorCode.EXIST_IN_OPERATION_HOTEL);
         }
 
 
@@ -522,6 +499,7 @@ public class BusinessService {
                 .userEntity(userEntity)
                 .approvalDate(today)
                 .applyDate(today.plusDays(30))
+                .reason("사업자 회원 탈퇴")
                 .build();
         withdrawalUserRepository.save(withdrawalUserEntity);
         userEntity.setUserStatus(1L);

@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class HotelAdvertiseApplicationDto {
     private String cardNum;
-    private String cardValidThru;
+    private LocalDate cardValidThru;
     private String cardUserName;
-    private String userBirth;
+    private LocalDate userBirth;
 }

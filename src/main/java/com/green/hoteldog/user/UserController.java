@@ -107,8 +107,8 @@ public class UserController {
     // 유저 회원 탈퇴
     @PostMapping("/withdrawal")
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 처리")
-    public ResVo postUserWithdrawal(@RequestBody String upw) {
-        return service.userWithdrawal(upw);
+    public ResVo postUserWithdrawal() {
+        return service.userWithdrawal();
     }
 
     // 유저 회원 탈퇴 철회

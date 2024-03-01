@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class HotelRoomInfo {
     private long hotelRoomPk;
+    private long sizePk;
     private String hotelRoomNm;
     private String roomPic;
     private long hotelRoomEa;
@@ -20,5 +21,4 @@ public class HotelRoomInfo {
     private String discountPer;
     private String createdAt;
     private long discountSignStatus;
-    private String cancelReason;
 }
