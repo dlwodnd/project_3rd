@@ -416,7 +416,7 @@ public class UserService {
             for(LocalDate localDate : getDatesThisYear){
                 HotelResRoomEntity hotelResRoomEntity = new HotelResRoomEntity();
                 hotelResRoomEntity.setHotelRoomInfoEntity(hotelRoomInfoEntity);
-                hotelResRoomEntity.setRoomLeftEa(0L);
+                hotelResRoomEntity.setHotelLeftEa(0L);
                 hotelResRoomEntity.setRoomDate(localDate);
                 hotelResRoomRepository.save(hotelResRoomEntity);
             }

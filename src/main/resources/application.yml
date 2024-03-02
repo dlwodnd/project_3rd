@@ -75,11 +75,15 @@ spring:
       max-request-size: 1024MB
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        hibernate:
+          format_sql: true
+          default_batch_fetch_size: 1000
+    open-in-view: false
+    generate-ddl: false
 
 file:
   dir: /home/download/
@@ -133,9 +137,8 @@ spring:
     password: green502
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
-
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:
@@ -162,7 +165,7 @@ spring:
   jpa:
 
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:

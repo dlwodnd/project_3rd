@@ -1,5 +1,6 @@
 package com.green.hoteldog.common.repository;
 
+import com.green.hoteldog.hotel.model.HotelDetailInfoDto;
 import com.green.hoteldog.hotel.model.HotelRoomInfoVo;
 import com.green.hoteldog.hotel.model.QHotelRoomInfoVo;
 import com.green.hoteldog.user.models.HotelRoomDateProcDto;
@@ -21,7 +22,7 @@ public class HotelResRoomQDslRepositoryImpl implements HotelResRoomQDslRepositor
         for (HotelRoomDateProcDto hotelRoomDateProcDto : hotelRoomDateProcDtoList) {
             jpaQueryFactory
                     .update(hotelResRoomEntity)
-                    .set(hotelResRoomEntity.roomLeftEa, hotelResRoomEntity.roomLeftEa.add(1))
+                    .set(hotelResRoomEntity.hotelLeftEa, hotelResRoomEntity.hotelLeftEa.add(1))
                     .where(hotelResRoomEntity.hotelRoomByDatePk.eq(hotelRoomDateProcDto.getHotelRoomInfoEntity().getHotelRoomPk())
                             , hotelResRoomEntity.roomDate.between(hotelRoomDateProcDto.getFromDate(), hotelRoomDateProcDto.getToDate().plusDays(1)))
                     .execute();
@@ -33,7 +34,7 @@ public class HotelResRoomQDslRepositoryImpl implements HotelResRoomQDslRepositor
     public void updateHotelResRoomRefundCount(HotelRoomDateProcDto hotelRoomDateProcDto) {
         jpaQueryFactory
                 .update(hotelResRoomEntity)
-                .set(hotelResRoomEntity.roomLeftEa, hotelResRoomEntity.roomLeftEa.add(1))
+                .set(hotelResRoomEntity.hotelLeftEa, hotelResRoomEntity.hotelLeftEa.add(1))
                 .where(hotelResRoomEntity.hotelRoomByDatePk.eq(hotelRoomDateProcDto.getHotelRoomInfoEntity().getHotelRoomPk())
                         , hotelResRoomEntity.roomDate.between(hotelRoomDateProcDto.getFromDate(), hotelRoomDateProcDto.getToDate().plusDays(1)))
                 .execute();
@@ -41,21 +42,31 @@ public class HotelResRoomQDslRepositoryImpl implements HotelResRoomQDslRepositor
     }
 
     @Override
-    public List<HotelRoomInfoVo> findResAbleHotelRoomInfo(long dogCount) {
+    public List<HotelRoomInfoVo> findResAbleHotelRoomInfo(long dogCount, HotelDetailInfoDto dto){
         List<HotelRoomInfoVo> hotelRoomInfoVoList = jpaQueryFactory
                 .select(new QHotelRoomInfoVo(
                         hotelResRoomEntity.hotelRoomInfoEntity.hotelRoomPk
                         , hotelResRoomEntity.hotelRoomInfoEntity.hotelRoomNm
-                        , hotelResRoomEntity.roomLeftEa.subtract(dogCount).as("hotelRoomEa")
+                        , hotelResRoomEntity.hotelLeftEa
                         , hotelResRoomEntity.hotelRoomInfoEntity.hotelRoomCost
                         , hotelResRoomEntity.hotelRoomInfoEntity.roomPic
                         , hotelResRoomEntity.hotelRoomInfoEntity.maximum
-                        , new CaseBuilder().when(hotelResRoomEntity.roomLeftEa.subtract(dogCount).goe(0))
-                        .then(0L).otherwise(1L).as("roomAble")
+                        , new CaseBuilder()
+                        .when(hotelResRoomEntity.hotelRoomInfoEntity.dogSizeEntity.sizePk.notIn(dto.getDogSizePkList()))
+                        .then(0L)
+                        .when(hotelResRoomEntity.hotelLeftEa.loe(0))
+                        .then(0L)
+                        .when(hotelResRoomEntity.hotelRoomInfoEntity.roomAble.eq(0L))
+                        .then(0L)
+                        .when(hotelResRoomEntity.hotelRoomInfoEntity.hotelEntity.approval.notIn(1L))
+                        .then(0L)
+                        .otherwise(1L).as("roomAble")
                 ))
                 .from(hotelResRoomEntity)
+                .where(hotelResRoomEntity.roomDate.between(dto.getStartDate(), dto.getEndDate().plusDays(1))
+                        ,hotelResRoomEntity.hotelRoomInfoEntity.hotelEntity.hotelPk.eq(dto.getHotelPk()))
                 .groupBy(hotelResRoomEntity.hotelRoomInfoEntity.hotelRoomPk)
-                .orderBy(hotelResRoomEntity.roomLeftEa.asc())
+                .orderBy(hotelResRoomEntity.hotelLeftEa.asc())
                 .fetch();
         return hotelRoomInfoVoList;
     }

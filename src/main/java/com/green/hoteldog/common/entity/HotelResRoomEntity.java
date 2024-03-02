@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-@Table(name = "t_res_room_date")
+@Table(name = "t_hotel_res_room")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,7 +25,7 @@ public class HotelResRoomEntity {
     private HotelRoomInfoEntity hotelRoomInfoEntity;
 
     @Column(nullable = false,columnDefinition = "BIGINT UNSIGNED")
-    private Long roomLeftEa;
+    private Long hotelLeftEa;
 
     @Column(nullable = false)
     private LocalDate roomDate;

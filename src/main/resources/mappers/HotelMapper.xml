@@ -5,7 +5,7 @@
     <!--호텔 광고 리스트-->
     <select id="selHotelAdvertiseList">
         SELECT A.hotel_pk AS hotelPk, A.hotel_nm AS hotelNm, B.pic AS hotelPic
-        , hotelRoomCost, avgStar, A.discount_per AS discountPer, reviewCount
+        , hotelRoomCost, avgStar, E.discount_per AS discountPer, reviewCount
         , F.address_name AS addressName
         <if test="userPk > 0">
             , IF(H.hotel_pk IS NULL, 0, 1) AS bookMark
@@ -24,7 +24,7 @@
         ) D
         ON C.res_pk = D.res_pk
         LEFT JOIN (
-        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost
+        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost, A.discount_per
         FROM t_hotel_room_info A
         JOIN t_hotel B
         ON A.hotel_pk = B.hotel_pk
@@ -49,7 +49,7 @@
     <!--비회원 첫 화면 호텔 리스트-->
     <select id="selHotelListToNonMember">
         SELECT A.hotel_pk AS hotelPk, A.hotel_nm AS hotelNm, B.pic AS hotelPic
-        , hotelRoomCost, avgStar, A.discount_per AS discountPer, reviewCount
+        , hotelRoomCost, avgStar, E.discount_per AS discountPer, reviewCount
         , F.address_name AS addressName
         FROM t_hotel A
         LEFT JOIN t_hotel_pic B
@@ -65,7 +65,7 @@
         ) D
         ON C.res_pk = D.res_pk
         LEFT JOIN (
-        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost
+        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost, A.discount_per
         FROM t_hotel_room_info A
         JOIN t_hotel B
         ON A.hotel_pk = B.hotel_pk
@@ -106,7 +106,7 @@
     <!--회원 첫 화면 호텔 리스트 1-->
     <select id="selHotelListAsUserAddress">
         SELECT A.hotel_pk AS hotelPk, A.hotel_nm AS hotelNm, B.pic AS hotelPic
-        , hotelRoomCost, avgStar, A.discount_per AS discountPer, reviewCount
+        , hotelRoomCost, avgStar, E.discount_per AS discountPer, reviewCount
         , G.address_name AS addressName, IF(I.hotel_pk IS NULL, 0, 1) AS bookMark
         FROM t_hotel A
         LEFT JOIN t_hotel_pic B
@@ -122,7 +122,7 @@
         ) D
         ON C.res_pk = D.res_pk
         LEFT JOIN (
-        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost
+        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost , A.discount_per
         FROM t_hotel_room_info A
         JOIN t_hotel B
         ON A.hotel_pk = B.hotel_pk
@@ -155,7 +155,7 @@
     <!--회원 첫 화면 호텔 리스트 2-->
     <select id="selHotelListAsUserAddressAndDogInformation">
         SELECT A.hotel_pk AS hotelPk, A.hotel_nm AS hotelNm, B.pic AS hotelPic
-        , hotelRoomCost, avgStar, A.discount_per AS discountPer, reviewCount
+        , hotelRoomCost, avgStar, E.discount_per AS discountPer, reviewCount
         , G.address_name AS addressName, IF(I.hotel_pk IS NULL, 0, 1) AS bookMark
         FROM t_hotel A
         LEFT JOIN t_hotel_pic B
@@ -171,7 +171,7 @@
         ) D
         ON C.res_pk = D.res_pk
         LEFT JOIN (
-        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost
+        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost , A.discount_per
         FROM t_hotel_room_info A
         JOIN t_hotel B
         ON A.hotel_pk = B.hotel_pk
@@ -219,7 +219,7 @@
     <!--검색 시 호텔 리스트-->
     <select id="selHotelListToSearch">
         SELECT A.hotel_pk AS hotelPk, A.hotel_nm AS hotelNm, B.pic AS hotelPic
-        , hotelRoomCost, avgStar, A.discount_per AS discountPer, F.address_name AS addressName
+        , hotelRoomCost, avgStar, E.discount_per AS discountPer, F.address_name AS addressName
         <if test="userPk > 0">
         , IF(H.hotel_pk IS NULL, 0, 1) AS bookMark
         </if>, reviewCount
@@ -237,7 +237,7 @@
         ) D
         ON C.res_pk = D.res_pk
         LEFT JOIN (
-        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost
+        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost , A.discount_per
         FROM t_hotel_room_info A
         JOIN t_hotel B
         ON A.hotel_pk = B.hotel_pk
@@ -270,7 +270,7 @@
 
     <select id="selHotelListToAccurateSearch">
         SELECT A.hotel_pk AS hotelPk, A.hotel_nm AS hotelNm, B.pic AS hotelPic
-        , hotelRoomCost, avgStar, A.discount_per AS discountPer, F.address_name AS addressName
+        , hotelRoomCost, avgStar, E.discount_per AS discountPer, F.address_name AS addressName
         <if test="userPk > 0">
         , IF(H.hotel_pk IS NULL, 0, 1) AS bookMark
         </if>, reviewCount
@@ -288,7 +288,7 @@
         ) D
         ON C.res_pk = D.res_pk
         LEFT JOIN (
-        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost
+        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost , A.discount_per
         FROM t_hotel_room_info A
         JOIN t_hotel B
         ON A.hotel_pk = B.hotel_pk
@@ -323,7 +323,7 @@
     <!--필터링 시 호텔 리스트-->
     <select id="selHotelListToFilter">
         SELECT A.hotel_pk AS hotelPk, A.hotel_nm AS hotelNm, B.pic AS hotelPic, hotelRoomCost
-        , avgStar, A.discount_per AS discountPer, G.address_name AS addressName, reviewCount
+        , avgStar, E.discount_per AS discountPer, G.address_name AS addressName, reviewCount
         <if test="userPk > 0">
             , IF(K.hotel_pk IS NULL, 0, 1) AS bookMark
         </if>
@@ -341,7 +341,7 @@
         ) D
         ON C.res_pk = D.res_pk
         LEFT JOIN (
-        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost
+        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost , A.discount_per
         FROM t_hotel_room_info A
         JOIN t_hotel B
         ON A.hotel_pk = B.hotel_pk
@@ -387,8 +387,9 @@
                 <foreach collection="filteredPk" item="item" separator="," open="(" close=")">
                     #{item}
                 </foreach>
+                AND A.approval = 1
             </if>
-            AND A.approval = 1
+
         </where>
         GROUP BY A.hotel_pk
         <choose>
@@ -540,7 +541,7 @@
     </insert>
     <select id="getHotelBookMark">
         SELECT A.hotel_pk AS hotelPk, A.hotel_nm AS hotelNm, B.pic AS hotelPic
-        , hotelRoomCost, avgStar, A.discount_per AS discountPer, reviewCount
+        , hotelRoomCost, avgStar, E.discount_per AS discountPer, reviewCount
         , F.address_name AS addressName, IF(H.hotel_pk IS NULL, 0, 1) AS bookMark
         FROM t_hotel A
         LEFT JOIN t_hotel_pic B
@@ -556,7 +557,7 @@
         ) D
         ON C.res_pk = D.res_pk
         LEFT JOIN (
-        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost
+        SELECT A.hotel_pk, MIN(A.hotel_room_cost) AS hotelRoomCost,A.discount_per
         FROM t_hotel_room_info A
         JOIN t_hotel B
         ON A.hotel_pk = B.hotel_pk

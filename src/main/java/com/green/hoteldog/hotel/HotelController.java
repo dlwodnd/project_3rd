@@ -98,9 +98,9 @@ public class HotelController {
 
     // 호텔 상세페이지 출력
     @GetMapping("/info")
-    public HotelDetailInfoVo getHotelDetail(@RequestBody HotelDetailInfoDto dto,
-                                      @RequestBody List<HotelReservationInsDto> dtoList) {
-        return service.getHotelDetailInfo(dto,dtoList);
+    public HotelDetailInfoVo getHotelDetail(HotelDetailInfoDto dto
+                                      /*@RequestBody(required = false) List<HotelReservationInsDto> dtoList*/) {
+        return service.getHotelDetailInfo(dto);
     }
 
    /* //--------------------------------------호텔 상세페이지에서 날짜 선택, 강아지 선택했을때-----------------------------------

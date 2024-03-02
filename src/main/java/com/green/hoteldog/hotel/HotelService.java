@@ -583,23 +583,23 @@ public class HotelService {
     (폐기)*/
 
     // 호텔 상세페이지 출력
-    public HotelDetailInfoVo getHotelDetailInfo(HotelDetailInfoDto dto, List<HotelReservationInsDto> dtoList){
+    @Transactional
+    public HotelDetailInfoVo getHotelDetailInfo(HotelDetailInfoDto dto){
         userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
         HotelEntity hotelEntity = hotelRepository.findById(dto.getHotelPk()).orElseThrow(() -> new CustomException(HotelErrorCode.NON_EXIST_HOTEL_PK));
         List<HotelOptionInfoEntity> optionList = hotelOptionInfoRepository.findAllByHotelEntity(hotelEntity);
 
         int dogCount = 0;
         int isMoreReview = 0;
-        if(!dtoList.isEmpty()){
-            dogCount = dtoList.size();
-        }
-        List<HotelRoomInfoVo> list = hotelResRoomRepository.findResAbleHotelRoomInfo(dogCount);
+        List<HotelRoomInfoVo> list = hotelResRoomRepository.findResAbleHotelRoomInfo(dogCount,dto);
         List<ReviewEntity> reviewList = reviewRepository.findByHotelEntity(hotelEntity);
+        ReviewEntity reviewEntity = null;
         if (reviewList.size() > 1){
             reviewList.remove(2);
             isMoreReview = 1;
+            reviewEntity = reviewList.get(0);
         }
-        ReviewEntity reviewEntity = reviewList.get(0);
+
 
         return HotelDetailInfoVo.builder()
                 .hotelPk(hotelEntity.getHotelPk())
@@ -608,13 +608,13 @@ public class HotelService {
                 .hotelCall(hotelEntity.getHotelCall())
                 .hotelDetailInfo(hotelEntity.getHotelDetailInfo())
                 .businessNum(hotelEntity.getBusinessNum())
-                .pics(hotelEntity.getHotelPicEntity().stream().map(HotelPicEntity::getPic).collect(Collectors.toList()))
+                .pics(hotelEntity.getHotelPicEntity().stream().map(HotelPicEntity::getPic).toList())
                 .roomList(list)
                 .hotelOption(optionList.stream().map(item -> HotelOptionInfoVo.builder()
                         .optionPk(item.getHotelOptionEntity().getOptionPk())
                         .optionNm(item.getHotelOptionEntity().getOptionNm())
                         .build()).collect(Collectors.toList()))
-                .review(HotelReviewVo.builder()
+                .review(reviewEntity == null ? null : HotelReviewVo.builder()
                         .reviewPk(reviewEntity.getReviewPk())
                         .comment(reviewEntity.getComment())
                         .score(reviewEntity.getScore())

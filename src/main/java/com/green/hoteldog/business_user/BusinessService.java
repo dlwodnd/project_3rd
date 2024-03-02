@@ -408,10 +408,10 @@ public class BusinessService {
         hotelRoomInfoEntity.setDogSizeEntity(dogSizeRepository.getReferenceById(dto.getSizePk()));
         hotelRoomInfoEntity.setDiscountPer(dto.getDiscountPer());
         hotelResRoomRepository.findAllByHotelRoomInfoEntity(hotelRoomInfoEntity).forEach(hotelResRoomEntity -> {
-            if (hotelResRoomEntity.getRoomLeftEa() + changeRoomEa < 0) {
-                hotelResRoomEntity.setRoomLeftEa(0L);
+            if (hotelResRoomEntity.getHotelLeftEa() + changeRoomEa < 0) {
+                hotelResRoomEntity.setHotelLeftEa(0L);
             } else {
-                hotelResRoomEntity.setRoomLeftEa(hotelResRoomEntity.getRoomLeftEa() + changeRoomEa);
+                hotelResRoomEntity.setHotelLeftEa(hotelResRoomEntity.getHotelLeftEa() + changeRoomEa);
             }
         });
 
@@ -470,11 +470,10 @@ public class BusinessService {
             hotelRoomInfoEntity.setRoomAble(0L);
             return new ResVo(2);
         }
-        if (hotelRoomInfoEntity.getRoomAble() == 0) {
+        else  {
             hotelRoomInfoEntity.setRoomAble(1L);
             return new ResVo(1);
         }
-        return null;
     }
 
     //사업자 유저 회원탈퇴
