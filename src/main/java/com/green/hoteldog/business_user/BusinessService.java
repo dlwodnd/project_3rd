@@ -561,10 +561,48 @@ public class BusinessService {
 
     }
     public ResVo reservationCheckIn(List<Long> resPkList){
-        return null;
+        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        List<ReservationEntity> reservationEntityList = reservationRepository.findAllById(resPkList);
+        for(ReservationEntity reservationEntity : reservationEntityList){
+            if(!reservationEntity.getHotelEntity().getHotelPk().equals(hotelEntity.getHotelPk())){
+                throw new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION);
+            }else if(reservationEntity.getResStatus() == 0){
+                throw new CustomException(ReservationErrorCode.NOT_APPROVAL_RESERVATION);
+            }else if(reservationEntity.getResStatus() == 1){
+                reservationEntity.setResStatus(2L);
+            }else if (reservationEntity.getResStatus() == 2){
+                throw new CustomException(ReservationErrorCode.ALREADY_CHECK_IN);
+            }else if (reservationEntity.getResStatus() == 3){
+                throw new CustomException(ReservationErrorCode.ALREADY_CHECK_OUT);
+            }else {
+                throw new CustomException(ReservationErrorCode.CANCEL_RESERVATION);
+            }
+        }
+        return new ResVo(1);
     }
     public ResVo reservationCheckOut(List<Long> resPkList){
-        return null;
+        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        List<ReservationEntity> reservationEntityList = reservationRepository.findAllById(resPkList);
+        for(ReservationEntity reservationEntity : reservationEntityList){
+            if(!reservationEntity.getHotelEntity().getHotelPk().equals(hotelEntity.getHotelPk())){
+                throw new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION);
+            }else if(reservationEntity.getResStatus() == 0){
+                throw new CustomException(ReservationErrorCode.NOT_APPROVAL_RESERVATION);
+            }else if(reservationEntity.getResStatus() == 1){
+                throw new CustomException(ReservationErrorCode.NOT_CHECK_IN);
+            }else if (reservationEntity.getResStatus() == 2){
+                reservationEntity.setResStatus(3L);
+            }else if (reservationEntity.getResStatus() == 3){
+                throw new CustomException(ReservationErrorCode.ALREADY_CHECK_OUT);
+            }else {
+                throw new CustomException(ReservationErrorCode.CANCEL_RESERVATION);
+            }
+        }
+        return new ResVo(1);
     }
 
 }

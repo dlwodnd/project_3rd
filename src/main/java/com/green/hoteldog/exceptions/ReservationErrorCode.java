@@ -7,6 +7,16 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ReservationErrorCode implements ErrorCode{
+    NOT_CHECK_IN(
+            HttpStatus.BAD_REQUEST, "체크인 되지 않은 예약입니다."),
+    CANCEL_RESERVATION
+            (HttpStatus.BAD_REQUEST, "취소된 예약입니다"),
+    ALREADY_CHECK_OUT
+            (HttpStatus.BAD_REQUEST, "이미 체크아웃된 예약입니다."),
+    ALREADY_CHECK_IN
+            (HttpStatus.BAD_REQUEST, "이미 체크인된 예약입니다."),
+    NOT_APPROVAL_RESERVATION
+            (HttpStatus.BAD_REQUEST, "승인되지 않은 예약입니다."),
     UNKNOWN_DOG_SIZE_PK
             (HttpStatus.BAD_REQUEST, "알 수 없는 강아지 사이즈 pk"),
     NOT_CANCELABLE
