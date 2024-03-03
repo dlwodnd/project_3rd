@@ -1,6 +1,8 @@
 package com.green.hoteldog.common.repository;
 
+import com.green.hoteldog.common.entity.HotelEntity;
 import com.green.hoteldog.common.entity.HotelFavoritesEntity;
+import com.green.hoteldog.common.entity.UserEntity;
 import com.green.hoteldog.common.entity.composite.HotelFavoritesComposite;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -16,6 +18,7 @@ public interface HotelFavoritesRepository extends JpaRepository<HotelFavoritesEn
     //영웅
 
     //재웅
+    boolean existsByUserEntityAndHotelEntity(UserEntity userEntity, HotelEntity hotelEntity);
     //재웅
 
 }

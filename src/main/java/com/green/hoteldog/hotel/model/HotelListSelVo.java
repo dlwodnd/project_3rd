@@ -1,14 +1,21 @@
 package com.green.hoteldog.hotel.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Schema(title = "리스트 출력 VO")
 public class HotelListSelVo {
     @JsonProperty(value = "hotel_pk")
-    private int hotelPk;
+    private long hotelPk;
     @JsonProperty(value = "hotel_nm")
     private String hotelNm;
     @JsonProperty(value = "address_name")

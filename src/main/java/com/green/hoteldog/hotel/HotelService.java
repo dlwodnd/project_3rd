@@ -3,8 +3,10 @@ package com.green.hoteldog.hotel;
 
 import com.green.hoteldog.common.AppProperties;
 import com.green.hoteldog.common.Const;
+import com.green.hoteldog.common.RoomDiscountInfo;
 import com.green.hoteldog.common.entity.*;
 import com.green.hoteldog.common.repository.*;
+import com.green.hoteldog.common.utils.DiscountCostUtil;
 import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.exceptions.AuthorizedErrorCode;
@@ -26,7 +28,9 @@ import scala.collection.Seq;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -48,6 +52,9 @@ public class HotelService {
     private final ReviewRepository reviewRepository;
     private final ReviewFavRepository reviewFavRepository;
     private final ReviewPicRepository reviewPicRepository;
+    private final DogSizeRepository dogSizeRepository;
+    private final ReservationRepository reservationRepository;
+    private final HotelFavoritesRepository hotelFavoritesRepository;
 
 
 
@@ -59,7 +66,7 @@ public class HotelService {
     }
 
     //-----------------------------------------------호텔 리스트 셀렉트----------------------------------------------------
-    public HotelListSelAllVo getHotelList(HotelListSelDto dto) {
+    public HotelListSelAllVo getHotelList1(HotelListSelDto dto) {
         // 정규표현식
         if (dto.getFromDate() != null) {
             boolean dateCheck = Pattern.matches("^[\\d]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", dto.getFromDate());
@@ -215,8 +222,8 @@ public class HotelService {
                 DogSizeInfoIn dogSizeInfo = new DogSizeInfoIn();
                 dogSizeInfo.setDates(strDateList);
                 for (DogSizeEa ea : dto.getDogInfo()) {
-                    dogSizeInfo.setDogSize(ea.getDogSize());
-                    dogSizeInfo.setDogCount(ea.getDogCount());
+                    dogSizeInfo.setDogSize((int) ea.getDogSize());
+                    dogSizeInfo.setDogCount((int) ea.getDogCount());
                     List<Integer> hotelPk1 = mapper.selHotelPkToIndividualDogInfo(dogSizeInfo);
                     list.addAll(hotelPk1);
                 }
@@ -226,8 +233,8 @@ public class HotelService {
                 List<Integer> dogSize = new ArrayList<>();
                 int allCount = 0;
                 for (DogSizeEa ea : dto.getDogInfo()) {
-                    allCount = +ea.getDogCount();
-                    dogSize.add(ea.getDogSize());
+                    allCount = (int) +ea.getDogCount();
+                    dogSize.add((int) ea.getDogSize());
                 }
                 dogSizeinfoGr.setAllDogCount(allCount);
                 Integer maxValue = dogSize.stream()
@@ -255,6 +262,116 @@ public class HotelService {
         return allVo;
     }
     // 영웅
+    @Transactional
+    public HotelListSelAllVo getHotelListJpa(HotelListSelDto dto) {
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(authenticationFacade.getLoginUserPk());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate fromDate = LocalDate.parse(dto.getFromDate(), formatter);
+        LocalDate toDate = LocalDate.parse(dto.getToDate(), formatter);
+        dto.setFrom(fromDate);
+        dto.setTo(toDate);
+        List<LocalDate> dateRange = new ArrayList<>();
+        while (!fromDate.isAfter(toDate)) {
+            dateRange.add(fromDate);
+            fromDate = fromDate.plusDays(1);
+        }
+        dto.setDate(dateRange);
+        if(dto.getSearch() != null && !dto.getSearch().isEmpty()){
+            CharSequence normalized = OpenKoreanTextProcessorJava.normalize(dto.getSearch());
+            Seq<KoreanTokenizer.KoreanToken> tokens = OpenKoreanTextProcessorJava.tokenize(normalized);
+            List<String> tokensToStrList = OpenKoreanTextProcessorJava.tokensToJavaStringList(tokens);
+            dto.setTokensToStrList(tokensToStrList);
+        }
+        HotelListSelAllVo allVo = new HotelListSelAllVo();
+        List<HotelListSelVo> hotelAdvertiseList = new ArrayList<>();
+        List<HotelListSelVo> hotelFilterList = new ArrayList<>();
+
+        hotelAdvertiseList = hotelRepository.getHotelAdvertiseList().stream()
+                .map(item -> {
+                    List<HotelRoomInfoEntity> hotelRoomInfoEntityList = hotelRoomRepository.findByHotelEntity(item);
+                    List<ReservationEntity> reservationEntityList = reservationRepository.findAllByHotelEntity(item);
+                    List<ReviewEntity> reviewEntityList = reviewRepository.findAllByReservationEntityIn(reservationEntityList);
+                    long reviewScoreSum = 0;
+                    for (ReviewEntity reviewEntity : reviewEntityList) {
+                        reviewScoreSum += reviewEntity.getScore();
+                    }
+                    float reviewScoreAvg = (float) reviewScoreSum / reviewEntityList.size();
+                    List<RoomDiscountInfo> roomCostList = hotelRoomInfoEntityList.stream()
+                            .map(cost -> {RoomDiscountInfo roomDiscountInfo = new RoomDiscountInfo();
+                                roomDiscountInfo.setDiscountCost(cost.getHotelRoomCost(), cost.getDiscountPer());
+                                return roomDiscountInfo;
+                            }).toList();
+                    roomCostList.stream().sorted(Comparator.comparing(RoomDiscountInfo::getRoomCost));
+                    log.info("roomCostList : {}", roomCostList);
+                    log.info("roomCostList.get(0).getRoomCost() : {}", roomCostList.get(0).getDiscount());
+                    int bookMark = 0;
+                    if (optionalUserEntity.isPresent()) {
+                        UserEntity userEntity = optionalUserEntity.get();
+                        bookMark = hotelFavoritesRepository.existsByUserEntityAndHotelEntity(userEntity, item) ? 1 : 0;
+                    }
+                    return HotelListSelVo.builder()
+                            .hotelPk(item.getHotelPk())
+                            .hotelNm(item.getHotelNm())
+                            .addressName(item.getHotelFullAddress())
+                            .hotelRoomCost("" +roomCostList.get(0).getRoomCost())
+                            .discountPer(Integer.parseInt(roomCostList.get(0).getDiscount()))
+                            .hotelPic(hotelPicRepository.findHotelPicEntitiesByHotelEntity(item).get(0).getPic())
+                            .bookMark(bookMark)
+                            .reviewCount(reviewEntityList.size())
+                            .avgStar(Math.round(reviewScoreAvg * 10) / 10.0f)
+                            .build();
+                }).collect(Collectors.toList());
+        allVo.setHotelAdvertiseList(hotelAdvertiseList);
+        hotelFilterList = hotelRepository.getHotelFilterList(dto).stream()
+                .map(item -> {
+                    List<HotelRoomInfoEntity> hotelRoomInfoEntityList = hotelRoomRepository.findByHotelEntity(item);
+                    List<ReservationEntity> reservationEntityList = reservationRepository.findAllByHotelEntity(item);
+                    List<ReviewEntity> reviewEntityList = reviewRepository.findAllByReservationEntityIn(reservationEntityList);
+                    long reviewScoreSum = 0;
+                    for (ReviewEntity reviewEntity : reviewEntityList) {
+                        reviewScoreSum += reviewEntity.getScore();
+                    }
+                    float reviewScoreAvg = (float) reviewScoreSum / reviewEntityList.size();
+                    List<RoomDiscountInfo> roomCostList = hotelRoomInfoEntityList.stream()
+                            .map(cost -> {RoomDiscountInfo roomDiscountInfo = new RoomDiscountInfo();
+                                roomDiscountInfo.setDiscountCost(cost.getHotelRoomCost(), cost.getDiscountPer());
+                                return roomDiscountInfo;
+                            }).toList();
+                    roomCostList.stream().sorted(Comparator.comparing(RoomDiscountInfo::getRoomCost));
+                    int bookMark = 0;
+                    if (optionalUserEntity.isPresent()) {
+                        UserEntity userEntity = optionalUserEntity.get();
+                        bookMark = hotelFavoritesRepository.existsByUserEntityAndHotelEntity(userEntity, item) ? 1 : 0;
+                    }
+                    return HotelListSelVo.builder()
+                            .hotelPk(item.getHotelPk())
+                            .hotelNm(item.getHotelNm())
+                            .addressName(item.getHotelFullAddress())
+                            .hotelRoomCost("" +roomCostList.get(0).getRoomCost())
+                            .discountPer(Integer.parseInt(roomCostList.get(0).getDiscount()))
+                            .hotelPic(hotelPicRepository.findHotelPicEntitiesByHotelEntity(item).get(0).getPic())
+                            .bookMark(bookMark)
+                            .reviewCount(reviewEntityList.size())
+                            .avgStar(Math.round(reviewScoreAvg * 10) / 10.0f)
+                            .build();
+                }).collect(Collectors.toList());
+        log.info("setHotelList : {}", allVo.getHotelList());
+        switch (dto.getMainFilter()) {
+            case 0:
+                allVo.setHotelList(hotelFilterList);
+                break;
+            case 1:
+                hotelFilterList.stream().sorted(Comparator.comparing(HotelListSelVo::getAvgStar).reversed()).collect(Collectors.toList());
+                allVo.setHotelList(hotelFilterList);
+                break;
+            case 2:
+                hotelFilterList.stream().sorted(Comparator.comparing(HotelListSelVo::getReviewCount).reversed()).collect(Collectors.toList());
+                allVo.setHotelList(hotelFilterList);
+                break;
+
+        }
+        return allVo;
+    }
 
 
     //----------------------------------------------호텔 북마크-----------------------------------------------------------

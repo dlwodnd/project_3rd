@@ -2,6 +2,7 @@ package com.green.hoteldog.business_user;
 
 import com.green.hoteldog.business_user.model.*;
 import com.green.hoteldog.common.ResVo;
+import com.green.hoteldog.common.RoomDiscountInfo;
 import com.green.hoteldog.common.entity.*;
 import com.green.hoteldog.common.entity.composite.HotelOptionComposite;
 import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
@@ -315,6 +316,7 @@ public class BusinessService {
         Optional<HotelEntity> optionalHotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity);
         HotelEntity hotelEntity = new HotelEntity();
         BusinessUserHotelVo businessUserHotelVo = new BusinessUserHotelVo();
+        RoomDiscountInfo roomDiscountInfo = new RoomDiscountInfo();
 
         if (optionalHotelEntity.isPresent()) {
             hotelEntity = optionalHotelEntity.get();
@@ -367,7 +369,7 @@ public class BusinessService {
                             .sizePk(hotelRoomInfoEntity.getDogSizeEntity().getSizePk())
                             .hotelRoomNm(hotelRoomInfoEntity.getHotelRoomNm())
                             .roomAble(hotelRoomInfoEntity.getRoomAble())
-                            .hotelRoomCost(getDiscountCost(hotelRoomInfoEntity.getHotelRoomCost(), hotelRoomInfoEntity.getDiscountPer()))
+                            .hotelRoomCost(roomDiscountInfo.setDiscountCost(hotelRoomInfoEntity.getHotelRoomCost(),hotelRoomInfoEntity.getDiscountPer()).getRoomCost())
                             .hotelRoomEa(hotelRoomInfoEntity.getHotelRoomEa())
                             .roomPic(hotelRoomInfoEntity.getRoomPic())
                             .maximum(hotelRoomInfoEntity.getMaximum())

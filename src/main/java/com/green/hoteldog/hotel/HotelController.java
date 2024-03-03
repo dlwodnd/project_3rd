@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -70,9 +72,9 @@ public class HotelController {
             "단, 사용자가 입력한 기능 이외의 변수명과 값이 들어 온다면 잘못 입력 에러 리턴")
     public HotelListSelAllVo getHotelList(@RequestParam int page, @RequestBody @Valid HotelListSelDto dto) {
         log.info("HotelListSelDto dto : {}", dto);
-        dto.setRowCount(Const.HOTEL_LIST_COUNT_PER_PAGE);
-        dto.setPage(page);
-        return service.getHotelList(dto);
+        Pageable pageable = PageRequest.of(page, Const.HOTEL_LIST_COUNT_PER_PAGE);
+        dto.setPageable(pageable);
+        return service.getHotelListJpa(dto);
     }
 
     /*//-------------------------------------------------호텔 상세페이지 출력------------------------------------------------

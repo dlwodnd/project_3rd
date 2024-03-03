@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -39,11 +40,18 @@ public class HotelListSelDto {
     private String search; // 호텔 이름 검색
     // 호텔 이용 테마
     @JsonProperty(value = "hotel_option_pk")
-    private List<Integer> hotelOptionPk;
+    private List<Long> hotelOptionPk;
     @Min(0)
     @JsonProperty(value = "filter_type")
     @Schema(title = "하단 필터링, default(0) : 추천순(최신순), 1 : 별점 높은 순, 2 : 리뷰 많은 순")
     private int filterType; // default(0) : 적용 x, 1 : 별점 높은 순, 2 : 리뷰 많은 순
+
+
+
+    @JsonIgnore
+    private LocalDate from;
+    @JsonIgnore
+    private LocalDate to;
     @JsonIgnore
     private int rowCount;
     @JsonIgnore
@@ -64,6 +72,9 @@ public class HotelListSelDto {
     private int dogPkSize; // 강아지pk 총 갯수 - xml having절에서 사용
     @JsonIgnore
     private List<Integer> filteredPk;
+
+    @JsonIgnore
+    private Pageable pageable;
 
     public void setPage(int page){
         startIdx = (page - 1) * this.rowCount;

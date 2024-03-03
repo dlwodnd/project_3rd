@@ -2,6 +2,8 @@ package com.green.hoteldog.user;
 
 import com.green.hoteldog.common.utils.CommonUtils;
 import com.green.hoteldog.exceptions.WithdrawalErrorCode;
+import com.green.hoteldog.hotel.model.DogSizeEa;
+import com.green.hoteldog.reservation.model.DogInfo;
 import com.green.hoteldog.user.models.BusinessUserSignupDto;
 import com.green.hoteldog.business_user.model.HotelInsDto;
 import com.green.hoteldog.common.AppProperties;
@@ -35,9 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -98,6 +98,7 @@ public class UserService {
     }
 
     //--------------------------------------------------유저 로그인-------------------------------------------------------
+    @Transactional
     public UserSigninVo userSignin(HttpServletResponse response, HttpServletRequest request, UserSigninDto dto) {
         Optional<UserEntity> userEntityOptional = userRepository.findByUserEmail(dto.getUserEmail());
 
@@ -125,13 +126,25 @@ public class UserService {
         cookie.deleteCookie(response, "rt");
         cookie.setCookie(response, "rt", rt, rtCookieMaxAge);
 
-        /*vo.setDepthName(mapper.selUserDepthName(userInfo.getUserPk()));
-        vo.setSizePkList(dogSizeList);*/
+        List<UserDogEntity> dogEntityList = userEntity.getUserDogEntities();
+
+
         UserSigninVo vo = new UserSigninVo();
         vo.setUserRole(userEntity.getUserRole().name());
         vo.setUserPk(userEntity.getUserPk());
         vo.setAccessToken(at);
         vo.setNickname(userEntity.getNickname());
+        vo.setDepthName(userEntity.getUserWhereEntity().getRegion1DepthName());
+        if (!dogEntityList.isEmpty()) {
+            Map<Long ,Long> sizeCountMap = new HashMap<>();
+            for(UserDogEntity userDogEntity : dogEntityList){
+                sizeCountMap.put(userDogEntity.getDogSizeEntity().getSizePk(),sizeCountMap.getOrDefault(userDogEntity.getDogSizeEntity().getSizePk(),0L) + 1);
+            }
+            vo.setDogInfo(sizeCountMap.entrySet().stream()
+                    .map(item -> DogSizeEa.builder().dogSize(item.getKey()).dogCount(item.getValue()).build())
+                    .collect(Collectors.toList())
+            );
+        }
         return vo;
     }
 
@@ -221,6 +234,7 @@ public class UserService {
     }
 
     // 사업자 유저 로그인
+    @Transactional
     public BusinessSigninVo businessSignin(HttpServletResponse response, HttpServletRequest request, UserSigninDto dto) {
         Optional<UserEntity> userEntityOptional = userRepository.findByUserEmail(dto.getUserEmail());
 

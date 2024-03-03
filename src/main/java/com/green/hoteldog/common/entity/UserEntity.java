@@ -9,6 +9,8 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "t_user")
@@ -70,8 +72,12 @@ public class UserEntity extends BaseEntity {
 
     //재웅
     @ToString.Exclude
-    @OneToOne(mappedBy = "userEntity",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "userEntity",cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
     private UserWhereEntity userWhereEntity;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
+    private List<UserDogEntity> userDogEntities;
     //재웅
 
 }
