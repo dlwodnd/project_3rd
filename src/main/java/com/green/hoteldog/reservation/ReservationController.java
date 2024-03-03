@@ -38,6 +38,12 @@ public class ReservationController {
         return service.postHotelReservation(dto);
     }
 
+    @PostMapping("/hotel/res2")
+    @Operation(summary = "호텔 예약", description = "호텔 예약 처리 기능")
+    public ResVo postHotelReservationJpa(@RequestBody HotelReservationInsDto dto) {
+        return service.postHotelReservationFix(dto);
+    }
+
     //---------------------------------------------------예약 취소--------------------------------------------------------
     @DeleteMapping("/hotel/res")
     @Operation(summary = "호텔 예약 취소", description = "호텔 예약 취소 관련 처리")

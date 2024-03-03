@@ -13,9 +13,9 @@ import java.util.List;
 @Schema(title = "호텔 예약 삭제 DTO")
 public class HotelReservationDelDto {
     @Schema(title = "예약 pk")
-    private int resPk;
+    private long resPk;
     @JsonIgnore
-    private int userPk;
+    private long userPk;
     @JsonIgnore
     private List<Integer> resDogPkList = new ArrayList<>();
     @JsonIgnore

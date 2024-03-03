@@ -9,6 +9,7 @@ import java.util.List;
 public interface HotelResRoomQDslRepository {
     void updateAllHotelResRoomRefundCount(List<HotelRoomDateProcDto> hotelRoomDateProcDtoList);
     void updateHotelResRoomRefundCount(HotelRoomDateProcDto hotelRoomDateProcDto);
+    void updateHotelResRoomReservationCount(HotelRoomDateProcDto hotelRoomDateProcDto);
 
     List<HotelRoomInfoVo> findResAbleHotelRoomInfo(long dogCount , HotelDetailInfoDto dto);
 }

@@ -15,7 +15,7 @@ public class HotelReservationInsDto{
     @Min(0)
     @JsonProperty(value = "hotel_pk")
     @Schema(title = "호텔pk")
-    private int hotelPk;
+    private long hotelPk;
     @JsonProperty(value = "from_date")
     @Schema(title = "시작일")
     private LocalDate fromDate;
@@ -25,6 +25,8 @@ public class HotelReservationInsDto{
     @JsonProperty(value = "dog_info")
     @Schema(title = "강이지 정보")
     private List<DogInfo> dogInfo;
+    @JsonIgnore
+    private long totalPrice;
     @JsonIgnore
     private int userPk;
     @JsonIgnore

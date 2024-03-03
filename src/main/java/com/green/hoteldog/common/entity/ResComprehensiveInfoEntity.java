@@ -2,11 +2,17 @@ package com.green.hoteldog.common.entity;
 
 import com.green.hoteldog.common.entity.composite.ResComprehensiveInfoComposite;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "t_res_comprehensive_info")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResComprehensiveInfoEntity {
     @EmbeddedId
     private ResComprehensiveInfoComposite composite;

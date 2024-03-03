@@ -3,7 +3,6 @@ package com.green.hoteldog.user;
 import com.green.hoteldog.common.utils.CommonUtils;
 import com.green.hoteldog.exceptions.WithdrawalErrorCode;
 import com.green.hoteldog.hotel.model.DogSizeEa;
-import com.green.hoteldog.reservation.model.DogInfo;
 import com.green.hoteldog.user.models.BusinessUserSignupDto;
 import com.green.hoteldog.business_user.model.HotelInsDto;
 import com.green.hoteldog.common.AppProperties;
@@ -39,6 +38,8 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.green.hoteldog.common.utils.CommonUtils.getRefundAmount;
 
 @Slf4j
 @Service
@@ -514,19 +515,7 @@ public class UserService {
         }
         return 0;
     }
-    //환불 금액 계산기
-    public long getRefundAmount(ReservationEntity reservationEntity, long paymentAmount) {
-        Period dateDiff = Period.between( LocalDate.now(),reservationEntity.getToDate());
-        if (dateDiff.getDays() >= 7) {
-            return paymentAmount;
-        } else if (dateDiff.getDays() > 3) {
-            return paymentAmount * 80 / 100;
-        } else if (dateDiff.getDays() > 1) {
-            return paymentAmount * 50 / 100;
-        } else {
-            return 0;
-        }
-    }
+
 
     //유저 회원 탈퇴 진행
     @Transactional

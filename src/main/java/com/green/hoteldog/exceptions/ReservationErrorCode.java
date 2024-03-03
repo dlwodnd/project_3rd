@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ReservationErrorCode implements ErrorCode{
+    UNKNOWN_DOG_SIZE_PK
+            (HttpStatus.BAD_REQUEST, "알 수 없는 강아지 사이즈 pk"),
     NOT_CANCELABLE
             (HttpStatus.BAD_REQUEST, "취소할 수 없는 예약입니다."),
     NOT_WAITING_APPROVAL

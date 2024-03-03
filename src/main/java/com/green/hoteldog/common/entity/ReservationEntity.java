@@ -2,8 +2,7 @@ package com.green.hoteldog.common.entity;
 
 import com.green.hoteldog.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
@@ -14,6 +13,9 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "t_reservation")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReservationEntity extends BaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")

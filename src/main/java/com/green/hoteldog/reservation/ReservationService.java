@@ -2,19 +2,25 @@ package com.green.hoteldog.reservation;
 
 import com.green.hoteldog.common.Const;
 import com.green.hoteldog.common.ResVo;
-import com.green.hoteldog.exceptions.CustomException;
-import com.green.hoteldog.exceptions.ReservationErrorCode;
+import com.green.hoteldog.common.entity.*;
+import com.green.hoteldog.common.repository.*;
+import com.green.hoteldog.common.utils.RandomCodeUtils;
+import com.green.hoteldog.exceptions.*;
 import com.green.hoteldog.reservation.model.*;
 import com.green.hoteldog.security.AuthenticationFacade;
+import com.green.hoteldog.user.models.HotelRoomDateProcDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.green.hoteldog.common.utils.CommonUtils.getRefundAmount;
 
 @Slf4j
 @Service
@@ -22,6 +28,17 @@ import java.util.stream.Collectors;
 public class ReservationService {
     private final ReservationMapper reservationMapper;
     private final AuthenticationFacade authenticationFacade;
+    private final UserRepository userRepository;
+    private final HotelRoomRepository hotelRoomRepository;
+    private final ReservationRepository reservationRepository;
+    private final ResPaymentRepository resPaymentRepository;
+    private final ResComprehensiveInfoRepository resComprehensiveInfoRepository;
+    private final HotelRepository hotelRepository;
+    private final HotelResRoomRepository hotelResRoomRepository;
+    private final ResDogInfoRepository resDogInfoRepository;
+    private final DogSizeRepository dogSizeRepository;
+    private final RefundRepository refundRepository;
+
 
     //--------------------------------------------------호텔 예약---------------------------------------------------------
     @Transactional(rollbackFor = Exception.class)
@@ -56,7 +73,7 @@ public class ReservationService {
         for (HotelReservationInsDto hotelReservationInsDto : dto) {
             for (DogInfo dogInfo : hotelReservationInsDto.getDogInfo()) {
                 HotelReservationUpdProcDto updProcDto = new HotelReservationUpdProcDto();
-                updProcDto.setHotelRoomPk(dogInfo.getHotelRoomPk());
+                updProcDto.setHotelRoomPk((int) dogInfo.getHotelRoomPk());
 
                 LocalDate fromDate = hotelReservationInsDto.getFromDate();
                 LocalDate toDate = hotelReservationInsDto.getToDate();
@@ -80,6 +97,58 @@ public class ReservationService {
         } catch (Exception e) {
             throw new CustomException(ReservationErrorCode.NO_ROOMS_AVAILABLE_FOR_THIS_DATE);
         }
+        return new ResVo(Const.SUCCESS);
+    }
+    @Transactional(rollbackFor = Exception.class)
+    public ResVo postHotelReservationFix(HotelReservationInsDto dto) {
+        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(ReservationErrorCode.UNKNOWN_USER_PK));
+        HotelEntity hotelEntity = hotelRepository.findById(dto.getHotelPk()).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        long totalPrice = 0;
+        ReservationEntity reservationEntity = ReservationEntity.builder()
+                .hotelEntity(hotelEntity)
+                .userEntity(userEntity)
+                .resNum("R" + RandomCodeUtils.getRandomCode(5))
+                .fromDate(dto.getFromDate())
+                .toDate(dto.getToDate())
+                .hotelEntity(hotelEntity)
+                .userEntity(userEntity)
+                .resStatus(0L)
+                .build();
+        reservationRepository.save(reservationEntity);
+        for (DogInfo dogInfo : dto.getDogInfo()){
+            DogSizeEntity dogSizeEntity = dogSizeRepository.findById(dogInfo.getSizePk()).orElseThrow(() -> new CustomException(ReservationErrorCode.UNKNOWN_DOG_SIZE_PK));
+            HotelRoomInfoEntity hotelRoomInfoEntity = hotelRoomRepository.findById(dogInfo.getHotelRoomPk()).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
+            ResDogInfoEntity resDogInfoEntity = ResDogInfoEntity.builder()
+                    .dogNm(dogInfo.getDogNm())
+                    .dogSizeEntity(dogSizeEntity)
+                    .age(dogInfo.getDogAge())
+                    .information(dogInfo.getInformation())
+                    .build();
+            resDogInfoRepository.save(resDogInfoEntity);
+            ResComprehensiveInfoEntity resComprehensiveInfoEntity = ResComprehensiveInfoEntity.builder()
+                    .resDogInfoEntity(resDogInfoEntity)
+                    .hotelRoomInfoEntity(hotelRoomInfoEntity)
+                    .reservationEntity(reservationEntity)
+                    .build();
+            resComprehensiveInfoRepository.save(resComprehensiveInfoEntity);
+            HotelRoomDateProcDto hotelRoomDateProcDto = HotelRoomDateProcDto.builder()
+                    .hotelRoomInfoEntity(hotelRoomInfoEntity)
+                    .fromDate(dto.getFromDate())
+                    .toDate(dto.getToDate())
+                    .build();
+            hotelResRoomRepository.updateHotelResRoomReservationCount(hotelRoomDateProcDto);
+            totalPrice += dogInfo.getRoomAmount();
+        }
+        ResPaymentEntity resPaymentEntity = ResPaymentEntity.builder()
+                .reservationEntity(reservationEntity)
+                .resPaymentNum("P" + RandomCodeUtils.getRandomCode(5))
+                .paymentAmount(totalPrice)
+                .businessEntity(hotelEntity.getBusinessEntity())
+                .userEntity(userEntity)
+                .paymentStatus(1L)
+                .build();
+        resPaymentRepository.save(resPaymentEntity);
+
         return new ResVo(Const.SUCCESS);
     }
 
@@ -141,6 +210,33 @@ public class ReservationService {
             throw new CustomException(ReservationErrorCode.HOTEL_ROOM_MANAGEMENT_TABLE_UPDATE_FAILED);
         }
         return new ResVo(Const.SUCCESS);
+    }
+    @Transactional(rollbackFor = Exception.class)
+    public ResVo refundHotelReservation(HotelReservationDelDto dto) {
+        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        ReservationEntity reservationEntity = reservationRepository.findById(dto.getResPk())
+                .orElseThrow(() -> new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION));
+        reservationEntity.setResStatus(4L);
+        RefundEntity refundEntity = RefundEntity.builder()
+                .userEntity(userEntity)
+                .reservationEntity(reservationEntity)
+                .refundAmount(getRefundAmount(reservationEntity, reservationEntity.getResPaymentEntity().getPaymentAmount())  )
+                .refundDate(LocalDateTime.now())
+                .refundNum("R" + RandomCodeUtils.getRandomCode(5))
+                .build();
+        refundRepository.save(refundEntity);
+
+        reservationEntity.getResPaymentEntity().setPaymentStatus(2L);
+        ResComprehensiveInfoEntity resComprehensiveInfoEntity = resComprehensiveInfoRepository.findByReservationEntity(reservationEntity);
+        HotelRoomDateProcDto hotelRoomDateProcDto = HotelRoomDateProcDto.builder()
+                .hotelRoomInfoEntity(resComprehensiveInfoEntity.getHotelRoomInfoEntity())
+                .fromDate(reservationEntity.getFromDate())
+                .toDate(reservationEntity.getToDate())
+                .build();
+
+        hotelResRoomRepository.updateHotelResRoomRefundCount(hotelRoomDateProcDto);
+        return new ResVo(1);
+
     }
 
     //--------------------------------------------------예약 정보---------------------------------------------------------

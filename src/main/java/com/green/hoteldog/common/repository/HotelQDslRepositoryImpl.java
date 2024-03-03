@@ -3,9 +3,7 @@ package com.green.hoteldog.common.repository;
 import com.green.hoteldog.common.entity.*;
 import com.green.hoteldog.hotel.model.DogSizeEa;
 import com.green.hoteldog.hotel.model.HotelListSelDto;
-import com.green.hoteldog.hotel.model.HotelListSelVo;
 
-import com.green.hoteldog.reservation.model.DogInfo;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;

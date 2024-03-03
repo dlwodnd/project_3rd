@@ -1,11 +1,17 @@
 package com.green.hoteldog.common.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "t_res_payment")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResPaymentEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
