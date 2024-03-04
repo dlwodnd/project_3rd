@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openkoreantext.processor.OpenKoreanTextProcessorJava;
 import org.openkoreantext.processor.tokenizer.KoreanTokenizer;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,9 +62,45 @@ public class HotelService {
 
 
 
+
     //-----------------------------------------------호텔 광고 리스트 셀렉트------------------------------------------------
     public List<HotelListSelVo> getHotelAdvertiseList() {
-        return mapper.selHotelAdvertiseList();
+
+        List<HotelEntity> hotelEntityList = hotelRepository.findAllByAdvertiseAndAndApproval(1L, 1L);
+        Optional<UserEntity> optionalUserEntity = userRepository.findById(authenticationFacade.getLoginUserPk());
+        return hotelEntityList.stream()
+                .map(item -> {
+                    List<HotelRoomInfoEntity> hotelRoomInfoEntityList = hotelRoomRepository.findByHotelEntity(item);
+                    List<ReservationEntity> reservationEntityList = reservationRepository.findAllByHotelEntity(item);
+                    List<ReviewEntity> reviewEntityList = reviewRepository.findAllByReservationEntityIn(reservationEntityList);
+                    long reviewScoreSum = 0;
+                    for (ReviewEntity reviewEntity : reviewEntityList) {
+                        reviewScoreSum += reviewEntity.getScore();
+                    }
+                    float reviewScoreAvg = (float) reviewScoreSum / reviewEntityList.size();
+                    List<RoomDiscountInfo> roomCostList = hotelRoomInfoEntityList.stream()
+                            .map(cost -> {RoomDiscountInfo roomDiscountInfo = new RoomDiscountInfo();
+                                roomDiscountInfo.setDiscountCost(cost.getHotelRoomCost(), cost.getDiscountPer());
+                                return roomDiscountInfo;
+                            }).toList();
+                    roomCostList.stream().sorted(Comparator.comparing(RoomDiscountInfo::getRoomCost));
+                    int bookMark = 0;
+                    if (optionalUserEntity.isPresent()) {
+                        UserEntity userEntity = optionalUserEntity.get();
+                        bookMark = hotelFavoritesRepository.existsByUserEntityAndHotelEntity(userEntity, item) ? 1 : 0;
+                    }
+                    return HotelListSelVo.builder()
+                            .hotelPk(item.getHotelPk())
+                            .hotelNm(item.getHotelNm())
+                            .addressName(item.getHotelFullAddress())
+                            .hotelRoomCost("" +roomCostList.get(0).getRoomCost())
+                            .discountPer(Integer.parseInt(roomCostList.get(0).getDiscount()))
+                            .hotelPic(hotelPicRepository.findHotelPicEntitiesByHotelEntity(item).get(0).getPic())
+                            .bookMark(bookMark)
+                            .reviewCount(reviewEntityList.size())
+                            .avgStar(Math.round(reviewScoreAvg * 10) / 10.0f)
+                            .build();
+                }).collect(Collectors.toList());
     }
 
     //-----------------------------------------------호텔 리스트 셀렉트----------------------------------------------------
@@ -385,16 +423,14 @@ public class HotelService {
     }
 
     //----------------------------------------------북마크 한 호텔 리스트---------------------------------------------------
-    public List<HotelBookMarkListVo> getHotelBookmarkList(int userPk, int page) {
-        int perPage = Const.HOTEL_LIST_COUNT_PER_PAGE;
-        int pages = (page - 1) * Const.HOTEL_FAV_COUNT_PER_PAGE;
-        List<HotelBookMarkListVo> getBookMarkList = mapper.getHotelBookMark(userPk, pages, perPage);
-        log.info("getBookMarkList {}", getBookMarkList);
-        List<Integer> pkList = getBookMarkList
-                .stream()
-                .map(HotelBookMarkListVo::getHotelPk)
-                .collect(Collectors.toList());
-        log.info("pkList {}", pkList);
+    @Transactional
+    public List<HotelBookMarkListVo> getHotelBookmarkList(long userPk, int page) {
+        UserEntity userEntity = userRepository.findById(userPk).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        Pageable pageable = PageRequest.of(page-1, Const.HOTEL_LIST_COUNT_PER_PAGE);
+        List<HotelFavoritesEntity> hotelFavoritesRepositoryList = hotelFavoritesRepository.findAllByUserEntity(userEntity,pageable);
+        List<HotelEntity> hotelEntityList = hotelFavoritesRepositoryList.stream()
+                .map(HotelFavoritesEntity::getHotelEntity)
+                .toList();
 
 //        List<HotelBookMarkPicVo> picVoList=mapper.getHotelBookMarkPic(pkList);
 //        log.info("picVoList {}", picVoList);
@@ -405,7 +441,34 @@ public class HotelService {
 //                        .findFirst()
 //                        .ifPresent(picVo -> vo.setHotelPic(picVo.getPic()))
 //        );
-        return getBookMarkList;
+        return hotelEntityList.stream()
+                .map(item -> {
+                    List<HotelRoomInfoEntity> hotelRoomInfoEntityList = hotelRoomRepository.findByHotelEntity(item);
+                    List<ReservationEntity> reservationEntityList = reservationRepository.findAllByHotelEntity(item);
+                    List<ReviewEntity> reviewEntityList = reviewRepository.findAllByReservationEntityIn(reservationEntityList);
+                    long reviewScoreSum = 0;
+                    for (ReviewEntity reviewEntity : reviewEntityList) {
+                        reviewScoreSum += reviewEntity.getScore();
+                    }
+                    float reviewScoreAvg = (float) reviewScoreSum / reviewEntityList.size();
+                    List<RoomDiscountInfo> roomCostList = hotelRoomInfoEntityList.stream()
+                            .map(cost -> {RoomDiscountInfo roomDiscountInfo = new RoomDiscountInfo();
+                                roomDiscountInfo.setDiscountCost(cost.getHotelRoomCost(), cost.getDiscountPer());
+                                return roomDiscountInfo;
+                            }).toList();
+                    roomCostList.stream().sorted(Comparator.comparing(RoomDiscountInfo::getRoomCost));
+                    return HotelBookMarkListVo.builder()
+                            .hotelPk(item.getHotelPk())
+                            .hotelNm(item.getHotelNm())
+                            .addressName(item.getHotelFullAddress())
+                            .hotelRoomCost("" +roomCostList.get(0).getRoomCost())
+                            .discountPer(Integer.parseInt(roomCostList.get(0).getDiscount()))
+                            .hotelPic(hotelPicRepository.findHotelPicEntitiesByHotelEntity(item).get(0).getPic())
+                            .bookMark(1)
+                            .reviewCount(reviewEntityList.size())
+                            .avgStar(Math.round(reviewScoreAvg * 10) / 10.0f)
+                            .build();
+                }).collect(Collectors.toList());
 
     }
 

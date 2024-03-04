@@ -185,7 +185,7 @@ public class BusinessService {
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         List<ReservationEntity> reservationEntityList = reservationRepository.findAllByHotelEntity(hotelEntity);
         Page<ReservationInfo> reservationInfoPage = reservationRepository.getReservationInfoList(pageable, reservationEntityList);
-
+        log.info("reservationInfoPage : " + reservationInfoPage.getContent());
         return ReservationInfoVo.builder()
                 .reservationInfoList(reservationInfoPage.getContent())
                 .totalPage(reservationInfoPage.getTotalPages())
@@ -199,7 +199,7 @@ public class BusinessService {
         BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         List<ReservationEntity> reservationEntityList = reservationRepository.findAllByHotelEntityAndFromDate(hotelEntity, LocalDate.now());
-        Page<ReservationTodayInfo> reservationTodayInfoPage = reservationRepository.getReservationTodayInfoList(pageable, reservationEntityList);
+        Page<ReservationTodayInfo> reservationTodayInfoPage = reservationRepository.getReservationTodayInfoList2(pageable, reservationEntityList);
 
 
 

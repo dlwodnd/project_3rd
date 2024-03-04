@@ -3,6 +3,7 @@ package com.green.hoteldog.reservation;
 import com.green.hoteldog.common.Const;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.common.entity.*;
+import com.green.hoteldog.common.entity.composite.ResComprehensiveInfoComposite;
 import com.green.hoteldog.common.repository.*;
 import com.green.hoteldog.common.utils.RandomCodeUtils;
 import com.green.hoteldog.exceptions.*;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -101,6 +103,16 @@ public class ReservationService {
     }
     @Transactional(rollbackFor = Exception.class)
     public ResVo postHotelReservationFix(HotelReservationInsDto dto) {
+        log.info("dto : {}", dto);
+        if(dto.getToDate() == null || dto.getFromDate() == null){
+            throw new CustomException(ReservationErrorCode.NO_DATE_INFORMATION);
+        }
+        if(dto.getToDate().isBefore(LocalDate.now())){
+            throw new CustomException(ReservationErrorCode.NO_DATE_INFORMATION);
+        }
+        if(!dto.getToDate().isAfter(dto.getFromDate())){
+            throw new CustomException(ReservationErrorCode.NO_DATE_INFORMATION);
+        }
         UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(ReservationErrorCode.UNKNOWN_USER_PK));
         HotelEntity hotelEntity = hotelRepository.findById(dto.getHotelPk()).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         long totalPrice = 0;
@@ -125,10 +137,16 @@ public class ReservationService {
                     .information(dogInfo.getInformation())
                     .build();
             resDogInfoRepository.save(resDogInfoEntity);
+            ResComprehensiveInfoComposite composite = ResComprehensiveInfoComposite.builder()
+                    .resPk(reservationEntity.getResPk())
+                    .hotelRoomPk(hotelRoomInfoEntity.getHotelRoomPk())
+                    .resDogPk(resDogInfoEntity.getResDogPk())
+                    .build();
             ResComprehensiveInfoEntity resComprehensiveInfoEntity = ResComprehensiveInfoEntity.builder()
-                    .resDogInfoEntity(resDogInfoEntity)
-                    .hotelRoomInfoEntity(hotelRoomInfoEntity)
+                    .composite(composite)
                     .reservationEntity(reservationEntity)
+                    .hotelRoomInfoEntity(hotelRoomInfoEntity)
+                    .resDogInfoEntity(resDogInfoEntity)
                     .build();
             resComprehensiveInfoRepository.save(resComprehensiveInfoEntity);
             HotelRoomDateProcDto hotelRoomDateProcDto = HotelRoomDateProcDto.builder()
@@ -211,6 +229,7 @@ public class ReservationService {
         }
         return new ResVo(Const.SUCCESS);
     }
+    //예약 취소 및 환불 jpa
     @Transactional(rollbackFor = Exception.class)
     public ResVo refundHotelReservation(HotelReservationDelDto dto) {
         UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));

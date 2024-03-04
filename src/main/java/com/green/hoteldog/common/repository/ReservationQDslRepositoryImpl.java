@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.green.hoteldog.common.entity.QDogSizeEntity.dogSizeEntity;
@@ -114,7 +115,7 @@ public class ReservationQDslRepositoryImpl implements ReservationQDslRepository{
                         , resComprehensiveInfoEntity.reservationEntity.resStatus))
                 .from(resComprehensiveInfoEntity)
                 .where(resComprehensiveInfoEntity.reservationEntity.in(reservationEntityList))
-                .orderBy(hotelRoomInfoEntity.dogSizeEntity.sizePk.asc(),reservationEntity.fromDate.asc())
+                .orderBy(hotelRoomInfoEntity.dogSizeEntity.sizePk.asc(),reservationEntity.resPk.asc(),reservationEntity.fromDate.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -128,7 +129,10 @@ public class ReservationQDslRepositoryImpl implements ReservationQDslRepository{
 
     @Override
     public Page<ReservationInfo> getReservationInfoList(Pageable pageable, List<ReservationEntity> reservationEntityList) {
-
+        List<Long> resPkList = new ArrayList<>();
+        for(ReservationEntity reservationEntity : reservationEntityList){
+            resPkList.add(reservationEntity.getResPk());
+        }
         List<ReservationInfo> reservationInfoList = jpaQueryFactory
                 .select(new QReservationInfo(
                         reservationEntity.resPk
@@ -141,10 +145,10 @@ public class ReservationQDslRepositoryImpl implements ReservationQDslRepository{
                         , reservationEntity.resPaymentEntity.paymentAmount
                         , reservationEntity.resStatus))
                 .from(reservationEntity)
-                .where(reservationEntity.in(reservationEntityList))
+                .where(reservationEntity.resPk.in(resPkList))
                 .orderBy(reservationEntity.resPk.asc())
-                .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         JPAQuery<Long> countQuery = jpaQueryFactory

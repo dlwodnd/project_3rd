@@ -133,10 +133,10 @@ public class HotelController {
     @Operation(summary = "좋아요 한 호텔 리스트", description = "좋아요 한 호텔 리스트 Page별로 6개씩 출력")
     public List<HotelBookMarkListVo> getHotelBookmarkList(int page) {
         if (page <= 0) {
-            throw new CustomException(HotelErrorCode.NON_EXIST_PAGE_DATA);
+            page = 1;
         }
         checkUser();
-        int userPk = (int)authenticationFacade.getLoginUserPk();
+        long userPk = authenticationFacade.getLoginUserPk();
         return service.getHotelBookmarkList(userPk, page);
     }
 

@@ -73,16 +73,17 @@ public class BusinessController {
             "toDate: 체크아웃 날짜<br>" +
             "userPhoneNum: 유저 전화번호<br>" +
             "payment: 결제 가격<br>" +
-            "resStatus: 예약 상태<br>"
+            "resStatus: 예약 상태<br>"+
+            "예약상태 : 0 : 승인 전, 1 : 예약 승인, 2 : 체크인 , 3 : 체크아웃, 4 : 유저 예약 취소, 5 : 사업자 예약 취소<br>"
     )
     @Parameters({
             @Parameter(name = "page", description = "페이지 번호", required = true)
     })
     public ReservationInfoVo getHotelReservationList(@RequestParam int page){
-        if(page < 1){
+        if(page - 1 < 0){
             page = 1;
         }
-        Pageable pageable = PageRequest.of(page, Const.COMMON_PAGE_SIZE);
+        Pageable pageable = PageRequest.of(page - 1, Const.COMMON_PAGE_SIZE);
         return service.getHotelReservationList(pageable);
     }
     // 오늘 예약 정보 리스트
@@ -106,22 +107,21 @@ public class BusinessController {
             "toDate: 체크아웃 날짜<br>" +
             "userPhoneNum: 유저 전화번호<br>" +
             "paymentAmount: 예약 결제 금액<br>" +
-            "resStatus: 예약 상태<br>"
+            "resStatus: 예약 상태<br>" +
+            "예약상태 : 0 : 승인 전, 1 : 예약 승인, 2 : 체크인 , 3 : 체크아웃, 4 : 유저 예약 취소, 5 : 사업자 예약 취소<br>"
     )
     @Parameters({
             @Parameter(name = "page", description = "페이지 번호", required = true)
     })
     public ReservationTodayInfoVo getHotelReservationListToday(@RequestParam int page){
-        if(page < 1){
-            page = 1;
-        }
-        Pageable pageable = PageRequest.of(page, Const.COMMON_PAGE_SIZE);
+
+        Pageable pageable = PageRequest.of(page - 1, Const.COMMON_PAGE_SIZE);
         return service.getHotelReservationTodayList(pageable);
     }
 
 
-    //사업자 유저 호텔 등록
-    @PostMapping("/registration")
+    //사업자 유저 호텔 등록 -- 사업자 회원 가입 기능으로 변경
+    /*@PostMapping("/registration")
     @Operation(summary = "사업자 유저 호텔 등록", description = "사업자 유저가 호텔을 등록합니다.<br>" +
             "입력값<br>" +
             "businessCertificationFile: 사업자 등록증 파일<br>" +
@@ -136,7 +136,7 @@ public class BusinessController {
         dto.setBusinessCertificationFile(businessCertificationFile);
         dto.setHotelPics(hotelPics);
         return service.insHotel(dto);
-    }
+    }*/
     //사업자 유저 호텔 정보 수정
     @PutMapping("/hotel")
     @Operation(summary = "사업자 유저 호텔 정보 수정", description = "사업자 유저가 등록한 호텔 정보를 수정합니다.<br>" +

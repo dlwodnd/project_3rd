@@ -3,6 +3,8 @@ package com.green.hoteldog.reservation.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
 
@@ -16,9 +18,11 @@ public class HotelReservationInsDto{
     @JsonProperty(value = "hotel_pk")
     @Schema(title = "호텔pk")
     private long hotelPk;
+    @FutureOrPresent
     @JsonProperty(value = "from_date")
     @Schema(title = "시작일")
     private LocalDate fromDate;
+    @Future
     @JsonProperty(value = "to_date")
     @Schema(title = "종료일")
     private LocalDate toDate;

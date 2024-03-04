@@ -23,8 +23,8 @@ public class HotelResRoomQDslRepositoryImpl implements HotelResRoomQDslRepositor
             jpaQueryFactory
                     .update(hotelResRoomEntity)
                     .set(hotelResRoomEntity.hotelLeftEa, hotelResRoomEntity.hotelLeftEa.add(1))
-                    .where(hotelResRoomEntity.hotelRoomByDatePk.eq(hotelRoomDateProcDto.getHotelRoomInfoEntity().getHotelRoomPk())
-                            , hotelResRoomEntity.roomDate.between(hotelRoomDateProcDto.getFromDate(), hotelRoomDateProcDto.getToDate().plusDays(1)))
+                    .where(hotelResRoomEntity.hotelRoomInfoEntity.hotelRoomPk.eq(hotelRoomDateProcDto.getHotelRoomInfoEntity().getHotelRoomPk())
+                            , hotelResRoomEntity.roomDate.between(hotelRoomDateProcDto.getFromDate(), hotelRoomDateProcDto.getToDate()))
                     .execute();
         }
 
@@ -35,8 +35,8 @@ public class HotelResRoomQDslRepositoryImpl implements HotelResRoomQDslRepositor
         jpaQueryFactory
                 .update(hotelResRoomEntity)
                 .set(hotelResRoomEntity.hotelLeftEa, hotelResRoomEntity.hotelLeftEa.add(1))
-                .where(hotelResRoomEntity.hotelRoomByDatePk.eq(hotelRoomDateProcDto.getHotelRoomInfoEntity().getHotelRoomPk())
-                        , hotelResRoomEntity.roomDate.between(hotelRoomDateProcDto.getFromDate(), hotelRoomDateProcDto.getToDate().plusDays(1)))
+                .where(hotelResRoomEntity.hotelRoomInfoEntity.hotelRoomPk.eq(hotelRoomDateProcDto.getHotelRoomInfoEntity().getHotelRoomPk())
+                        , hotelResRoomEntity.roomDate.between(hotelRoomDateProcDto.getFromDate(), hotelRoomDateProcDto.getToDate()))
                 .execute();
 
     }
@@ -46,8 +46,8 @@ public class HotelResRoomQDslRepositoryImpl implements HotelResRoomQDslRepositor
         jpaQueryFactory
                 .update(hotelResRoomEntity)
                 .set(hotelResRoomEntity.hotelLeftEa, hotelResRoomEntity.hotelLeftEa.subtract(1))
-                .where(hotelResRoomEntity.hotelRoomByDatePk.eq(hotelRoomDateProcDto.getHotelRoomInfoEntity().getHotelRoomPk())
-                        , hotelResRoomEntity.roomDate.between(hotelRoomDateProcDto.getFromDate(), hotelRoomDateProcDto.getToDate().plusDays(1)))
+                .where(hotelResRoomEntity.hotelRoomInfoEntity.hotelRoomPk.eq(hotelRoomDateProcDto.getHotelRoomInfoEntity().getHotelRoomPk())
+                        , hotelResRoomEntity.roomDate.between(hotelRoomDateProcDto.getFromDate(), hotelRoomDateProcDto.getToDate()))
                 .execute();
     }
 

@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ReservationErrorCode implements ErrorCode{
+    BAD_REQUEST
+            (HttpStatus.BAD_REQUEST, "날짜 정보를 잘 못 입력했습니다."),
+    NO_DATE_INFORMATION
+            (HttpStatus.BAD_REQUEST, "날짜 정보가 없습니다."),
     NOT_CHECK_IN(
             HttpStatus.BAD_REQUEST, "체크인 되지 않은 예약입니다."),
     CANCEL_RESERVATION
