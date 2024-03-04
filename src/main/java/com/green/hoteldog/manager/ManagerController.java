@@ -1,15 +1,9 @@
 package com.green.hoteldog.manager;
 
-import com.green.hoteldog.common.entity.UserEntity;
-import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
-import com.green.hoteldog.manager.model.ApprovalAdListVo;
-import com.green.hoteldog.manager.model.HotelListVo;
-import com.green.hoteldog.manager.model.UserListVo;
-import com.green.hoteldog.manager.model.UserListVo2;
+import com.green.hoteldog.manager.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +43,7 @@ public class ManagerController {
 //        return null;
 //    }
 
-    @GetMapping("/userList")
+    /*@GetMapping("/userList")
     @Operation(summary = "유저목록", description = "사업자 유저 1 일반유저 0 보냄됨")
     public List<UserListVo2> getUserList(@RequestParam(required = false) UserRoleEnum userRole, @PageableDefault(page = 1, size = 2) Pageable pageable) {
         if (userRole != null && userRole == UserRoleEnum.USER) {
@@ -64,6 +58,16 @@ public class ManagerController {
             return businessUsers;
         }
         return null;
+    }*/
+    @GetMapping("/userList")
+    @Operation(summary = "유저 목록", description = "일반 유저 목록")
+    public UserInfoVo getUserList(@PageableDefault(page = 1, size = 2) Pageable pageable) {
+        return service.getUsers(pageable);
+    }
+    @GetMapping("/businessUserList")
+    @Operation(summary = "사업자 유저 목록", description = "사업자 유저 목록")
+    public BusinessUserInfoVo getBusinessUserList(@PageableDefault(page = 1, size = 2) Pageable pageable) {
+        return service.businessUsers(pageable);
     }
    // 대기 유저 사업자유저 전환
    @Operation(summary = "대기 유저 사업자유저 전환", description = "보내야될 비지니스 pk와  대기자가 0인AccountStatus를 1보내면됨 ")

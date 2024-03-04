@@ -8,22 +8,18 @@ public class UserListVo {
     public static class BusinessVo {
 
 
-        private Long userPk;
-        private String userNum;
+        private Long businessUserPk;
         private String userEmail;
-        private String nickname;
-        private String userAddress;
+        private String businessName;
         private String phoneNum;
 
         public static BusinessVo UserList(BusinessEntity businessEntity) {
-            BusinessVo businessDto = new BusinessVo();
-            businessDto.setUserPk(businessEntity.getUserEntity().getUserPk());
-            businessDto.setUserNum(businessEntity.getUserEntity().getUserNum());
-            businessDto.setUserEmail(businessEntity.getUserEntity().getUserEmail());
-            businessDto.setNickname(businessEntity.getUserEntity().getNickname());
-            businessDto.setUserAddress(businessEntity.getUserEntity().getUserAddress());
-            businessDto.setPhoneNum(businessEntity.getUserEntity().getPhoneNum());
-            return businessDto;
+            BusinessVo businessVo = new BusinessVo();
+            businessVo.setBusinessUserPk(businessEntity.getBusinessPk());
+            businessVo.setBusinessName(businessEntity.getBusinessName());
+            businessVo.setUserEmail(businessEntity.getBusinessEmail());
+            businessVo.setPhoneNum(businessEntity.getBusinessPhoneNum());
+            return businessVo;
         }
     }
 }

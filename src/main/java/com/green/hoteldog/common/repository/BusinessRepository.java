@@ -18,7 +18,8 @@ public interface BusinessRepository extends JpaRepository<BusinessEntity, Long> 
     List<BusinessEntity> findByAccountStatusNot(int accountStatus);
 */
     //승민
-    List<BusinessEntity> findByUserEntity_UserPkInOrderByCreatedAtDesc(List<Long> userPks, Pageable pageable);
+    /*List<BusinessEntity> findByUserEntity_UserPkInOrderByCreatedAtDesc(List<Long> userPks, Pageable pageable);*/
+    List<BusinessEntity> findAllCreatedAtDesc(Pageable pageable);
 
 //    @Modifying
 //    @Query("UPDATE BusinessEntity b SET b.accountStatus = :accountStatus WHERE b.userEntity.userPk = :userPk")
@@ -37,6 +38,6 @@ public interface BusinessRepository extends JpaRepository<BusinessEntity, Long> 
     //영웅
 
     //재웅
-    Optional<BusinessEntity> findByUserEntity(UserEntity userEntity);
+    Optional<BusinessEntity> findByBusinessEmail(String businessEmail);
     //재웅
 }

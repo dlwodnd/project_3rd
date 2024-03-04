@@ -237,27 +237,23 @@ public class UserService {
     // 사업자 유저 로그인
     @Transactional
     public BusinessSigninVo businessSignin(HttpServletResponse response, HttpServletRequest request, UserSigninDto dto) {
-        Optional<UserEntity> userEntityOptional = userRepository.findByUserEmail(dto.getUserEmail());
-
-        UserEntity userEntity = userEntityOptional.orElseThrow(() -> new CustomException(UserErrorCode.UNKNOWN_EMAIL_ADDRESS));
-        if(userEntity.getUserRole().equals(UserRoleEnum.WITHDRAWAL)){
+        BusinessEntity businessEntity = businessRepository.findByBusinessEmail(dto.getUserEmail()).orElseThrow(() -> new CustomException(UserErrorCode.UNKNOWN_EMAIL_ADDRESS));
+        if(businessEntity.getRole().equals(UserRoleEnum.WITHDRAWAL)){
             throw new CustomException(UserErrorCode.WITHDRAWAL_USER);
         }
 
-        Optional<BusinessEntity> businessEntityOptional = businessRepository.findByUserEntity(userEntity);
-
-        BusinessEntity businessEntity = businessEntityOptional.orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
 
 
-        if (!passwordEncoder.matches(dto.getUpw(), userEntity.getUpw())) {
+
+        if (!passwordEncoder.matches(dto.getUpw(), businessEntity.getBusinessPw())) {
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
         }
 
 
         MyPrincipal myPrincipal = MyPrincipal.builder()
-                .userPk(userEntity.getUserPk())
+                .userPk(businessEntity.getBusinessPk())
                 .build();
-        myPrincipal.getRoles().add(userEntity.getUserRole().name());
+        myPrincipal.getRoles().add(businessEntity.getRole().name());
         String at = tokenProvider.generateAccessToken(myPrincipal);
         //엑서스 토큰 값 받아오기
         String rt = tokenProvider.generateRefreshToken(myPrincipal);
@@ -270,10 +266,9 @@ public class UserService {
 
         return BusinessSigninVo.builder()
                 .businessPk(businessEntity.getBusinessPk())
-                .userPk(userEntity.getUserPk())
+                .businessName(businessEntity.getBusinessName())
                 .accessToken(at)
-                .nickname(userEntity.getNickname())
-                .userRole(userEntity.getUserRole().name())
+                .userRole(businessEntity.getRole().name())
                 .build();
     }
 
@@ -281,37 +276,13 @@ public class UserService {
     @Transactional
     public ResVo insBusinessUser(BusinessUserSignupDto businessUserDto, HotelInsDto hotelDto) {
 
-        //유저 엔티티 등록
-        UserEntity userEntity = UserEntity.builder()
-                .userStatus(0L)
-                .userRole(UserRoleEnum.BUSINESS_USER)
-                .userNum("U" + RandomCodeUtils.getRandomCode(5))
-                .userEmail(businessUserDto.getEmailResponseVo().getEmail())
-                .upw(passwordEncoder.encode(businessUserDto.getUpw()))
-                .nickname(businessUserDto.getNickname())
-                .phoneNum(businessUserDto.getPhoneNum())
-                .userAddress(businessUserDto.getAddressEntity().getAddressName() + " " + businessUserDto.getAddressEntity().getDetailAddress())
-                .build();
-        userRepository.save(userEntity);
-
-        UserWhereEntity userWhereEntity = UserWhereEntity.builder()
-                .userEntity(userEntity)
-                .x(businessUserDto.getAddressEntity().getX())
-                .y(businessUserDto.getAddressEntity().getY())
-                .addressName(businessUserDto.getAddressEntity().getAddressName())
-                .userEntity(userEntity)
-                .zoneNum(businessUserDto.getAddressEntity().getZoneNum())
-                .region1DepthName(businessUserDto.getAddressEntity().getRegion1DepthName())
-                .region2DepthName(businessUserDto.getAddressEntity().getRegion2DepthName())
-                .region3DepthName(businessUserDto.getAddressEntity().getRegion3DepthName())
-                .detailAddress(businessUserDto.getAddressEntity().getDetailAddress())
-                .build();
-        userEntity.setUserWhereEntity(userWhereEntity);
-        //유저 엔티티 등록
-
         //사업자 엔티티 등록
         BusinessEntity businessEntity = new BusinessEntity();
-        businessEntity.setUserEntity(userEntity);
+        businessEntity.setBusinessEmail(businessUserDto.getUserEmail());
+        businessEntity.setBusinessPw(passwordEncoder.encode(businessUserDto.getUpw()));
+        businessEntity.setBusinessPhoneNum(businessUserDto.getPhoneNum());
+        businessEntity.setRole(UserRoleEnum.BUSINESS_USER);
+        businessEntity.setBusinessStatus(1L);
         businessEntity.setBusinessName(businessUserDto.getBusinessName());
         businessRepository.save(businessEntity);
         //사업자 엔티티 등록
@@ -521,9 +492,7 @@ public class UserService {
     @Transactional
     public ResVo userWithdrawal() {
         UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        if(businessRepository.findByUserEntity(userEntity).isPresent()){
-            throw new CustomException(WithdrawalErrorCode.BUSINESS_USER_EXISTS);
-        }
+
         List<ReservationEntity> reservationEntityList = reservationRepository.findByUserEntityAndResStatus(userEntity, 0);
 
         if (!reservationEntityList.isEmpty()) {

@@ -1,4 +1,4 @@
-package com.green.hoteldog.user.models;
+package com.green.hoteldog.manager.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BusinessSigninVo {
-
-    private long businessPk;
-    private String userRole;
+public class BusinessUserInfo {
+    private long businessUserPk;
+    private String userEmail;
     private String businessName;
-    private String accessToken;
-
+    private String phoneNum;
+    private String hotelAddress;
 }

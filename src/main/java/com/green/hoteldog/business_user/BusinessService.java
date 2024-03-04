@@ -61,8 +61,8 @@ public class BusinessService {
 
     @Transactional
     public ResVo insHotelStateChange(HotelSateChangeInsDto dto) {
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         if(hotelEntity.getApproval() == 0){
             throw new CustomException(HotelErrorCode.WAITING_SUSPEND_APPROVAL);
@@ -133,8 +133,7 @@ public class BusinessService {
     // 광고 신청
     @Transactional
     public ResVo postHotelAdvertiseApplication(HotelAdvertiseApplicationDto dto) {
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         LocalDateTime today = LocalDateTime.now();
         HotelAdvertiseEntity hotelAdvertiseEntity = HotelAdvertiseEntity.builder()
@@ -166,8 +165,7 @@ public class BusinessService {
     // 광고 연장 취소
     @Transactional
     public ResVo postHotelAdvertiseCancel(){
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         HotelAdvertiseEntity hotelAdvertiseEntity = hotelAdvertiseRepository.findByHotelEntity(hotelEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_SUBSCRIBE_ADVERTISE));
         if(hotelAdvertiseEntity.getAdStatus() != 1){
@@ -180,8 +178,7 @@ public class BusinessService {
     // 예약 리스트 출력
     @Transactional
     public ReservationInfoVo getHotelReservationList(Pageable pageable) {
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         List<ReservationEntity> reservationEntityList = reservationRepository.findAllByHotelEntity(hotelEntity);
         Page<ReservationInfo> reservationInfoPage = reservationRepository.getReservationInfoList(pageable, reservationEntityList);
@@ -195,8 +192,7 @@ public class BusinessService {
     //하루 방 예약정보
     @Transactional
     public ReservationTodayInfoVo getHotelReservationTodayList(Pageable pageable) {
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         List<ReservationEntity> reservationEntityList = reservationRepository.findAllByHotelEntityAndFromDate(hotelEntity, LocalDate.now());
         Page<ReservationTodayInfo> reservationTodayInfoPage = reservationRepository.getReservationTodayInfoList2(pageable, reservationEntityList);
@@ -211,8 +207,7 @@ public class BusinessService {
     //사업자 유저 호텔 정보 수정
     @Transactional
     public ResVo putHotel(HotelUpdateDto dto){
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         hotelEntity.setHotelDetailInfo(dto.getHotelDetailInfo());
         hotelOptionInfoRepository.deleteAllByHotelEntity(hotelEntity);
@@ -250,12 +245,7 @@ public class BusinessService {
     //사업자 유저 호텔 등록
     @Transactional
     public ResVo insHotel(HotelInsDto dto) {
-        Optional<UserEntity> optionalUserEntity = userRepository.findById(authenticationFacade.getLoginUserPk());
-        UserEntity userEntity = optionalUserEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-
-
-        Optional<BusinessEntity> optionalBusinessEntity = businessRepository.findByUserEntity(userEntity);
-        BusinessEntity businessEntity = optionalBusinessEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
 
         HotelEntity hotelEntity = HotelEntity.builder()
                 .hotelNm(dto.getHotelNm())
@@ -322,12 +312,7 @@ public class BusinessService {
     //사업자 유저가 등록한 호텔 정보
     @Transactional
     public BusinessUserHotelVo getBusinessUserHotel() {
-        Optional<UserEntity> optionalUserEntity = userRepository.findById(authenticationFacade.getLoginUserPk());
-        UserEntity userEntity = optionalUserEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-
-
-        Optional<BusinessEntity> optionalBusinessEntity = businessRepository.findByUserEntity(userEntity);
-        BusinessEntity businessEntity = optionalBusinessEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
 
         Optional<HotelEntity> optionalHotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity);
         HotelEntity hotelEntity = new HotelEntity();
@@ -402,12 +387,7 @@ public class BusinessService {
     //사업자 유저가 등록한 호텔 방 수정
     @Transactional
     public ResVo putHotelRoomInfo(BusinessHotelRoomPutDto dto) {
-        Optional<UserEntity> optionalUserEntity = userRepository.findById(authenticationFacade.getLoginUserPk());
-        UserEntity userEntity = optionalUserEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-
-
-        Optional<BusinessEntity> optionalBusinessEntity = businessRepository.findByUserEntity(userEntity);
-        BusinessEntity businessEntity = optionalBusinessEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
 
         Optional<HotelRoomInfoEntity> optionalHotelRoomInfoEntity = hotelRoomRepository.findById(dto.getHotelRoomPk());
 
@@ -439,12 +419,7 @@ public class BusinessService {
     // 사업자 유저 예약 강아지 방 정보
     @Transactional
     public List<HotelRoomAndDogInfoVo> getHotelRoomAndDogInfo(long resPk) {
-        Optional<UserEntity> optionalUserEntity = userRepository.findById(authenticationFacade.getLoginUserPk());
-        UserEntity userEntity = optionalUserEntity.orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-
-
-        Optional<BusinessEntity> optionalBusinessEntity = businessRepository.findByUserEntity(userEntity);
-        BusinessEntity businessEntity = optionalBusinessEntity.orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         Optional<ReservationEntity> optionalReservationEntity = reservationRepository.findById(resPk);
         ReservationEntity reservationEntity = optionalReservationEntity.orElseThrow(() -> new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION));
         List<ResComprehensiveInfoEntity> resComprehensiveInfoEntityList = resComprehensiveInfoRepository.findAllByReservationEntity(reservationEntity);
@@ -475,8 +450,7 @@ public class BusinessService {
     //호텔 방 활성화 & 비활성화 토글
     @Transactional
     public ResVo toggleHotelRoomActive(HotelRoomToggleDto dto){
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelRoomInfoEntity hotelRoomInfoEntity = hotelRoomRepository.findById(dto.getHotelRoomPk()).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
         if (hotelRoomInfoEntity.getHotelRoomEa() == null || hotelRoomInfoEntity.getHotelRoomCost() == null || hotelRoomInfoEntity.getMaximum() == null || hotelRoomInfoEntity.getRoomPic() == null) {
             throw new CustomException(HotelErrorCode.REQUIRED_VALUE_IS_NULL);
@@ -497,11 +471,7 @@ public class BusinessService {
     //사업자 유저 회원탈퇴
     @Transactional
     public ResVo postBusinessUserWithdrawal() {
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        /*if (!userEntity.getUpw().equals(upw)) {
-            throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
-        }*/
-        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         if (!reservationRepository.findAllByHotelEntityAndResStatusLessThan(hotelEntity, 2L).isEmpty()) {
             throw new CustomException(WithdrawalErrorCode.NOT_CHECK_OUT_RESERVATIONS_REMAIN);
@@ -509,25 +479,14 @@ public class BusinessService {
         if (hotelEntity.getApproval() == 1){
             throw new CustomException(WithdrawalErrorCode.EXIST_IN_OPERATION_HOTEL);
         }
-
-
-        LocalDateTime today = LocalDateTime.now();
-        WithdrawalUserEntity withdrawalUserEntity = WithdrawalUserEntity.builder()
-                .userEntity(userEntity)
-                .approvalDate(today)
-                .applyDate(today.plusDays(30))
-                .reason("사업자 회원 탈퇴")
-                .build();
-        withdrawalUserRepository.save(withdrawalUserEntity);
-        userEntity.setUserStatus(1L);
-        userEntity.setUserRole(UserRoleEnum.WITHDRAWAL);
+        businessEntity.setBusinessStatus(2L);
+        businessEntity.setRole(UserRoleEnum.WITHDRAWAL);
 
 
         return new ResVo(1);
     }
     public ResVo reservationApproval(List<Long> resPkList){
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         List<ReservationEntity> reservationEntityList = reservationRepository.findAllById(resPkList);
         reservationEntityList.forEach(reservationEntity -> {
@@ -542,8 +501,7 @@ public class BusinessService {
         return new ResVo(1);
     }
     public ResVo reservationCancel(ResCancelDto dto){
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         ReservationEntity reservationEntity = reservationRepository.findById(dto.getResPk())
                 .orElseThrow(() -> new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION));
@@ -577,8 +535,7 @@ public class BusinessService {
 
     }
     public ResVo reservationCheckIn(List<Long> resPkList){
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         List<ReservationEntity> reservationEntityList = reservationRepository.findAllById(resPkList);
         for(ReservationEntity reservationEntity : reservationEntityList){
@@ -599,8 +556,7 @@ public class BusinessService {
         return new ResVo(1);
     }
     public ResVo reservationCheckOut(List<Long> resPkList){
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
-        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         List<ReservationEntity> reservationEntityList = reservationRepository.findAllById(resPkList);
         for(ReservationEntity reservationEntity : reservationEntityList){

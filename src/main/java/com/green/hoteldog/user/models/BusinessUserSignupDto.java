@@ -31,14 +31,9 @@ public class BusinessUserSignupDto {
     @Schema(description = "유저 패스워드",defaultValue = "password")
     private String upw;
 
-    @Size(min = 2,message = "닉네임은 최소 2글자 입니다.")
-    private String nickname;
-
     @Pattern(regexp = "^01[0-1|6-9]{1}[\\d]{3,4}[\\d]{4}",message = "올바른 전화번호 입력이 아닙니다.")
     private String phoneNum;
 
-    @JsonIgnore
-    private String userAddress;
 
     private String businessName;
 
@@ -46,5 +41,4 @@ public class BusinessUserSignupDto {
 
     private String bankNm;*/
 
-    private UserAddressInfo addressEntity;
 }

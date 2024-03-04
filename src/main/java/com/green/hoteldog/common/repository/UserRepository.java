@@ -11,15 +11,15 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     //승민
 
-    //모든 유저
+    /*//모든 유저
     List<UserEntity> findAllByOrderByCreatedAtDesc();
 
     //사업자
     List<UserEntity> findAllByUserPkInOrderByCreatedAtDesc(List<Long> userPks);
     // 일반유저
-    List<UserEntity> findAllByUserPkNotInOrderByCreatedAtDesc(List<Long> userPks);
+    List<UserEntity> findAllByUserPkNotInOrderByCreatedAtDesc(List<Long> userPks);*/
 
-    List<UserEntity>findByUserRoleOrderByCreatedAtDesc(UserRoleEnum userRole, Pageable pageable);
+    List<UserEntity>findAllCreatedAtDesc(Pageable pageable);
     // 일반유저
     Optional<UserEntity> findByUserEmail(String email);
     UserEntity findByNickname(String nickname);

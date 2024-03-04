@@ -2,6 +2,7 @@ package com.green.hoteldog.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.green.hoteldog.common.entity.base.CreatedAtBaseEntity;
+import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -18,13 +19,26 @@ public class BusinessEntity extends CreatedAtBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long businessPk;
 
-    @JsonIgnore
-    @ManyToOne(optional = false,fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_pk", referencedColumnName = "userPk",columnDefinition = "BIGINT UNSIGNED")
-    private UserEntity userEntity;
 
     @Column(nullable = false)
     private String businessName;
+
+    @ColumnDefault("'BUSINESS_USER'")
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
+
+    @Column(nullable = false,unique = true)
+    private String businessEmail;
+
+    @Column(nullable = false)
+    private String businessPw;
+
+    @ColumnDefault("0")
+    @Column(nullable = false)
+    private Long businessStatus;
+
+    @Column(nullable = false)
+    private String businessPhoneNum;
 
     //승민
     //승민

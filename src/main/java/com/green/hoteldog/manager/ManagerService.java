@@ -2,7 +2,6 @@ package com.green.hoteldog.manager;
 
 import com.green.hoteldog.common.entity.*;
 
-import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
 import com.green.hoteldog.common.repository.*;
 import com.green.hoteldog.manager.model.*;
 import jakarta.transaction.Transactional;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ManagerService {
-    private final UserRepository managerRepository;
+    private final UserRepository userRepository;
     private final BusinessRepository businessEntityRepository;
     private final HotelRepository hotelRepository;
     private final HotelAdvertiseRepository hotelAdvertiseRepository;
@@ -54,32 +53,44 @@ public class ManagerService {
 
     public List<UserListVo.BusinessVo> getUsersPks(List<Long> userPks, Pageable pageable) {
 
-        List<BusinessEntity> users = businessEntityRepository.findByUserEntity_UserPkInOrderByCreatedAtDesc(userPks, pageable);
+        /*List<BusinessEntity> users = businessEntityRepository.findByUserEntity_UserPkInOrderByCreatedAtDesc(userPks, pageable);
         return users.stream()
                 .map(BusinessEntity -> UserListVo.BusinessVo.UserList(BusinessEntity))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+        return null;
     }
 
-    public List<UserListVo2>getUsers(UserRoleEnum userRole, Pageable pageable){
-        UserListVo2 vo2 = new UserListVo2();
-        long totalRecords =  managerRepository.count();
+    public UserInfoVo getUsers(Pageable pageable){
+        UserInfo vo2 = new UserInfo();
+        long totalRecords = userRepository.count();
         int maxPage = (int) Math.ceil((double) totalRecords / pageable.getPageSize());
-        vo2.setMaxPage(maxPage);
-        List<UserEntity> users = managerRepository.findByUserRoleOrderByCreatedAtDesc(UserRoleEnum.USER, pageable);
-        return users.stream()
-                .map(UserEntity -> UserListVo2.UserList2(UserEntity))
-                .collect(Collectors.toList());
+        List<UserEntity> users = userRepository.findAllCreatedAtDesc(pageable);
+        List<UserInfo> userListVos = users.stream()
+                .map(UserInfo::UserList2)
+                .toList();
+        UserInfoVo userInfoVo = UserInfoVo.builder()
+                .totalPage(maxPage)
+                .userInfoList(userListVos)
+                .build();
+        return userInfoVo;
     }
 
-    public List<UserListVo2>businessUsers(UserRoleEnum userRole, Pageable pageable){
-        UserListVo2 vo2 = new UserListVo2();
-        long totalRecords =  managerRepository.count();
+    public BusinessUserInfoVo businessUsers(Pageable pageable){
+        List<BusinessEntity> businessEntities = businessEntityRepository.findAllCreatedAtDesc(pageable);
+        int totalRecords = businessEntities.size();
         int maxPage = (int) Math.ceil((double) totalRecords / pageable.getPageSize());
-        vo2.setMaxPage(maxPage);
-        List<UserEntity> users = managerRepository.findByUserRoleOrderByCreatedAtDesc(UserRoleEnum.BUSINESS_USER, pageable);
-        return users.stream()
-                .map(UserEntity -> UserListVo2.UserList2(UserEntity))
-                .collect(Collectors.toList());
+        return BusinessUserInfoVo.builder()
+                .totalPage(maxPage)
+                .businessUserInfoList(businessEntities.stream()
+                        .map(item -> BusinessUserInfo.builder()
+                                .businessUserPk(item.getBusinessPk())
+                                .userEmail(item.getBusinessEmail())
+                                .phoneNum(item.getBusinessPhoneNum())
+                                .businessName(item.getBusinessName())
+                                .hotelAddress(item.getHotelEntity().getHotelFullAddress())
+                                .build()).collect(Collectors.toList())
+
+                ).build();
     }
 
 
