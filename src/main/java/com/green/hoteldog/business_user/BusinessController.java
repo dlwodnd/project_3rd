@@ -8,6 +8,7 @@ import com.green.hoteldog.exceptions.CustomException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -22,29 +23,91 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/business")
+@Tag(name = "호텔 사업자 API", description = "사업자 유저 관련 처리")
 public class BusinessController {
     private final BusinessService service;
 
 
     // 호텔 상태 전환
+    @Operation(summary = "호텔 상태 전환",
+            description = "호텔 상태가 운영 중에는 호텔 중지 신청을 합니다<br>" +
+                    "호텔이 중지상태라면 바로 운영 중으로 전환합니다<br>" +
+                    "결과값은 중지 신청시 result = 1 , 운영중으로 변경시 result = 2 입니다<br>" +
+                    "중지 신청시에는 사유를 입력해야 합니다")
     @PostMapping("/state")
     public ResVo insHotelStateChange(@RequestBody HotelSateChangeInsDto dto){
         return service.insHotelStateChange(dto);
     }
 
     // 광고 신청
+    @Operation(summary = "광고 신청", description = "광고 신청<br>" +
+            "cardNum: 카드 번호<br>" +
+            "cardValidThru: 카드 유효기간<br>" +
+            "userBirth: 생년월일<br>" +
+            "cardUserName: 카드 소유자<br>" +
+            "이미 광고 신청상태면 작동하지 않습니다.")
     @GetMapping("/advertise")
     public ResVo postHotelAdvertiseApplication(@RequestBody HotelAdvertiseApplicationDto dto){
         return service.postHotelAdvertiseApplication(dto);
     }
+    // 광고 연장 취소
+    @Operation(summary = "광고 연장 취소", description = "광고 연장 취소<br>" +
+            "이미 광고 취소상태면 작동하지 않습니다.<br>")
+    @GetMapping("/advertise/cancel")
+    public ResVo postHotelAdvertiseCancel(){
+        return service.postHotelAdvertiseCancel();
+    }
 
     // 예약 리스트 출력
     @GetMapping("/reservation")
-    public ReservationInfoVo getHotelReservationList(@RequestParam @PageableDefault(page = 1,size = 10) Pageable pageable){
+    @Operation(summary = "호텔 예약 정보 리스트", description = "호텔 예약 정보 리스트<br>" +
+            "출력 값<br>" +
+            "totalPage: 전체 페이지 수<br>" +
+            "reservationInfoList: 예약 정보 리스트<br>" +
+            "reservationInfoList의 출력 값<br>" +
+            "resPk: 예약 pk<br>" +
+            "resNum: 예약 번호<br>" +
+            "nickname: 유저 닉네임<br>" +
+            "hotelNm: 호텔 이름<br>" +
+            "fromDate: 체크인 날짜<br>" +
+            "toDate: 체크아웃 날짜<br>" +
+            "userPhoneNum: 유저 전화번호<br>" +
+            "payment: 결제 가격<br>" +
+            "resStatus: 예약 상태<br>"
+    )
+    @Parameters({
+            @Parameter(name = "page", description = "페이지 번호", required = true)
+    })
+    public ReservationInfoVo getHotelReservationList(@RequestParam int page){
+        if(page < 1){
+            page = 1;
+        }
+        Pageable pageable = PageRequest.of(page, Const.COMMON_PAGE_SIZE);
         return service.getHotelReservationList(pageable);
     }
     // 오늘 예약 정보 리스트
     @GetMapping("/reservation/today")
+    @Operation(summary = "오늘 호텔 방 예약 리스트", description = "오늘 호텔 방 예약 리스트<br>" +
+            "출력 값<br>" +
+            "totalPage: 전체 페이지 수<br>" +
+            "reservationTodayInfoList: 오늘 호텔 방 예약 정보 리스트<br>" +
+            "reservationTodayInfoList 출력 값<br>" +
+            "resNum: 예약 번호<br>" +
+            "resPk: 예약 pk<br>" +
+            "nickname: 유저 닉네임<br>" +
+            "hotelRoomPk: 호텔 방 pk<br>" +
+            "hotelRoomNm: 호텔 방 이름<br>" +
+            "resDogPk: 예약된 강아지 pk<br>" +
+            "resDogNm: 예약된 강아지 이름<br>" +
+            "resDogInfo: 예약된 강아지 정보<br>" +
+            "dogSizePk: 강아지 사이즈 pk<br>" +
+            "dogSizeNm: 강아지 사이즈 이름<br>" +
+            "fromDate: 체크인 날짜<br>" +
+            "toDate: 체크아웃 날짜<br>" +
+            "userPhoneNum: 유저 전화번호<br>" +
+            "paymentAmount: 예약 결제 금액<br>" +
+            "resStatus: 예약 상태<br>"
+    )
     @Parameters({
             @Parameter(name = "page", description = "페이지 번호", required = true)
     })
@@ -59,7 +122,11 @@ public class BusinessController {
 
     //사업자 유저 호텔 등록
     @PostMapping("/registration")
-    @Operation(summary = "사업자 유저 호텔 등록", description = "사업자 유저가 호텔을 등록합니다.")
+    @Operation(summary = "사업자 유저 호텔 등록", description = "사업자 유저가 호텔을 등록합니다.<br>" +
+            "입력값<br>" +
+            "businessCertificationFile: 사업자 등록증 파일<br>" +
+            "hotelPics: 호텔 사진 리스트(최대 5장)<br>"
+    )
     public ResVo postHotel(@RequestPart HotelInsDto dto,
                            @RequestPart MultipartFile businessCertificationFile,
                            @RequestPart List<MultipartFile> hotelPics){
@@ -72,7 +139,12 @@ public class BusinessController {
     }
     //사업자 유저 호텔 정보 수정
     @PutMapping("/hotel")
-    @Operation(summary = "사업자 유저 호텔 정보 수정", description = "사업자 유저가 등록한 호텔 정보를 수정합니다.")
+    @Operation(summary = "사업자 유저 호텔 정보 수정", description = "사업자 유저가 등록한 호텔 정보를 수정합니다.<br>" +
+            "입력값<br>" +
+            "hotelPics: 호텔 사진 리스트(최대 5장)<br>" +
+            "hotelDetailInfo: 호텔 정보<br>" +
+            "optionList: 호텔 옵션pk 리스트<br>"
+    )
     public ResVo putHotel(@RequestPart HotelUpdateDto dto,
                           @RequestPart(required = false) List<MultipartFile> hotelPics){
         if(hotelPics.size() > 5){
@@ -114,7 +186,10 @@ public class BusinessController {
 
     //호텔 방 활성화 & 비활성화 토글
     @PatchMapping("/hotelRoom")
-    @Operation(summary = "호텔 방 활성화 & 비활성화 토글", description = "호텔 방 활성화 & 비활성화 토글")
+    @Operation(summary = "호텔 방 활성화 & 비활성화 토글", description = "호텔 방 활성화 & 비활성화 토글<br>" +
+            "활성화 상태면 비활성화로, 비활성화 상태면 활성화로 전환합니다.<br>" +
+            "result: 1.활성화, 2.비활성화<br>"
+    )
     public ResVo toggleHotelRoomActive(@RequestBody HotelRoomToggleDto dto){
 
         return service.toggleHotelRoomActive(dto);

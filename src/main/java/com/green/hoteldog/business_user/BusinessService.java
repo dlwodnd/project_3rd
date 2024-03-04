@@ -12,6 +12,7 @@ import com.green.hoteldog.common.utils.RandomCodeUtils;
 import com.green.hoteldog.exceptions.*;
 import com.green.hoteldog.security.AuthenticationFacade;
 import com.green.hoteldog.user.models.HotelRoomDateProcDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,7 @@ import static com.green.hoteldog.common.utils.DiscountCostUtil.getDiscountCost;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+
 public class BusinessService {
     private final AuthenticationFacade authenticationFacade;
     private final BusinessRepository businessRepository;
@@ -56,6 +58,7 @@ public class BusinessService {
 
 
     // 호텔 상태 전환
+
     @Transactional
     public ResVo insHotelStateChange(HotelSateChangeInsDto dto) {
         UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
@@ -158,6 +161,19 @@ public class BusinessService {
                 .build();
         paymentAdRepository.save(paymentAdEntity);
 
+        return new ResVo(1);
+    }
+    // 광고 연장 취소
+    @Transactional
+    public ResVo postHotelAdvertiseCancel(){
+        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        BusinessEntity businessEntity = businessRepository.findByUserEntity(userEntity).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        HotelAdvertiseEntity hotelAdvertiseEntity = hotelAdvertiseRepository.findByHotelEntity(hotelEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_SUBSCRIBE_ADVERTISE));
+        if(hotelAdvertiseEntity.getAdStatus() != 1){
+            throw new CustomException(HotelErrorCode.NOT_SUBSCRIBE_ADVERTISE);
+        }
+        hotelAdvertiseEntity.setAdStatus(2L);
         return new ResVo(1);
     }
 

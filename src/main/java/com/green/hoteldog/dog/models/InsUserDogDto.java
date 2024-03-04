@@ -21,4 +21,6 @@ public class InsUserDogDto {
     private MultipartFile dogPic;
     @Schema(description = "강아지 상세정보")
     private String dogEtc;
+    @JsonIgnore
+    private String dogNum;
 }

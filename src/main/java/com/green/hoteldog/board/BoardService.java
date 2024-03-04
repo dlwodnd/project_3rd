@@ -4,6 +4,7 @@ import com.green.hoteldog.board.models.*;
 import com.green.hoteldog.common.Const;
 import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.ResVo;
+import com.green.hoteldog.common.utils.RandomCodeUtils;
 import com.green.hoteldog.exceptions.AuthorizedErrorCode;
 import com.green.hoteldog.exceptions.BoardErrorCode;
 import com.green.hoteldog.exceptions.CommonErrorCode;
@@ -33,6 +34,7 @@ public class BoardService {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
         log.info("postDto : {}", dto);
+        dto.setBoardNum("B" + RandomCodeUtils.getRandomCode(5));
         try {
             boardMapper.postBoard(dto);
         } catch (Exception e) {
@@ -132,6 +134,7 @@ public class BoardService {
     //---------------------------------------------------댓글 등록--------------------------------------------------------
     public ResVo postComment(PostCommentDto dto) {
         dto.setUserPk((int)facade.getLoginUserPk());
+        dto.setCommentNum("Z" + RandomCodeUtils.getRandomCode(5));
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
@@ -167,6 +170,9 @@ public class BoardService {
     public GetSimpleBoardVo getBoardList(GetBoardListDto dto) {
         GetSimpleBoardVo vo = new GetSimpleBoardVo();
         vo.setSimpleBoardVoList(boardMapper.getBoardList(dto));
+        for(SimpleBoardVo boardVo : vo.getSimpleBoardVoList()){
+            boardVo.setCreatedAt(boardVo.getCreatedAt().substring(0, boardVo.getCreatedAt().lastIndexOf(".")));
+        }
         int boardCount = boardMapper.selBoardCount(dto);
         int maxPage = 1;
         if (boardCount != 0) {
@@ -188,6 +194,9 @@ public class BoardService {
     public BoardCommentVo getBoardComment(GetBoardCommentDto dto) {
 
         List<CommentInfoVo> boardComment = boardMapper.selBoardComment(dto);
+        for(CommentInfoVo infoVo : boardComment){
+            infoVo.setCreatedAt(infoVo.getCreatedAt().substring(0,infoVo.getCreatedAt().lastIndexOf(".")));
+        }
         BoardCommentVo vo = new BoardCommentVo();
         vo.setCommentInfoVoList(boardComment);
         int commentCount = boardMapper.selBoardCommentCount(dto.getBoardPk());
@@ -208,6 +217,9 @@ public class BoardService {
         }
         GetSimpleBoardVo vo = new GetSimpleBoardVo();
         vo.setSimpleBoardVoList(boardMapper.myPostingBoardList(dto));
+        for (SimpleBoardVo boardVo : vo.getSimpleBoardVoList()) {
+            boardVo.setCreatedAt(boardVo.getCreatedAt().substring(0,boardVo.getCreatedAt().indexOf(".")));
+        }
         int userBoardCount = boardMapper.selUserBoardCount(dto.getUserPk());
         int userBoardMaxPage = 1;
         if (userBoardCount != 0) {
@@ -225,6 +237,9 @@ public class BoardService {
         }
         GetUserCommentVo vo = new GetUserCommentVo();
         vo.setUserCommentVoList(boardMapper.myPostingCommentList(dto));
+        for (UserCommentVo userCommentVo : vo.getUserCommentVoList()) {
+            userCommentVo.setCreatedAt(userCommentVo.getCreatedAt().substring(0,userCommentVo.getCreatedAt().lastIndexOf(".")));
+        }
         int userCommentCount = boardMapper.selUserCommentCount(dto.getUserPk());
         int userCommentMaxPage = 1;
         if (userCommentCount != 0) {

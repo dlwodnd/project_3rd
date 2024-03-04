@@ -16,4 +16,6 @@ public class PostCommentDto {
     @NotEmpty(message = "comment값은 필수 입력값 입니다.")
     @Schema(description = "댓글 내용")
     private String comment;
+    @JsonIgnore
+    private String commentNum;
 }

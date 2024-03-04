@@ -26,4 +26,6 @@ public class PostBoardDto {
     private String contents;
     @JsonIgnore
     private List<MultipartFile> pics;
+    @JsonIgnore
+    private String boardNum;
 }

@@ -27,7 +27,7 @@ public class UserDogEntity extends BaseEntity {
     @Column(nullable = false)
     private String dogAge;
 
-    @Column(nullable = false)
+    @Column(name ="dog_etc" ,nullable = false)
     private String etc;
 
     private String dogPic;

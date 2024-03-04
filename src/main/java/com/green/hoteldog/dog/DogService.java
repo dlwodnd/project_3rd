@@ -2,6 +2,7 @@ package com.green.hoteldog.dog;
 
 import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.ResVo;
+import com.green.hoteldog.common.utils.RandomCodeUtils;
 import com.green.hoteldog.dog.models.*;
 import com.green.hoteldog.exceptions.AuthorizedErrorCode;
 import com.green.hoteldog.exceptions.CommonErrorCode;
@@ -34,6 +35,7 @@ public class DogService {
     @Transactional(rollbackFor = Exception.class)
     public ResVo insUserDog(InsUserDogDto dto) {
         dto.setUserPk((int)facade.getLoginUserPk());
+        dto.setDogNum("D" + RandomCodeUtils.getRandomCode(5));
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }

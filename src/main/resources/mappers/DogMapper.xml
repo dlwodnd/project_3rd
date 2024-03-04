@@ -9,6 +9,8 @@
         ,dog_nm = #{dogNm}
         ,dog_age = #{dogAge}
         ,dog_etc = #{dogEtc}
+        ,user_dog_num = #{dogNum}
+        ,created_at = now()
     </insert>
     <update id="updUserDog">
         UPDATE t_user_dog

@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 
 public enum HotelErrorCode implements ErrorCode{
+    NOT_SUBSCRIBE_ADVERTISE
+            (HttpStatus.BAD_REQUEST,"광고 신청을 하지 않았습니다"),
     WAITING_SUSPEND_APPROVAL
             (HttpStatus.BAD_REQUEST,"호텔 중지 승인 대기중 입니다"),
     WAITING_HOTEL_APPROVAL

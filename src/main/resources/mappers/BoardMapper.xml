@@ -8,6 +8,8 @@
         ,board_category_pk = #{boardCategoryPk}
         ,title = #{title}
         ,contents = #{contents}
+        ,board_num = #{boardNum}
+        ,board_view_count = 0
     </insert>
     <insert id="postBoardPics">
         INSERT INTO t_board_pics
@@ -50,6 +52,8 @@
         SET user_pk = #{userPk}
         ,board_pk = #{boardPk}
         ,comment = #{comment}
+        ,comment_num = #{commentNum}
+        ,created_at = now()
     </insert>
     <update id="updComment">
         UPDATE t_board_comment

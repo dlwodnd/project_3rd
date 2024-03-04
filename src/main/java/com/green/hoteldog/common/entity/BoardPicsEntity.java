@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "t_board_pic")
+@Table(name = "t_board_pics")
 public class BoardPicsEntity extends CreatedAtBaseEntity {
     @Id
     @Column(columnDefinition = "BIGINT UNSIGNED")
@@ -17,7 +17,7 @@ public class BoardPicsEntity extends CreatedAtBaseEntity {
     @JoinColumn(name = "board_pk",referencedColumnName = "boardPk",columnDefinition = "BIGINT UNSIGNED")
     private BoardEntity boardEntity;
 
-    @Column(nullable = false)
+    @Column(name = "board_pic" ,nullable = false)
     private String pic;
 
     //승민
