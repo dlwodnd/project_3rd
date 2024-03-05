@@ -2,6 +2,8 @@ package com.green.hoteldog.common.repository;
 
 import com.green.hoteldog.common.entity.BusinessEntity;
 import com.green.hoteldog.common.entity.UserEntity;
+import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,30 +15,7 @@ import java.util.Optional;
 public interface BusinessRepository extends JpaRepository<BusinessEntity, Long> {
 
     //승민
-    /*List<BusinessEntity> findByAccountStatus(int accountStatus);
-
-    List<BusinessEntity> findByAccountStatusNot(int accountStatus);
-*/
-    //승민
-    /*List<BusinessEntity> findByUserEntity_UserPkInOrderByCreatedAtDesc(List<Long> userPks, Pageable pageable);*/
-    List<BusinessEntity> findAllCreatedAtDesc(Pageable pageable);
-
-//    @Modifying
-//    @Query("UPDATE BusinessEntity b SET b.accountStatus = :accountStatus WHERE b.userEntity.userPk = :userPk")
-//    void updateBusinessEntityByAccountStatus(@Param("accountStatus") int accountStatus, @Param("userPk") long userPk);
-
-    //비지니스 유저로 바꾸는거
-    /*@Modifying
-    @Query("UPDATE BusinessEntity b SET b.accountStatus = :accountStatus WHERE b.businessPk = :businessPk")
-    void updateBusinessEntityByAccountStatus(int accountStatus, long businessPk);*/
-
-
-      //승준
-    //승준
-
-    //영웅
-    //영웅
-
+    Page<BusinessEntity> findAllByRole(UserRoleEnum role, Pageable pageable);
     //재웅
     Optional<BusinessEntity> findByBusinessEmail(String businessEmail);
     //재웅

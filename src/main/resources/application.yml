@@ -7,7 +7,7 @@ app:
     access-token-expiry: 7200000
     refresh-token-expiry: 1296000000
 file:
-  dir: D:/home/download/greengram4/
+  dir: D:/home/download/hotelDog/
 
 spring:
   data:

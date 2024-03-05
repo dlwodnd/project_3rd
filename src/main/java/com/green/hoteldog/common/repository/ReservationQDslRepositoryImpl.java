@@ -5,6 +5,7 @@ import com.green.hoteldog.business_user.model.QReservationTodayInfo;
 import com.green.hoteldog.business_user.model.ReservationInfo;
 import com.green.hoteldog.business_user.model.ReservationTodayInfo;
 import com.green.hoteldog.common.entity.*;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,6 +93,14 @@ public class ReservationQDslRepositoryImpl implements ReservationQDslRepository{
                 .join(resPaymentEntity)
                 .on(reservationEntity.resPk.eq(resPaymentEntity.reservationEntity.resPk));
         return PageableExecutionUtils.getPage(reservationTodayInfoList, pageable,countQuery::fetchOne);
+    }
+    @Override
+    public List<ReservationEntity> getByHotelEntityNowBetweenFromToResList(HotelEntity hotelEntity){
+        return jpaQueryFactory.selectFrom(reservationEntity)
+                .where(reservationEntity.hotelEntity.eq(hotelEntity),
+                        Expressions.timeTemplate(LocalDate.class, "DATE_FORMAT({0}, '%Y-%m-%d')")
+                                .between(reservationEntity.fromDate, reservationEntity.toDate))
+                .fetch();
     }
 
     @Override

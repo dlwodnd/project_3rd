@@ -2,6 +2,7 @@ package com.green.hoteldog.manager;
 
 import com.green.hoteldog.common.entity.*;
 
+import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
 import com.green.hoteldog.common.repository.*;
 import com.green.hoteldog.manager.model.*;
 import jakarta.transaction.Transactional;
@@ -64,23 +65,30 @@ public class ManagerService {
         UserInfo vo2 = new UserInfo();
         long totalRecords = userRepository.count();
         int maxPage = (int) Math.ceil((double) totalRecords / pageable.getPageSize());
-        List<UserEntity> users = userRepository.findAllCreatedAtDesc(pageable);
+        if(maxPage == 0){
+            maxPage = 1;
+        }
+        List<UserEntity> users = userRepository.findAll(pageable).getContent();
         List<UserInfo> userListVos = users.stream()
                 .map(UserInfo::UserList2)
                 .toList();
         UserInfoVo userInfoVo = UserInfoVo.builder()
-                .totalPage(maxPage)
+                .totalPage(userRepository.findAll(pageable).getTotalPages())
                 .userInfoList(userListVos)
                 .build();
         return userInfoVo;
     }
 
     public BusinessUserInfoVo businessUsers(Pageable pageable){
-        List<BusinessEntity> businessEntities = businessEntityRepository.findAllCreatedAtDesc(pageable);
-        int totalRecords = businessEntities.size();
+        long totalRecords = businessEntityRepository.count();
+        List<BusinessEntity> businessEntities = businessEntityRepository.findAllByRole(UserRoleEnum.BUSINESS_USER, pageable).getContent();
+
         int maxPage = (int) Math.ceil((double) totalRecords / pageable.getPageSize());
+        if(maxPage == 0){
+            maxPage = 1;
+        }
         return BusinessUserInfoVo.builder()
-                .totalPage(maxPage)
+                .totalPage(businessEntityRepository.findAllByRole(UserRoleEnum.BUSINESS_USER, pageable).getTotalPages())
                 .businessUserInfoList(businessEntities.stream()
                         .map(item -> BusinessUserInfo.builder()
                                 .businessUserPk(item.getBusinessPk())

@@ -61,12 +61,12 @@ public class ManagerController {
     }*/
     @GetMapping("/userList")
     @Operation(summary = "유저 목록", description = "일반 유저 목록")
-    public UserInfoVo getUserList(@PageableDefault(page = 1, size = 2) Pageable pageable) {
+    public UserInfoVo getUserList(@PageableDefault(page = 1, size = 15) Pageable pageable) {
         return service.getUsers(pageable);
     }
     @GetMapping("/businessUserList")
     @Operation(summary = "사업자 유저 목록", description = "사업자 유저 목록")
-    public BusinessUserInfoVo getBusinessUserList(@PageableDefault(page = 1, size = 2) Pageable pageable) {
+    public BusinessUserInfoVo getBusinessUserList(@PageableDefault(page = 1, size = 15) Pageable pageable) {
         return service.businessUsers(pageable);
     }
    // 대기 유저 사업자유저 전환
@@ -80,7 +80,7 @@ public class ManagerController {
     // 호텔 목록을 가져오는 메서드
     @GetMapping("/hotelList")
     @Operation(summary = "호텔목록", description = "호텔목록")
-    public List<HotelListVo> getManagementHotelList(@PageableDefault(page = 1,size = 2) Pageable pageable) {
+    public List<HotelListVo> getManagementHotelList(@PageableDefault(page = 1,size = 15) Pageable pageable) {
         return service.getManagementHotelList(pageable);
     }
 
@@ -88,7 +88,7 @@ public class ManagerController {
     @GetMapping("/hotelAccountStatus")
     @Operation(summary = "승인 대길 호텔", description = "사이즈 숫자 뒤에, 부분부터 쇼트 ] 대괄호하나 지우셈")
 
-    public List<HotelListVo> getManagementApprovalHotelList(@PageableDefault(page = 1,size = 2) Pageable pageable) {
+    public List<HotelListVo> getManagementApprovalHotelList(@PageableDefault(page = 1,size = 15) Pageable pageable) {
         return service.getManagementHotelByBusinessEntity_AccountStatus(pageable);
     }
 

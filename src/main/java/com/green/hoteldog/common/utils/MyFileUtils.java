@@ -71,6 +71,12 @@ public class MyFileUtils {
 
         }
     }
+    public void delFile(String filePath) {//파일 삭제
+        File file = new File(uploadPrefixPath + filePath);
+        if(file.exists()) {
+            file.delete();
+        }
+    }
 
     public void delAllFolderTrigger(String relativePath) {//폴더 및 안의 파일 삭제
         delAllFiles(uploadPrefixPath + relativePath);

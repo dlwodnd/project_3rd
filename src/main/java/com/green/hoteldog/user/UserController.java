@@ -133,4 +133,18 @@ public class UserController {
     }
 
 
+    /*//최종 관리자 회원가입
+    @PostMapping("/admin/signup")
+    @Operation(summary = "관리자 회원가입", description = "관리자 회원가입 처리")
+    public ResVo postAdminSignup(@RequestBody @Valid AdminSignupDto dto) {
+        return service.adminSignup(dto);
+    }
+
+    //최종 관리자 로그인
+    @PostMapping("/admin/signin")
+    @Operation(summary = "관리자 로그인", description = "관리자 로그인 처리")
+    public AdminSigninVo adminSignin(HttpServletResponse response, HttpServletRequest request, @RequestBody @Valid UserSigninDto dto) {
+        return service.adminSignin(response, request, dto);
+    }
+*/
 }

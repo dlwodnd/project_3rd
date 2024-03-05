@@ -26,11 +26,13 @@ import com.green.hoteldog.user.models.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -65,6 +67,7 @@ public class UserService {
     private final RefundRepository refundRepository;
     private final ResComprehensiveInfoRepository resComprehensiveInfoRepository;
     private final HotelResRoomRepository hotelResRoomRepository;
+    private final ManagerRepository managerRepository;
 
 
     //--------------------------------------------------유저 회원가입-----------------------------------------------------
@@ -241,10 +244,6 @@ public class UserService {
         if(businessEntity.getRole().equals(UserRoleEnum.WITHDRAWAL)){
             throw new CustomException(UserErrorCode.WITHDRAWAL_USER);
         }
-
-
-
-
         if (!passwordEncoder.matches(dto.getUpw(), businessEntity.getBusinessPw())) {
             throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
         }
@@ -521,4 +520,40 @@ public class UserService {
         return new ResVo(1);
     }
 
+    /*//관리자 유저 등록
+    @Transactional
+    public ResVo adminSignup(AdminSignupDto dto) {
+        ManagerEntity managerEntity = new ManagerEntity();
+        managerEntity.setManagerId(dto.getManagerId());
+        managerEntity.setManagerPw(passwordEncoder.encode(dto.getManagerPw()));
+        managerEntity.setManagerName(dto.getManagerName());
+        managerEntity.setRole(UserRoleEnum.ADMIN);
+        managerRepository.save(managerEntity);
+
+        return new ResVo(1);
+    }
+
+    //관리자 유저 로그인
+    @Transactional
+    public AdminSigninVo adminSignin(HttpServletResponse response, HttpServletRequest request, @RequestBody @Valid UserSigninDto dto){
+        ManagerEntity managerEntity = managerRepository.findByManagerId(dto.getUserEmail()).orElseThrow(() -> new CustomException(UserErrorCode.UNKNOWN_EMAIL_ADDRESS));
+        if (!passwordEncoder.matches(dto.getUpw(), managerEntity.getManagerPw())) {
+            throw new CustomException(UserErrorCode.MISS_MATCH_PASSWORD);
+        }
+        MyPrincipal myPrincipal = MyPrincipal.builder()
+                .userPk(managerEntity.getManagerPk())
+                .build();
+        myPrincipal.getRoles().add(managerEntity.getRole().name());
+        String at = tokenProvider.generateAccessToken(myPrincipal);
+        String rt = tokenProvider.generateRefreshToken(myPrincipal);
+        int rtCookieMaxAge = (int) appProperties.getJwt().getRefreshTokenExpiry() / 1000;
+        cookie.deleteCookie(response, "rt");
+        cookie.setCookie(response, "rt", rt, rtCookieMaxAge);
+        return AdminSigninVo.builder()
+                .managerId(managerEntity.getManagerId())
+                .managerName(managerEntity.getManagerName())
+                .accessToken(at)
+                .role(managerEntity.getRole().name())
+                .build();
+    }*/
 }

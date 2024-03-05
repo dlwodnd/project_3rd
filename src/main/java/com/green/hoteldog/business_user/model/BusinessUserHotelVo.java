@@ -18,6 +18,7 @@ public class BusinessUserHotelVo {
     private String hotelNum;
     private String hotelNm;
     private String hotelDetailInfo;
+    private String businessName;
     private String businessNum;
     private String hotelCall;
     private String createdAt;

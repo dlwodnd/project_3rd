@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     // 일반유저
     List<UserEntity> findAllByUserPkNotInOrderByCreatedAtDesc(List<Long> userPks);*/
 
-    List<UserEntity>findAllCreatedAtDesc(Pageable pageable);
+
     // 일반유저
     Optional<UserEntity> findByUserEmail(String email);
     UserEntity findByNickname(String nickname);

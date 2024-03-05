@@ -54,7 +54,6 @@ public class ReviewService {
         if (dto.getPics() != null) {
             List<String> pics = new ArrayList<>();
             String target = "/review/" + dto.getReviewPk();
-            fileUtils.delFiles(target);
             for (MultipartFile file : dto.getPics()) {
                 String saveFileNm = fileUtils.transferTo(file, target);
                 pics.add(saveFileNm);
@@ -126,9 +125,11 @@ public class ReviewService {
     }
 
     //--------------------------------------------------리뷰 삭제---------------------------------------------------
+    @Transactional
     public ResVo delReview(DelReviewDto dto) {
         dto.setUserPk((int)facade.getLoginUserPk());
         log.info("DelReviewDto : {}", dto);
+        fileUtils.delAllFolderTrigger("/review/" + dto.getReviewPk());
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }

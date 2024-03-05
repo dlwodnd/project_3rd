@@ -14,7 +14,7 @@ public  class BusinessVo {
     public static BusinessVo toDto(BusinessEntity businessEntity) {
         BusinessVo businessDto = new BusinessVo();
         businessDto.setBusinessPk(businessEntity.getBusinessPk());
-        businessDto.setUserDto(UserVo.toDto(businessEntity.getUserEntity()));
+        /*businessDto.setUserDto(UserVo.toDto(businessEntity.getUserEntity()));*/
         return businessDto;
     }
 }

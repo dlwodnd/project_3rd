@@ -1,5 +1,7 @@
 package com.green.hoteldog.email;
 
+import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
+import com.green.hoteldog.common.repository.BusinessRepository;
 import com.green.hoteldog.common.utils.RedisUtil;
 import com.green.hoteldog.user.UserMapper;
 import com.green.hoteldog.common.repository.UserRepository;
@@ -23,18 +25,29 @@ public class MailSendService {
     @Autowired
     private RedisUtil redisUtil;
     private String authNumber;
-    private final UserMapper userMapper;
     private final UserRepository userRepository;
-    public boolean checkDuplicationEmail(String email){
-        userRepository.findByUserEmail(email).isPresent();
-        List<UserInfo> userInfoList = userMapper.selUserEntity();
-        if(userRepository.findByUserEmail(email).isPresent()){
-            return true;
-        }
-        return false;
+    private final BusinessRepository businessRepository;
+    public boolean checkUserDuplicationEmail(String email){
+        return userRepository.findByUserEmail(email).isPresent();
+    }
+    public boolean checkBusinessUserDuplicationEmail(String email){
+        return businessRepository.findByBusinessEmail(email).isPresent();
     }
 
     public boolean checkAuthNum(String email,String authNum){
+
+
+        if(redisUtil.getData(email)==null){
+            return false;
+        }
+        else if(redisUtil.getData(email).equals(authNum)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    public boolean businessCheckAuthNum(String email,String authNum){
 
 
         if(redisUtil.getData(email)==null){
@@ -67,10 +80,10 @@ public class MailSendService {
         authNumber = randomNumber;
     }
 
-    public String joinEmail(String email) {
+    public String joinEmail(String email , UserRoleEnum role) {
         makeRandomNumber();
         String setFrom = "greendoghotel2024@gmail.com"; // email-config에 설정한 자신의 이메일 주소를 입력
-        String toMail = email;
+        String toMail = email; // 받는 사람 이메일 주소
         String title = "회원 가입 인증 이메일 입니다."; // 이메일 제목
         String content =
                 "저희 프로젝트 테스트에 참여해 주셔서 감사합니다." + 	//html 형식으로 작성 !
@@ -78,12 +91,20 @@ public class MailSendService {
                         "인증 번호는 " + authNumber + "입니다." +
                         "<br>" +
                         "인증번호를 제대로 입력해주세요"; //이메일 내용 삽입
-        mailSend(setFrom, toMail, title, content);
+        mailSend(setFrom, toMail, title, content,role);
         return authNumber;
     }
-    public void mailSend(String setFrom,String toMail,String title,String content){
+    public void mailSend(String setFrom,String toMail,String title,String content,UserRoleEnum role){
+        String redisKey = "";
+
+        if (role.equals(UserRoleEnum.USER)){
+            redisKey = "CU_" + toMail;
+        }
+        else if(role.equals(UserRoleEnum.BUSINESS_USER)){
+            redisKey = "BU_" + toMail;
+        }
         MimeMessage message = mailSender.createMimeMessage();
-        redisUtil.setDataExpire(toMail,authNumber,60*5L);
+        redisUtil.setDataExpire(redisKey,authNumber,60*5L);
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message,true,"UTF-8");
             helper.setFrom(setFrom);
