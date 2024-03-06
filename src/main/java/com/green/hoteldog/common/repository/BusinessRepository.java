@@ -18,5 +18,6 @@ public interface BusinessRepository extends JpaRepository<BusinessEntity, Long> 
     Page<BusinessEntity> findAllByRole(UserRoleEnum role, Pageable pageable);
     //재웅
     Optional<BusinessEntity> findByBusinessEmail(String businessEmail);
+
     //재웅
 }

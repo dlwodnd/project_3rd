@@ -1,6 +1,7 @@
 package com.green.hoteldog.business_user.model;
 
 import com.querydsl.core.annotations.QueryProjection;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,12 +9,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Builder
+@AllArgsConstructor
 public class ReservationTodayInfo {
     private String resNum;
     private long resPk;
     private String nickname;
     private long hotelRoomPk;
     private String hotelRoomNm;
+    private String hotelRoomPic;
     private long resDogPk;
     private String resDogNm;
     private String resDogInfo;
@@ -42,7 +45,8 @@ public class ReservationTodayInfo {
             , String toDate
             , String userPhoneNum
             , long paymentAmount
-            , long resStatus) {
+            , long resStatus
+            , String hotelRoomPic) {
         this.resNum = resNum;
         this.resPk = resPk;
         this.nickname = nickname;
@@ -59,6 +63,7 @@ public class ReservationTodayInfo {
         this.userPhoneNum = userPhoneNum;
         this.paymentAmount = paymentAmount;
         this.resStatus = resStatus;
+        this.hotelRoomPic = hotelRoomPic;
     }
 }
 

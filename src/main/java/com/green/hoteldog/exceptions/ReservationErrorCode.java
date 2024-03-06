@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ReservationErrorCode implements ErrorCode{
+    RESERVATION_PERIOD_EXCEEDS_30_DAYS
+            (HttpStatus.BAD_REQUEST, "예약 기간은 30일을 초과할 수 없습니다."),
     DOG_SIZE_AND_ROOM_SIZE_DO_NOT_MATCH
             (HttpStatus.BAD_REQUEST, "방과 강아지 사이즈가 맞지 않습니다."),
     BAD_REQUEST

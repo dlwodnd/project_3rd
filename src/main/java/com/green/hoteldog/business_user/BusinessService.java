@@ -238,19 +238,21 @@ public class BusinessService {
                     .hotelOptionEntity(hotelOptionRepository.getReferenceById(optionPk))
                     .build();
             hotelOptionInfoRepository.save(hotelOptionInfoEntity);
+
+        }
+        String target = "/hotel/" + hotelEntity.getHotelPk();
+
+        if (dto.getDeletePicsPk() != null && !dto.getDeletePicsPk().isEmpty()) {
+
+            for (Long pk : dto.getDeletePicsPk()) {
+                hotelPicRepository.findById(pk).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_PIC));
+                String delFileNm = "/" + hotelPicRepository.getReferenceById(pk).getPic();
+                myFileUtils.delFile(target, delFileNm);
+            }
+            hotelPicRepository.deleteAllById(dto.getDeletePicsPk());
         }
 
-
         if (dto.getHotelPics() != null && !dto.getHotelPics().isEmpty()) {
-            String target = "/hotel/" + hotelEntity.getHotelPk();
-            if (dto.getDeletePicsPk() != null && !dto.getDeletePicsPk().isEmpty()) {
-                for (Long pk : dto.getDeletePicsPk()) {
-                    String delFileNm = "/" + hotelPicRepository.getReferenceById(pk).getPic();
-                    myFileUtils.delFile(target, delFileNm);
-                }
-                hotelPicRepository.deleteAllById(dto.getDeletePicsPk());
-            }
-
             for (MultipartFile file : dto.getHotelPics()) {
                 String hotelPicFile = myFileUtils.transferTo(file, target);
                 HotelPicEntity hotelPicsEntity = HotelPicEntity.builder()
@@ -258,24 +260,8 @@ public class BusinessService {
                         .pic(hotelPicFile)
                         .build();
                 hotelPicRepository.save(hotelPicsEntity);
+
             }
-            /*List<String> delPicList = new ArrayList<>();
-
-            for (MultipartFile file : dto.getHotelPics()) {
-                String requestFileNm = file.getOriginalFilename();
-                if (hotelPicRepository.findByPic(requestFileNm).isPresent()) {
-
-                }
-
-                String hotelPicFile = myFileUtils.transferTo(file, target);
-                HotelPicEntity hotelPicsEntity = HotelPicEntity.builder()
-                        .hotelEntity(hotelEntity)
-                        .pic(hotelPicFile)
-                        .build();
-                hotelPicRepository.save(hotelPicsEntity);
-            }*/
-
-
         }
         return new ResVo(1);
     }
@@ -354,12 +340,11 @@ public class BusinessService {
                 .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
 
         Optional<HotelEntity> optionalHotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity);
-        HotelEntity hotelEntity = new HotelEntity();
         BusinessUserHotelVo businessUserHotelVo = new BusinessUserHotelVo();
         RoomDiscountInfo roomDiscountInfo = new RoomDiscountInfo();
 
         if (optionalHotelEntity.isPresent()) {
-            hotelEntity = optionalHotelEntity.get();
+            HotelEntity hotelEntity = optionalHotelEntity.get();
             List<HotelOptionInfoEntity> hotelOptionInfoEntityList = hotelOptionInfoRepository.findAllByHotelEntity(hotelEntity);
             List<Long> hotelOptionPkList = new ArrayList<>();
 
@@ -412,7 +397,8 @@ public class BusinessService {
                             .sizePk(hotelRoomInfoEntity.getDogSizeEntity().getSizePk())
                             .hotelRoomNm(hotelRoomInfoEntity.getHotelRoomNm())
                             .roomAble(hotelRoomInfoEntity.getRoomAble())
-                            .hotelRoomCost(roomDiscountInfo.setDiscountCost(hotelRoomInfoEntity.getHotelRoomCost(), hotelRoomInfoEntity.getDiscountPer()).getRoomCost())
+                            .hotelRoomCost(roomDiscountInfo.setDiscountCost(hotelRoomInfoEntity.getHotelRoomCost(),
+                                    hotelRoomInfoEntity.getDiscountPer()).getRoomCost())
                             .hotelRoomEa(hotelRoomInfoEntity.getHotelRoomEa())
                             .roomPic(hotelRoomInfoEntity.getRoomPic())
                             .maximum(hotelRoomInfoEntity.getMaximum())
@@ -435,18 +421,20 @@ public class BusinessService {
         Optional<HotelRoomInfoEntity> optionalHotelRoomInfoEntity = hotelRoomRepository.findById(dto.getHotelRoomPk());
 
         HotelRoomInfoEntity hotelRoomInfoEntity = optionalHotelRoomInfoEntity.orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
-        String hotelRoomPic = null;
+        if (hotelRoomInfoEntity.getHotelEntity().getBusinessEntity().getBusinessPk() != businessEntity.getBusinessPk()) {
+            throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
+        }
+
         if (dto.getRoomPic() != null && !dto.getRoomPic().isEmpty()) {
             String target = "hotel/" + hotelRoomInfoEntity.getHotelEntity().getHotelPk() + "/room/" + hotelRoomInfoEntity.getHotelRoomPk();
             myFileUtils.delFolderTrigger(target);
-            hotelRoomPic = myFileUtils.transferTo(dto.getRoomPic(), target);
+            String hotelRoomPic = myFileUtils.transferTo(dto.getRoomPic(), target);
             hotelRoomInfoEntity.setRoomPic(hotelRoomPic);
         }
         long changeRoomEa = dto.getHotelRoomEa() - hotelRoomInfoEntity.getHotelRoomEa();
-        hotelRoomInfoEntity.setHotelRoomNm(dto.getHotelRoomNm());
+
         hotelRoomInfoEntity.setHotelRoomCost(dto.getHotelRoomCost());
         hotelRoomInfoEntity.setHotelRoomEa(dto.getHotelRoomEa());
-        hotelRoomInfoEntity.setDogSizeEntity(dogSizeRepository.getReferenceById(dto.getSizePk()));
         hotelRoomInfoEntity.setDiscountPer(dto.getDiscountPer());
         hotelResRoomRepository.findAllByHotelRoomInfoEntity(hotelRoomInfoEntity).forEach(hotelResRoomEntity -> {
             if (hotelResRoomEntity.getHotelLeftEa() + changeRoomEa < 0) {
@@ -499,7 +487,7 @@ public class BusinessService {
                 .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelRoomInfoEntity hotelRoomInfoEntity = hotelRoomRepository.findById(dto.getHotelRoomPk())
                 .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
-        if (hotelRoomInfoEntity.getHotelRoomEa() == null || hotelRoomInfoEntity.getHotelRoomCost() == null || hotelRoomInfoEntity.getMaximum() == null || hotelRoomInfoEntity.getRoomPic() == null) {
+        if (hotelRoomInfoEntity.getHotelRoomEa() == null || hotelRoomInfoEntity.getHotelRoomCost() == null || hotelRoomInfoEntity.getRoomPic() == null) {
             throw new CustomException(HotelErrorCode.REQUIRED_VALUE_IS_NULL);
         }
         if (hotelRoomInfoEntity.getHotelEntity().getBusinessEntity().getBusinessPk() != businessEntity.getBusinessPk()) {
@@ -510,12 +498,6 @@ public class BusinessService {
             hotelRoomInfoEntity.setRoomAble(0L);
             return new ResVo(2);
         }
-        if (hotelRoomInfoEntity.getHotelRoomCost() == 0
-                || hotelRoomInfoEntity.getRoomPic().isEmpty()
-                || hotelRoomInfoEntity.getHotelRoomEa() == 0){
-            throw new CustomException(HotelErrorCode.REQUIRED_VALUE_IS_NULL);
-        }
-
         hotelRoomInfoEntity.setRoomAble(1L);
         return new ResVo(1);
 
@@ -524,7 +506,8 @@ public class BusinessService {
     //사업자 유저 회원탈퇴
     @Transactional
     public ResVo postBusinessUserWithdrawal() {
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
                 .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         if (!reservationRepository.findAllByHotelEntityAndResStatusLessThan(hotelEntity, 2L).isEmpty()) {

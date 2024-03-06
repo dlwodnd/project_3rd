@@ -66,7 +66,7 @@ public class HotelService {
     //-----------------------------------------------호텔 광고 리스트 셀렉트------------------------------------------------
     public List<HotelListSelVo> getHotelAdvertiseList() {
 
-        List<HotelEntity> hotelEntityList = hotelRepository.findAllByAdvertiseAndAndApproval(1L, 1L);
+        List<HotelEntity> hotelEntityList = hotelRepository.findAllByAdvertiseAndApproval(1L, 1L);
         Optional<UserEntity> optionalUserEntity = userRepository.findById(authenticationFacade.getLoginUserPk());
         return hotelEntityList.stream()
                 .map(item -> {

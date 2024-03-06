@@ -17,11 +17,6 @@ import java.util.List;
 public class BusinessHotelRoomPutDto {
     private long hotelRoomPk;
 
-    @NotBlank
-    private String hotelRoomNm;
-    @NotBlank
-    private long sizePk;
-
     @JsonIgnore
     private MultipartFile roomPic;
     @NotBlank

@@ -41,60 +41,7 @@ public class ReservationQDslRepositoryImpl implements ReservationQDslRepository{
                 .orderBy(reservationEntity.resPk.desc()).fetch();
     }
 
-    @Override
-    public Page<ReservationTodayInfo> getReservationTodayInfoList(Pageable pageable, List<ReservationEntity> reservationEntityList) {
-        List<ReservationTodayInfo> reservationTodayInfoList = jpaQueryFactory
-                .select(new QReservationTodayInfo(
-                        reservationEntity.resNum
-                        , reservationEntity.resPk
-                        , userEntity.nickname
-                        , hotelRoomInfoEntity.hotelRoomPk
-                        , hotelRoomInfoEntity.hotelRoomNm
-                        , resDogInfoEntity.resDogPk
-                        , resDogInfoEntity.dogNm
-                        , resDogInfoEntity.information
-                        , resDogInfoEntity.age
-                        , dogSizeEntity.sizePk
-                        , dogSizeEntity.dogSize
-                        , reservationEntity.fromDate.stringValue()
-                        , reservationEntity.toDate.stringValue()
-                        , userEntity.phoneNum
-                        , resPaymentEntity.paymentAmount
-                        , reservationEntity.resStatus))
-                .from(resComprehensiveInfoEntity)
-                .join(reservationEntity)
-                .on(reservationEntity.in(reservationEntityList))
-                .join(userEntity)
-                .on(reservationEntity.userEntity.userPk.eq(userEntity.userPk))
-                .join(hotelRoomInfoEntity)
-                .on(resComprehensiveInfoEntity.hotelRoomInfoEntity.hotelRoomPk.eq(hotelRoomInfoEntity.hotelRoomPk))
-                .join(resDogInfoEntity)
-                .on(resComprehensiveInfoEntity.resDogInfoEntity.resDogPk.eq(resDogInfoEntity.resDogPk))
-                .join(dogSizeEntity)
-                .on(resDogInfoEntity.dogSizeEntity.sizePk.eq(dogSizeEntity.sizePk))
-                .join(resPaymentEntity)
-                .on(reservationEntity.resPk.eq(resPaymentEntity.reservationEntity.resPk))
-                .orderBy(hotelRoomInfoEntity.dogSizeEntity.sizePk.asc(),reservationEntity.fromDate.asc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-        JPAQuery<Long> countQuery = jpaQueryFactory
-                .select(reservationEntity.resPk.count())
-                .from(resComprehensiveInfoEntity)
-                .join(reservationEntity)
-                .on(reservationEntity.in(reservationEntityList))
-                .join(userEntity)
-                .on(reservationEntity.userEntity.userPk.eq(userEntity.userPk))
-                .join(hotelRoomInfoEntity)
-                .on(resComprehensiveInfoEntity.hotelRoomInfoEntity.hotelRoomPk.eq(hotelRoomInfoEntity.hotelRoomPk))
-                .join(resDogInfoEntity)
-                .on(resComprehensiveInfoEntity.resDogInfoEntity.resDogPk.eq(resDogInfoEntity.resDogPk))
-                .join(dogSizeEntity)
-                .on(resDogInfoEntity.dogSizeEntity.sizePk.eq(dogSizeEntity.sizePk))
-                .join(resPaymentEntity)
-                .on(reservationEntity.resPk.eq(resPaymentEntity.reservationEntity.resPk));
-        return PageableExecutionUtils.getPage(reservationTodayInfoList, pageable,countQuery::fetchOne);
-    }
+
     @Override
     public List<ReservationEntity> getByHotelEntityNowBetweenFromToResList(HotelEntity hotelEntity){
 
@@ -124,7 +71,8 @@ public class ReservationQDslRepositoryImpl implements ReservationQDslRepository{
                         , resComprehensiveInfoEntity.reservationEntity.toDate.stringValue()
                         , resComprehensiveInfoEntity.reservationEntity.userEntity.phoneNum
                         , resComprehensiveInfoEntity.reservationEntity.resPaymentEntity.paymentAmount
-                        , resComprehensiveInfoEntity.reservationEntity.resStatus))
+                        , resComprehensiveInfoEntity.reservationEntity.resStatus
+                        , resComprehensiveInfoEntity.hotelRoomInfoEntity.roomPic))
                 .from(resComprehensiveInfoEntity)
                 .where(resComprehensiveInfoEntity.reservationEntity.in(reservationEntityList))
                 .orderBy(hotelRoomInfoEntity.dogSizeEntity.sizePk.asc(),reservationEntity.resPk.asc(),reservationEntity.fromDate.asc())
@@ -137,6 +85,7 @@ public class ReservationQDslRepositoryImpl implements ReservationQDslRepository{
                 .where(resComprehensiveInfoEntity.reservationEntity.in(reservationEntityList));
 
         return PageableExecutionUtils.getPage(reservationTodayInfoList, pageable,countQuery::fetchOne);
+
     }
 
     @Override

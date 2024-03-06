@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,8 +117,14 @@ public class ReservationService {
         if(!dto.getToDate().isAfter(dto.getFromDate())){
             throw new CustomException(ReservationErrorCode.NO_DATE_INFORMATION);
         }
+        if(ChronoUnit.DAYS.between(dto.getFromDate(), dto.getToDate()) > 30){
+            throw new CustomException(ReservationErrorCode.RESERVATION_PERIOD_EXCEEDS_30_DAYS);
+        }
         UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(ReservationErrorCode.UNKNOWN_USER_PK));
         HotelEntity hotelEntity = hotelRepository.findById(dto.getHotelPk()).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        if(hotelEntity.getApproval() != 1){
+            throw new CustomException(HotelErrorCode.NOT_OPERATING_HOTEL);
+        }
         long totalPrice = 0;
         ReservationEntity reservationEntity = ReservationEntity.builder()
                 .hotelEntity(hotelEntity)
@@ -238,7 +245,8 @@ public class ReservationService {
     //예약 취소 및 환불 jpa
     @Transactional(rollbackFor = Exception.class)
     public ResVo refundHotelReservation(HotelReservationDelDto dto) {
-        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        UserEntity userEntity = userRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
         ReservationEntity reservationEntity = reservationRepository.findById(dto.getResPk())
                 .orElseThrow(() -> new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION));
         reservationEntity.setResStatus(4L);

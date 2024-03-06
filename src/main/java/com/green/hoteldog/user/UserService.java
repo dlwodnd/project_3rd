@@ -1,7 +1,7 @@
 package com.green.hoteldog.user;
 
 import com.green.hoteldog.common.utils.CommonUtils;
-import com.green.hoteldog.exceptions.WithdrawalErrorCode;
+import com.green.hoteldog.exceptions.*;
 import com.green.hoteldog.hotel.model.DogSizeEa;
 import com.green.hoteldog.user.models.BusinessUserSignupDto;
 import com.green.hoteldog.business_user.model.HotelInsDto;
@@ -15,9 +15,6 @@ import com.green.hoteldog.common.utils.CookieUtils;
 import com.green.hoteldog.common.ResVo;
 import com.green.hoteldog.common.utils.MyFileUtils;
 import com.green.hoteldog.common.utils.RandomCodeUtils;
-import com.green.hoteldog.exceptions.AuthorizedErrorCode;
-import com.green.hoteldog.exceptions.CustomException;
-import com.green.hoteldog.exceptions.UserErrorCode;
 import com.green.hoteldog.security.AuthenticationFacade;
 import com.green.hoteldog.security.JwtTokenProvider;
 import com.green.hoteldog.security.MyUserDetails;
@@ -274,6 +271,9 @@ public class UserService {
     //사업자 유저 회원가입
     @Transactional
     public ResVo insBusinessUser(BusinessUserSignupDto businessUserDto, HotelInsDto hotelDto) {
+        if (businessRepository.findByBusinessEmail(hotelDto.getBusinessNum()).isPresent()){
+            throw new CustomException(HotelErrorCode.ALREADY_USED_BUSINESS_NUM);
+        }
 
         //사업자 엔티티 등록
         BusinessEntity businessEntity = new BusinessEntity();
@@ -351,7 +351,7 @@ public class UserService {
 
 
         //호텔 방 자동 등록
-        List<DogSizeEntity> dogSizeEntityList = dogSizeRepository.findAll();
+        dogSizeRepository.findAll();
         List<HotelRoomInfoEntity> hotelRoomInfoEntityList = new ArrayList<>();
         HotelRoomInfoEntity smallRoomInfo = HotelRoomInfoEntity.builder()
                 .dogSizeEntity(dogSizeRepository.findById(1L).get())
@@ -396,7 +396,6 @@ public class UserService {
         hotelRoomRepository.saveAll(hotelRoomInfoEntityList);
         //호텔 방 자동 등록
         List<LocalDate> getDatesThisYear = CommonUtils.getDatesThisYear();
-        List<HotelResRoomEntity> hotelResRoomEntityList = new ArrayList<>();
         for(HotelRoomInfoEntity hotelRoomInfoEntity : hotelRoomInfoEntityList){
             for(LocalDate localDate : getDatesThisYear){
                 HotelResRoomEntity hotelResRoomEntity = new HotelResRoomEntity();

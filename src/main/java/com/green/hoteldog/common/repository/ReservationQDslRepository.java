@@ -12,7 +12,6 @@ import java.util.List;
 
 public interface ReservationQDslRepository {
     List<ResPaymentEntity> getResPaymentList(List<ReservationEntity> resPaymentEntityList);
-    Page<ReservationTodayInfo> getReservationTodayInfoList(Pageable pageable, List<ReservationEntity> reservationEntityList);
     Page<ReservationTodayInfo> getReservationTodayInfoList2(Pageable pageable, List<ReservationEntity> reservationEntityList);
     List<ReservationEntity> getByHotelEntityNowBetweenFromToResList(HotelEntity hotelEntity);
 
