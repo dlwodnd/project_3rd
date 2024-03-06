@@ -12,6 +12,8 @@ public class HotelUpdateDto {
 
     private List<Long> optionList;
 
+    private List<Long> deletePicsPk;
+
     @JsonIgnore
     List<MultipartFile> hotelPics;
 }

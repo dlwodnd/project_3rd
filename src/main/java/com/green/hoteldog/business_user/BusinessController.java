@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,7 +47,7 @@ public class BusinessController {
             "userBirth: 생년월일<br>" +
             "cardUserName: 카드 소유자<br>" +
             "이미 광고 신청상태면 작동하지 않습니다.")
-    @GetMapping("/advertise")
+    @PostMapping("/advertise")
     public ResVo postHotelAdvertiseApplication(@RequestBody HotelAdvertiseApplicationDto dto){
         return service.postHotelAdvertiseApplication(dto);
     }
@@ -138,7 +139,7 @@ public class BusinessController {
         return service.insHotel(dto);
     }*/
     //사업자 유저 호텔 정보 수정
-    @PutMapping("/hotel")
+    @PutMapping(value = "/hotel",consumes = "multipart/form-data")
     @Operation(summary = "사업자 유저 호텔 정보 수정", description = "사업자 유저가 등록한 호텔 정보를 수정합니다.<br>" +
             "입력값<br>" +
             "hotelPics: 호텔 사진 리스트(최대 5장)<br>" +
@@ -150,6 +151,7 @@ public class BusinessController {
         if(hotelPics.size() > 5){
             throw new CustomException(BoardErrorCode.PICS_SIZE_OVER);
         }
+
         dto.setHotelPics(hotelPics);
         return service.putHotel(dto);
     }
@@ -191,7 +193,6 @@ public class BusinessController {
             "result: 1.활성화, 2.비활성화<br>"
     )
     public ResVo toggleHotelRoomActive(@RequestBody HotelRoomToggleDto dto){
-
         return service.toggleHotelRoomActive(dto);
     }
 
@@ -203,7 +204,7 @@ public class BusinessController {
     }
     //사업자 호텔에 등록된 예약 승인처리
     @PatchMapping("/reservation/approval")
-    @Operation(summary = "사업자 호텔에 등록된 예약 체크인 처리", description = "사업자 호텔에 등록된 예약 체크인 처리")
+    @Operation(summary = "사업자 호텔에 등록된 예약 접수", description = "사업자 호텔에 등록된 예약 접수")
     @Parameter(name = "resPkList", description = "예약 pk 리스트", required = true)
     public ResVo patchReservationApproval(List<Long> resPkList){
         return service.reservationApproval(resPkList);
@@ -211,7 +212,7 @@ public class BusinessController {
 
     //사업자 호텔에 등록된 예약 취소처리
     @PostMapping("/reservation/cancel")
-    @Operation(summary = "사업자 호텔에 등록된 예약 체크인 처리", description = "사업자 호텔에 등록된 예약 체크인 처리")
+    @Operation(summary = "사업자 호텔에 등록된 예약 취소", description = "사업자 호텔에 등록된 예약 취소")
     public ResVo patchReservationCheckIn(@RequestBody ResCancelDto dto){
         return service.reservationCancel(dto);
     }
@@ -227,7 +228,7 @@ public class BusinessController {
     //사업자 호텔에 등록된 예약 체크아웃 처리
     @PatchMapping("/reservation/checkOut")
     @Parameter(name = "resPkList", description = "예약 pk 리스트", required = true)
-    @Operation(summary = "사업자 호텔에 등록된 예약 체크인 처리", description = "사업자 호텔에 등록된 예약 체크인 처리")
+    @Operation(summary = "사업자 호텔에 등록된 예약 체크아웃", description = "사업자 호텔에 등록된 예약 체크아웃 처리")
     public ResVo patchReservationCheckOut(@RequestBody List<Long> resPkList){
         return service.reservationCheckOut(resPkList);
     }

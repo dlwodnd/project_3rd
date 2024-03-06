@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                                         , "/api/dog/**"
                                         , "/api/board/my-comment"
                                         , "/api/board/my-board").authenticated()
-                                .requestMatchers("/api/reservation/**").hasAnyRole("USER","BUSINESS_USER")
+                                .requestMatchers("/api/reservation/**").hasAnyRole("USER")
                                 .requestMatchers(HttpMethod.POST
                                         , "/api/review"
                                         , "/api/user/follow"

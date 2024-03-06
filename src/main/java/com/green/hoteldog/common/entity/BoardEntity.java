@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -48,11 +51,11 @@ public class BoardEntity extends BaseEntity {
     //재웅
     @ToString.Exclude
     @OneToMany(mappedBy = "boardEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
-    private List<BoardCommentEntity> boardCommentEntityList;
+    private List<BoardCommentEntity> boardCommentEntityList = new ArrayList<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "boardEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
-    private List<BoardPicsEntity> boardPicsEntityList;
+    private Set<BoardPicsEntity> boardPicsEntityList = new HashSet<>();
 
     //재웅
 }

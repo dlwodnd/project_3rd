@@ -3,6 +3,9 @@ package com.green.hoteldog.common.entity;
 import com.green.hoteldog.common.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -36,5 +39,12 @@ public class ReviewEntity extends BaseEntity {
     //영웅
 
     //재웅
+    @ToString.Exclude
+    @OneToMany(mappedBy = "reviewEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
+    List<ReviewFavEntity> reviewFavEntity;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "reviewEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
+    List<ReviewPicEntity> reviewPicEntity;
     //재웅
 }

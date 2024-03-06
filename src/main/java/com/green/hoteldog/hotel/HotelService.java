@@ -800,7 +800,7 @@ public class HotelService {
                         .score(reviewEntity.getScore())
                         .nickName(reviewEntity.getReservationEntity().getUserEntity().getNickname())
                         .updatedAt(reviewEntity.getUpdatedAt().toString())
-                        .favCount(reviewFavRepository.findAllByReviewPk(reviewEntity).size())
+                        .favCount(reviewFavRepository.findAllByReviewEntity(reviewEntity).size())
                         .pics(reviewPicRepository.findAllByReviewEntity(reviewEntity).stream().map(ReviewPicEntity::getPic).collect(Collectors.toList())).build())
                 .isMoreReview(isMoreReview)
                 .build();

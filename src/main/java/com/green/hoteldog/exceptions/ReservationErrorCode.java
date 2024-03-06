@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ReservationErrorCode implements ErrorCode{
+    DOG_SIZE_AND_ROOM_SIZE_DO_NOT_MATCH
+            (HttpStatus.BAD_REQUEST, "방과 강아지 사이즈가 맞지 않습니다."),
     BAD_REQUEST
             (HttpStatus.BAD_REQUEST, "날짜 정보를 잘 못 입력했습니다."),
     NO_DATE_INFORMATION

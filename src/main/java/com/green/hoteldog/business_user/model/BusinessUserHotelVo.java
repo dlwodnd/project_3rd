@@ -1,7 +1,6 @@
 package com.green.hoteldog.business_user.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.green.hoteldog.common.entity.HotelOptionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +21,8 @@ public class BusinessUserHotelVo {
     private String businessNum;
     private String hotelCall;
     private String createdAt;
-    private List<String> hotelPics;
+
+    private List<PicsInfo> hotelPics;
     private String hotelFullAddress;
     private HotelAddressInfo hotelAddressInfo;
     private long approval;

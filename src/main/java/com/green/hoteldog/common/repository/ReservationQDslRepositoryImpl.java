@@ -15,6 +15,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.green.hoteldog.common.entity.QDogSizeEntity.dogSizeEntity;
@@ -96,10 +97,11 @@ public class ReservationQDslRepositoryImpl implements ReservationQDslRepository{
     }
     @Override
     public List<ReservationEntity> getByHotelEntityNowBetweenFromToResList(HotelEntity hotelEntity){
+
         return jpaQueryFactory.selectFrom(reservationEntity)
                 .where(reservationEntity.hotelEntity.eq(hotelEntity),
-                        Expressions.timeTemplate(LocalDate.class, "DATE_FORMAT({0}, '%Y-%m-%d')")
-                                .between(reservationEntity.fromDate, reservationEntity.toDate))
+                        Expressions.timeTemplate(LocalDate.class, "DATE({0})", LocalDate.now()).loe(reservationEntity.toDate),
+                        Expressions.timeTemplate(LocalDate.class, "DATE({0})", LocalDate.now()).goe(reservationEntity.fromDate))
                 .fetch();
     }
 

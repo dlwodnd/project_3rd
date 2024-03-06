@@ -19,7 +19,7 @@ public interface ReviewFavRepository extends JpaRepository<ReviewFavEntity, Revi
     //영웅
 
     //재웅
-    List<ReviewFavEntity> findAllByReviewPk(ReviewEntity reviewPk);
+    List<ReviewFavEntity> findAllByReviewEntity(ReviewEntity reviewPk);
     //재웅
 
 }

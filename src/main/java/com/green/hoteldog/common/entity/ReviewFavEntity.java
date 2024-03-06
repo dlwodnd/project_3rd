@@ -14,12 +14,12 @@ public class ReviewFavEntity {
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @MapsId("reviewPk")
     @JoinColumn(name = "review_pk",columnDefinition = "BIGINT UNSIGNED")
-    private ReviewEntity reviewPk;
+    private ReviewEntity reviewEntity;
 
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @MapsId("userPk")
     @JoinColumn(name = "user_pk",columnDefinition = "BIGINT UNSIGNED")
-    private UserEntity userPk;
+    private UserEntity userEntity;
 
     //승민
     //승민

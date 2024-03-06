@@ -71,8 +71,8 @@ public class MyFileUtils {
 
         }
     }
-    public void delFile(String filePath) {//파일 삭제
-        File file = new File(uploadPrefixPath + filePath);
+    public void delFile(String filePath,String targetFile) {//파일 삭제
+        File file = new File(uploadPrefixPath + filePath + targetFile);
         if(file.exists()) {
             file.delete();
         }

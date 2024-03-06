@@ -12,7 +12,6 @@ import com.green.hoteldog.common.utils.RandomCodeUtils;
 import com.green.hoteldog.exceptions.*;
 import com.green.hoteldog.security.AuthenticationFacade;
 import com.green.hoteldog.user.models.HotelRoomDateProcDto;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,8 +27,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static com.green.hoteldog.common.utils.DiscountCostUtil.getDiscountCost;
 
 @Slf4j
 @Service
@@ -61,17 +58,18 @@ public class BusinessService {
 
     @Transactional
     public ResVo insHotelStateChange(HotelSateChangeInsDto dto) {
-
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
-        if(hotelEntity.getApproval() == 0){
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        if (hotelEntity.getApproval() == 0) {
             throw new CustomException(HotelErrorCode.WAITING_SUSPEND_APPROVAL);
-        }else if (hotelEntity.getApproval() == 1 && hotelEntity.getSignStatus() == 1) {
+        } else if (hotelEntity.getApproval() == 1 && hotelEntity.getSignStatus() == 1) {
             throw new CustomException(HotelErrorCode.WAITING_SUSPEND_APPROVAL);
-        }else if (hotelEntity.getApproval() == 2){
+        } else if (hotelEntity.getApproval() == 2) {
             hotelEntity.setApproval(1L);
             return new ResVo(2);
-        }else {
+        } else {
             hotelEntity.setSignStatus(1L);
             HotelSuspendedEntity hotelSuspendedEntity = HotelSuspendedEntity.builder()
                     .hotelEntity(hotelEntity)
@@ -133,9 +131,14 @@ public class BusinessService {
     // 광고 신청
     @Transactional
     public ResVo postHotelAdvertiseApplication(HotelAdvertiseApplicationDto dto) {
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         LocalDateTime today = LocalDateTime.now();
+        if (hotelEntity.getAdvertise() == 1) {
+            throw new CustomException(HotelErrorCode.ALREADY_SUBSCRIBE_ADVERTISE);
+        }
         HotelAdvertiseEntity hotelAdvertiseEntity = HotelAdvertiseEntity.builder()
                 .hotelEntity(hotelEntity)
                 .hotelAdvertiseToDate(today)
@@ -159,16 +162,21 @@ public class BusinessService {
                 .paymentStatus(1L)
                 .build();
         paymentAdRepository.save(paymentAdEntity);
+        hotelEntity.setAdvertise(1L);
 
         return new ResVo(1);
     }
+
     // 광고 연장 취소
     @Transactional
-    public ResVo postHotelAdvertiseCancel(){
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
-        HotelAdvertiseEntity hotelAdvertiseEntity = hotelAdvertiseRepository.findByHotelEntity(hotelEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_SUBSCRIBE_ADVERTISE));
-        if(hotelAdvertiseEntity.getAdStatus() != 1){
+    public ResVo postHotelAdvertiseCancel() {
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        HotelAdvertiseEntity hotelAdvertiseEntity = hotelAdvertiseRepository.findByHotelEntity(hotelEntity)
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_SUBSCRIBE_ADVERTISE));
+        if (hotelAdvertiseEntity.getAdStatus() != 1) {
             throw new CustomException(HotelErrorCode.NOT_SUBSCRIBE_ADVERTISE);
         }
         hotelAdvertiseEntity.setAdStatus(2L);
@@ -178,9 +186,11 @@ public class BusinessService {
     // 예약 리스트 출력
     @Transactional
     public ReservationInfoVo getHotelReservationList(Pageable pageable) {
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
-        List<ReservationEntity> reservationEntityList = reservationRepository.getByHotelEntityNowBetweenFromToResList(hotelEntity);
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        List<ReservationEntity> reservationEntityList = reservationRepository.findAllByHotelEntity(hotelEntity);
         Page<ReservationInfo> reservationInfoPage = reservationRepository.getReservationInfoList(pageable, reservationEntityList);
         log.info("reservationInfoPage : " + reservationInfoPage.getContent());
         return ReservationInfoVo.builder()
@@ -189,14 +199,16 @@ public class BusinessService {
                 .build();
 
     }
+
     //하루 방 예약정보
     @Transactional
     public ReservationTodayInfoVo getHotelReservationTodayList(Pageable pageable) {
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
-        List<ReservationEntity> reservationEntityList = reservationRepository.findAllByHotelEntityAndFromDate(hotelEntity, LocalDate.now());
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        List<ReservationEntity> reservationEntityList = reservationRepository.getByHotelEntityNowBetweenFromToResList(hotelEntity);
         Page<ReservationTodayInfo> reservationTodayInfoPage = reservationRepository.getReservationTodayInfoList2(pageable, reservationEntityList);
-
 
 
         return ReservationTodayInfoVo.builder()
@@ -204,14 +216,18 @@ public class BusinessService {
                 .totalPage(reservationTodayInfoPage.getTotalPages())
                 .build();
     }
+
     //사업자 유저 호텔 정보 수정
     @Transactional
-    public ResVo putHotel(HotelUpdateDto dto){
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+    public ResVo putHotel(HotelUpdateDto dto) {
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         hotelEntity.setHotelDetailInfo(dto.getHotelDetailInfo());
         hotelOptionInfoRepository.deleteAllByHotelEntity(hotelEntity);
-        for(Long optionPk : dto.getOptionList()){
+
+        for (Long optionPk : dto.getOptionList()) {
             HotelOptionComposite hotelOptionComposite = HotelOptionComposite.builder()
                     .hotelPk(hotelEntity.getHotelPk())
                     .optionPk(optionPk)
@@ -224,11 +240,16 @@ public class BusinessService {
             hotelOptionInfoRepository.save(hotelOptionInfoEntity);
         }
 
-        if(dto.getHotelPics() != null && !dto.getHotelPics().isEmpty()){
 
+        if (dto.getHotelPics() != null && !dto.getHotelPics().isEmpty()) {
             String target = "/hotel/" + hotelEntity.getHotelPk();
-            myFileUtils.delFolderTrigger(target);
-            hotelPicRepository.deleteAllByHotelEntity(hotelEntity);
+            if (dto.getDeletePicsPk() != null && !dto.getDeletePicsPk().isEmpty()) {
+                for (Long pk : dto.getDeletePicsPk()) {
+                    String delFileNm = "/" + hotelPicRepository.getReferenceById(pk).getPic();
+                    myFileUtils.delFile(target, delFileNm);
+                }
+                hotelPicRepository.deleteAllById(dto.getDeletePicsPk());
+            }
 
             for (MultipartFile file : dto.getHotelPics()) {
                 String hotelPicFile = myFileUtils.transferTo(file, target);
@@ -262,8 +283,8 @@ public class BusinessService {
     //사업자 유저 호텔 등록
     @Transactional
     public ResVo insHotel(HotelInsDto dto) {
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = HotelEntity.builder()
                 .hotelNm(dto.getHotelNm())
                 .businessEntity(businessEntity)
@@ -329,7 +350,8 @@ public class BusinessService {
     //사업자 유저가 등록한 호텔 정보
     @Transactional
     public BusinessUserHotelVo getBusinessUserHotel() {
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
 
         Optional<HotelEntity> optionalHotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity);
         HotelEntity hotelEntity = new HotelEntity();
@@ -369,7 +391,9 @@ public class BusinessService {
                     .advertise(hotelEntity.getAdvertise())
                     .createdAt(hotelEntity.getCreatedAt().toString())
                     .hotelFullAddress(hotelEntity.getHotelWhereEntity().getAddressName() + " " + hotelEntity.getHotelWhereEntity().getDetailAddress())
-                    .hotelPics(hotelEntity.getHotelPicEntity().stream().map(HotelPicEntity::getPic).collect(Collectors.toList()))
+                    .hotelPics(hotelEntity.getHotelPicEntity().stream().map(item -> PicsInfo.builder()
+                            .hotelPicPk(item.getHotelPicPk())
+                            .hotelPic(item.getPic()).build()).collect(Collectors.toList()))
                     .optionList(hotelOptionInfoVoList)
                     .businessCertificate(hotelEntity.getBusinessCertificate())
                     .hotelAddressInfo(HotelAddressInfo.builder()
@@ -388,7 +412,7 @@ public class BusinessService {
                             .sizePk(hotelRoomInfoEntity.getDogSizeEntity().getSizePk())
                             .hotelRoomNm(hotelRoomInfoEntity.getHotelRoomNm())
                             .roomAble(hotelRoomInfoEntity.getRoomAble())
-                            .hotelRoomCost(roomDiscountInfo.setDiscountCost(hotelRoomInfoEntity.getHotelRoomCost(),hotelRoomInfoEntity.getDiscountPer()).getRoomCost())
+                            .hotelRoomCost(roomDiscountInfo.setDiscountCost(hotelRoomInfoEntity.getHotelRoomCost(), hotelRoomInfoEntity.getDiscountPer()).getRoomCost())
                             .hotelRoomEa(hotelRoomInfoEntity.getHotelRoomEa())
                             .roomPic(hotelRoomInfoEntity.getRoomPic())
                             .maximum(hotelRoomInfoEntity.getMaximum())
@@ -405,14 +429,15 @@ public class BusinessService {
     //사업자 유저가 등록한 호텔 방 수정
     @Transactional
     public ResVo putHotelRoomInfo(BusinessHotelRoomPutDto dto) {
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
 
         Optional<HotelRoomInfoEntity> optionalHotelRoomInfoEntity = hotelRoomRepository.findById(dto.getHotelRoomPk());
 
         HotelRoomInfoEntity hotelRoomInfoEntity = optionalHotelRoomInfoEntity.orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
         String hotelRoomPic = null;
         if (dto.getRoomPic() != null && !dto.getRoomPic().isEmpty()) {
-            String target = "hotel/"+hotelRoomInfoEntity.getHotelEntity().getHotelPk()+"/room/"+hotelRoomInfoEntity.getHotelRoomPk();
+            String target = "hotel/" + hotelRoomInfoEntity.getHotelEntity().getHotelPk() + "/room/" + hotelRoomInfoEntity.getHotelRoomPk();
             myFileUtils.delFolderTrigger(target);
             hotelRoomPic = myFileUtils.transferTo(dto.getRoomPic(), target);
             hotelRoomInfoEntity.setRoomPic(hotelRoomPic);
@@ -437,7 +462,8 @@ public class BusinessService {
     // 사업자 유저 예약 강아지 방 정보
     @Transactional
     public List<HotelRoomAndDogInfoVo> getHotelRoomAndDogInfo(long resPk) {
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         Optional<ReservationEntity> optionalReservationEntity = reservationRepository.findById(resPk);
         ReservationEntity reservationEntity = optionalReservationEntity.orElseThrow(() -> new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION));
         List<ResComprehensiveInfoEntity> resComprehensiveInfoEntityList = resComprehensiveInfoRepository.findAllByReservationEntity(reservationEntity);
@@ -465,36 +491,46 @@ public class BusinessService {
         }
         return hotelRoomAndDogInfoVoList;
     }
+
     //호텔 방 활성화 & 비활성화 토글
     @Transactional
-    public ResVo toggleHotelRoomActive(HotelRoomToggleDto dto){
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelRoomInfoEntity hotelRoomInfoEntity = hotelRoomRepository.findById(dto.getHotelRoomPk()).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
+    public ResVo toggleHotelRoomActive(HotelRoomToggleDto dto) {
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelRoomInfoEntity hotelRoomInfoEntity = hotelRoomRepository.findById(dto.getHotelRoomPk())
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
         if (hotelRoomInfoEntity.getHotelRoomEa() == null || hotelRoomInfoEntity.getHotelRoomCost() == null || hotelRoomInfoEntity.getMaximum() == null || hotelRoomInfoEntity.getRoomPic() == null) {
             throw new CustomException(HotelErrorCode.REQUIRED_VALUE_IS_NULL);
         }
         if (hotelRoomInfoEntity.getHotelEntity().getBusinessEntity().getBusinessPk() != businessEntity.getBusinessPk()) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
+
         if (hotelRoomInfoEntity.getRoomAble() == 1) {
             hotelRoomInfoEntity.setRoomAble(0L);
             return new ResVo(2);
         }
-        else  {
-            hotelRoomInfoEntity.setRoomAble(1L);
-            return new ResVo(1);
+        if (hotelRoomInfoEntity.getHotelRoomCost() == 0
+                || hotelRoomInfoEntity.getRoomPic().isEmpty()
+                || hotelRoomInfoEntity.getHotelRoomEa() == 0){
+            throw new CustomException(HotelErrorCode.REQUIRED_VALUE_IS_NULL);
         }
+
+        hotelRoomInfoEntity.setRoomAble(1L);
+        return new ResVo(1);
+
     }
 
     //사업자 유저 회원탈퇴
     @Transactional
     public ResVo postBusinessUserWithdrawal() {
         BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         if (!reservationRepository.findAllByHotelEntityAndResStatusLessThan(hotelEntity, 2L).isEmpty()) {
             throw new CustomException(WithdrawalErrorCode.NOT_CHECK_OUT_RESERVATIONS_REMAIN);
         }
-        if (hotelEntity.getApproval() == 1){
+        if (hotelEntity.getApproval() == 1) {
             throw new CustomException(WithdrawalErrorCode.EXIST_IN_OPERATION_HOTEL);
         }
         businessEntity.setBusinessStatus(2L);
@@ -503,31 +539,37 @@ public class BusinessService {
 
         return new ResVo(1);
     }
-    public ResVo reservationApproval(List<Long> resPkList){
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+
+    public ResVo reservationApproval(List<Long> resPkList) {
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         List<ReservationEntity> reservationEntityList = reservationRepository.findAllById(resPkList);
         reservationEntityList.forEach(reservationEntity -> {
-            if(!Objects.equals(reservationEntity.getHotelEntity().getHotelPk(), hotelEntity.getHotelPk())){
+            if (!Objects.equals(reservationEntity.getHotelEntity().getHotelPk(), hotelEntity.getHotelPk())) {
                 throw new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION);
             }
-            if(reservationEntity.getResStatus() != 0){
+            if (reservationEntity.getResStatus() != 0) {
                 throw new CustomException(ReservationErrorCode.NOT_WAITING_APPROVAL);
             }
             reservationEntity.setResStatus(1L);
         });
         return new ResVo(1);
     }
-    public ResVo reservationCancel(ResCancelDto dto){
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+
+    public ResVo reservationCancel(ResCancelDto dto) {
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         ReservationEntity reservationEntity = reservationRepository.findById(dto.getResPk())
                 .orElseThrow(() -> new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION));
-        if(!reservationEntity.getHotelEntity().getHotelPk().equals(hotelEntity.getHotelPk())){
+        if (!reservationEntity.getHotelEntity().getHotelPk().equals(hotelEntity.getHotelPk())) {
             throw new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION);
-        }else if(reservationEntity.getResStatus() != 0){
+        } else if (reservationEntity.getResStatus() != 0) {
             throw new CustomException(ReservationErrorCode.NOT_CANCELABLE);
-        }else {
+        } else {
             reservationEntity.setResStatus(5L);
             RefundEntity refundEntity = RefundEntity.builder()
                     .userEntity(reservationEntity.getUserEntity())
@@ -552,43 +594,49 @@ public class BusinessService {
 
 
     }
-    public ResVo reservationCheckIn(List<Long> resPkList){
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+
+    public ResVo reservationCheckIn(List<Long> resPkList) {
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         List<ReservationEntity> reservationEntityList = reservationRepository.findAllById(resPkList);
-        for(ReservationEntity reservationEntity : reservationEntityList){
-            if(!reservationEntity.getHotelEntity().getHotelPk().equals(hotelEntity.getHotelPk())){
+        for (ReservationEntity reservationEntity : reservationEntityList) {
+            if (!reservationEntity.getHotelEntity().getHotelPk().equals(hotelEntity.getHotelPk())) {
                 throw new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION);
-            }else if(reservationEntity.getResStatus() == 0){
+            } else if (reservationEntity.getResStatus() == 0) {
                 throw new CustomException(ReservationErrorCode.NOT_APPROVAL_RESERVATION);
-            }else if(reservationEntity.getResStatus() == 1){
+            } else if (reservationEntity.getResStatus() == 1) {
                 reservationEntity.setResStatus(2L);
-            }else if (reservationEntity.getResStatus() == 2){
+            } else if (reservationEntity.getResStatus() == 2) {
                 throw new CustomException(ReservationErrorCode.ALREADY_CHECK_IN);
-            }else if (reservationEntity.getResStatus() == 3){
+            } else if (reservationEntity.getResStatus() == 3) {
                 throw new CustomException(ReservationErrorCode.ALREADY_CHECK_OUT);
-            }else {
+            } else {
                 throw new CustomException(ReservationErrorCode.CANCEL_RESERVATION);
             }
         }
         return new ResVo(1);
     }
-    public ResVo reservationCheckOut(List<Long> resPkList){
-        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
-        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+
+    public ResVo reservationCheckOut(List<Long> resPkList) {
+        BusinessEntity businessEntity = businessRepository.findById(authenticationFacade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
+        HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
+                .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
         List<ReservationEntity> reservationEntityList = reservationRepository.findAllById(resPkList);
-        for(ReservationEntity reservationEntity : reservationEntityList){
-            if(!reservationEntity.getHotelEntity().getHotelPk().equals(hotelEntity.getHotelPk())){
+        for (ReservationEntity reservationEntity : reservationEntityList) {
+            if (!reservationEntity.getHotelEntity().getHotelPk().equals(hotelEntity.getHotelPk())) {
                 throw new CustomException(ReservationErrorCode.NOT_EXIST_RESERVATION);
-            }else if(reservationEntity.getResStatus() == 0){
+            } else if (reservationEntity.getResStatus() == 0) {
                 throw new CustomException(ReservationErrorCode.NOT_APPROVAL_RESERVATION);
-            }else if(reservationEntity.getResStatus() == 1){
+            } else if (reservationEntity.getResStatus() == 1) {
                 throw new CustomException(ReservationErrorCode.NOT_CHECK_IN);
-            }else if (reservationEntity.getResStatus() == 2){
+            } else if (reservationEntity.getResStatus() == 2) {
                 reservationEntity.setResStatus(3L);
-            }else if (reservationEntity.getResStatus() == 3){
+            } else if (reservationEntity.getResStatus() == 3) {
                 throw new CustomException(ReservationErrorCode.ALREADY_CHECK_OUT);
-            }else {
+            } else {
                 throw new CustomException(ReservationErrorCode.CANCEL_RESERVATION);
             }
         }

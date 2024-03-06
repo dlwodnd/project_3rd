@@ -2,10 +2,9 @@ package com.green.hoteldog.common.entity;
 
 import com.green.hoteldog.common.entity.base.CreatedAtBaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -42,5 +41,8 @@ public class ResDogInfoEntity extends CreatedAtBaseEntity {
     //영웅
 
     //재웅
+    @ToString.Exclude
+    @OneToMany(mappedBy = "resDogInfoEntity",fetch = FetchType.LAZY,orphanRemoval = true)
+    List<ResComprehensiveInfoEntity> resComprehensiveInfoEntity;
     //재웅
 }

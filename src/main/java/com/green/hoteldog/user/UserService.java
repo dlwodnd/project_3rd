@@ -277,7 +277,7 @@ public class UserService {
 
         //사업자 엔티티 등록
         BusinessEntity businessEntity = new BusinessEntity();
-        businessEntity.setBusinessEmail(businessUserDto.getUserEmail());
+        businessEntity.setBusinessEmail(businessUserDto.getEmailResponseVo().getEmail());
         businessEntity.setBusinessPw(passwordEncoder.encode(businessUserDto.getUpw()));
         businessEntity.setBusinessPhoneNum(businessUserDto.getPhoneNum());
         businessEntity.setRole(UserRoleEnum.BUSINESS_USER);
@@ -490,7 +490,8 @@ public class UserService {
     //유저 회원 탈퇴 진행
     @Transactional
     public ResVo userWithdrawal() {
-        UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        UserEntity userEntity = userRepository.findById(facade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
 
         List<ReservationEntity> reservationEntityList = reservationRepository.findByUserEntityAndResStatus(userEntity, 0);
 
@@ -512,7 +513,8 @@ public class UserService {
     //유저 탈퇴 철회
     @Transactional
     public ResVo userWithdrawalCancel() {
-        UserEntity userEntity = userRepository.findById(facade.getLoginUserPk()).orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
+        UserEntity userEntity = userRepository.findById(facade.getLoginUserPk())
+                .orElseThrow(() -> new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED));
         WithdrawalUserEntity withdrawalUserEntity = withdrawalUserRepository.findById(userEntity.getUserPk()).orElseThrow(() -> new CustomException(UserErrorCode.NOT_EXISTS_WITHDRAWAL_USER));
         withdrawalUserRepository.deleteById(withdrawalUserEntity.getUserEntity().getUserPk());
         userEntity.setUserStatus(0L);

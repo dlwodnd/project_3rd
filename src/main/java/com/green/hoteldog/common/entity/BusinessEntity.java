@@ -57,5 +57,7 @@ public class BusinessEntity extends CreatedAtBaseEntity {
     /*@ToString.Exclude
     @OneToMany(mappedBy = "businessEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
     private List<PaymentAdEntity> paymentAdEntityList;*/
+
+
     //재웅
 }

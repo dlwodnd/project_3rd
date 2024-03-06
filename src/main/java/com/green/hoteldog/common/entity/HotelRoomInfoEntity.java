@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -65,6 +66,8 @@ public class HotelRoomInfoEntity extends BaseEntity {
     @OneToMany(mappedBy = "hotelRoomInfoEntity",fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST},orphanRemoval = true)
     private List<HotelResRoomEntity> hotelResRoomEntities;
 
-
+    @ToString.Exclude
+    @OneToMany(mappedBy = "hotelRoomInfoEntity",fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST},orphanRemoval = true)
+    private Set<ResComprehensiveInfoEntity> resComprehensiveInfoEntities;
     //재웅
 }

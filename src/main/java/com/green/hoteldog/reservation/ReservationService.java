@@ -103,6 +103,9 @@ public class ReservationService {
     }
     @Transactional(rollbackFor = Exception.class)
     public ResVo postHotelReservationFix(HotelReservationInsDto dto) {
+        if(dto.getFromDate().isBefore(LocalDate.now())){
+            throw new CustomException(ReservationErrorCode.BAD_REQUEST);
+        }
         log.info("dto : {}", dto);
         if(dto.getToDate() == null || dto.getFromDate() == null){
             throw new CustomException(ReservationErrorCode.NO_DATE_INFORMATION);
@@ -130,6 +133,9 @@ public class ReservationService {
         for (DogInfo dogInfo : dto.getDogInfo()){
             DogSizeEntity dogSizeEntity = dogSizeRepository.findById(dogInfo.getSizePk()).orElseThrow(() -> new CustomException(ReservationErrorCode.UNKNOWN_DOG_SIZE_PK));
             HotelRoomInfoEntity hotelRoomInfoEntity = hotelRoomRepository.findById(dogInfo.getHotelRoomPk()).orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL_ROOM));
+            if (dogSizeEntity.getSizePk() != hotelRoomInfoEntity.getDogSizeEntity().getSizePk()) {
+                throw new CustomException(ReservationErrorCode.DOG_SIZE_AND_ROOM_SIZE_DO_NOT_MATCH);
+            }
             ResDogInfoEntity resDogInfoEntity = ResDogInfoEntity.builder()
                     .dogNm(dogInfo.getDogNm())
                     .dogSizeEntity(dogSizeEntity)
