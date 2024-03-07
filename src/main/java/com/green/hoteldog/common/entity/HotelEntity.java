@@ -25,7 +25,7 @@ public class HotelEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotelPk;
 
-    @OneToOne(optional = false,fetch = FetchType.EAGER)
+    @OneToOne(optional = false,fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     @JoinColumn(name = "business_pk",referencedColumnName = "businessPk",columnDefinition = "BIGINT UNSIGNED")
     private BusinessEntity businessEntity;
 

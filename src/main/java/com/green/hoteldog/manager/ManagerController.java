@@ -86,7 +86,7 @@ public class ManagerController {
     // 호텔 목록을 가져오는 메서드
     @GetMapping("/hotelList")
     @Operation(summary = "호텔목록", description = "호텔목록")
-    public List<HotelListVo> getManagementHotelList(@PageableDefault(page = 1,size = 15) Pageable pageable) {
+    public HotelInfoListVo getManagementHotelList(@PageableDefault(page = 1,size = 15) Pageable pageable) {
         return service.getManagementHotelList(pageable);
     }
 
@@ -94,7 +94,7 @@ public class ManagerController {
     @GetMapping("/hotelAccountStatus")
     @Operation(summary = "승인 대길 호텔", description = "사이즈 숫자 뒤에, 부분부터 쇼트 ] 대괄호하나 지우셈")
 
-    public List<HotelListVo> getManagementApprovalHotelList(@PageableDefault(page = 1,size = 15) Pageable pageable) {
+    public HotelInfoListVo getManagementApprovalHotelList(@PageableDefault(page = 1,size = 15) Pageable pageable) {
         return service.getManagementHotelByBusinessEntity_AccountStatus(pageable);
     }
 

@@ -2,6 +2,7 @@ package com.green.hoteldog.common.repository;
 
 import com.green.hoteldog.common.entity.BusinessEntity;
 import com.green.hoteldog.common.entity.HotelEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,9 +18,9 @@ public interface HotelRepository extends JpaRepository<HotelEntity, Long> , Hote
     //승민
     //승민
     //전체 호텔 모록 가져옴
-    List<HotelEntity>  findAllByApprovalIsNotOrderByCreatedAtDesc(long approval , Pageable pageable);
+    Page<HotelEntity>  findAllByOrderByCreatedAtDesc(Pageable pageable);
 
-    List<HotelEntity> findHotelEntityByApprovalOrderByCreatedAtDesc(int Approval, Pageable pageable);
+    Page<HotelEntity> findAllByApprovalIsOrderByCreatedAtDesc(long Approval, Pageable pageable);
 
     @Modifying
     @Query("UPDATE HotelEntity h SET h.approval = :approval WHERE h.hotelPk = :hotelPk")
@@ -36,5 +37,6 @@ public interface HotelRepository extends JpaRepository<HotelEntity, Long> , Hote
     Optional<HotelEntity> findHotelEntityByBusinessEntity(BusinessEntity businessEntity);
     List<HotelEntity> findAllByAdvertiseAndApproval(Long advertise, Long approval);
     Optional<HotelEntity> findByBusinessNum(String businessNum);
+    List<HotelEntity> findAllByApprovalIsNotOrderByCreatedAtDesc(long approval, Pageable pageable);
     //재웅
 }

@@ -10,6 +10,7 @@ import com.green.hoteldog.manager.model.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -87,7 +88,8 @@ public class ManagerService {
 
     public BusinessUserInfoVo businessUsers(Pageable pageable){
         long totalRecords = businessEntityRepository.count();
-        List<BusinessEntity> businessEntities = businessEntityRepository.findAllByRole(UserRoleEnum.BUSINESS_USER, pageable).getContent();
+
+        List<HotelEntity> hotelEntities = hotelRepository.findAllByApprovalIsNotOrderByCreatedAtDesc(0L,pageable);
 
         int maxPage = (int) Math.ceil((double) totalRecords / pageable.getPageSize());
         if(maxPage == 0){
@@ -95,13 +97,13 @@ public class ManagerService {
         }
         return BusinessUserInfoVo.builder()
                 .totalPage(businessEntityRepository.findAllByRole(UserRoleEnum.BUSINESS_USER, pageable).getTotalPages())
-                .businessUserInfoList(businessEntities.stream()
+                .businessUserInfoList(hotelEntities.stream()
                         .map(item -> BusinessUserInfo.builder()
-                                .businessUserPk(item.getBusinessPk())
-                                .userEmail(item.getBusinessEmail())
-                                .phoneNum(item.getBusinessPhoneNum())
-                                .businessName(item.getBusinessName())
-                                .hotelAddress(item.getHotelEntity().getHotelFullAddress())
+                                .businessUserPk(item.getBusinessEntity().getBusinessPk())
+                                .userEmail(item.getBusinessEntity().getBusinessEmail())
+                                .phoneNum(item.getBusinessEntity().getBusinessPhoneNum())
+                                .businessName(item.getBusinessEntity().getBusinessName())
+                                .hotelAddress(item.getHotelFullAddress())
                                 .build()).collect(Collectors.toList())
 
                 ).build();
@@ -117,27 +119,39 @@ public class ManagerService {
 
 
     // 호텔 목록을 가져오는 메서드
-    public List<HotelListVo> getManagementHotelList(Pageable pageable) {
-        HotelListVo hotelListVo = new HotelListVo();
-        long totalRecords =  hotelRepository.count();
-        int maxPage = (int) Math.ceil((double) totalRecords / pageable.getPageSize());
-        hotelListVo.setMaxPage(maxPage);
-        List<HotelEntity> hotelEntities = hotelRepository.findAllByApprovalIsNotOrderByCreatedAtDesc(0,pageable);
-        return hotelEntities.stream()
-                .map(hotelEntity -> HotelListVo.hotelListVo(hotelEntity))
-                .collect(Collectors.toList());
+    public HotelInfoListVo getManagementHotelList(Pageable pageable) {
+        Page<HotelEntity> hotelEntities = hotelRepository.findAllByOrderByCreatedAtDesc(pageable);
+        return HotelInfoListVo.builder()
+                .totalPage(hotelEntities.getTotalPages())
+                .hotelInfoList(hotelEntities.stream().map(item -> HotelInfo.builder()
+                        .hotelPk(item.getHotelPk())
+                        .hotelNum(item.getHotelNum())
+                        .hotelNm(item.getHotelNm())
+                        .businessName(item.getBusinessEntity().getBusinessName())
+                        .hotelFullAddress(item.getHotelFullAddress())
+                        .advertise(item.getAdvertise())
+                        .approval(item.getApproval())
+                        .hotelCall(item.getHotelCall())
+                        .build()).collect(Collectors.toList()))
+                .build();
     }
 
     // 승인 대기 호텔목록 가져오는 메서드
-    public List<HotelListVo> getManagementHotelByBusinessEntity_AccountStatus(Pageable pageable) {
-        HotelListVo hotelListVo = new HotelListVo();
-        long totalRecords =  hotelRepository.count();
-        int maxPage = (int) Math.ceil((double) totalRecords / pageable.getPageSize());
-        hotelListVo.setMaxPage(maxPage);
-        List<HotelEntity> hotelEntities = hotelRepository.findHotelEntityByApprovalOrderByCreatedAtDesc(0, pageable);
-        return hotelEntities.stream()
-                .map(hotelEntity -> HotelListVo.hotelListVo(hotelEntity))
-                .collect(Collectors.toList());
+    public HotelInfoListVo getManagementHotelByBusinessEntity_AccountStatus(Pageable pageable) {
+        Page<HotelEntity> hotelEntities = hotelRepository.findAllByApprovalIsOrderByCreatedAtDesc(0L, pageable);
+        return HotelInfoListVo.builder()
+                .totalPage(hotelEntities.getTotalPages())
+                .hotelInfoList(hotelEntities.stream().map(item -> HotelInfo.builder()
+                        .hotelPk(item.getHotelPk())
+                        .hotelNum(item.getHotelNum())
+                        .hotelNm(item.getHotelNm())
+                        .businessName(item.getBusinessEntity().getBusinessName())
+                        .hotelFullAddress(item.getHotelFullAddress())
+                        .advertise(item.getAdvertise())
+                        .approval(item.getApproval())
+                        .hotelCall(item.getHotelCall())
+                        .build()).collect(Collectors.toList()))
+                .build();
     }
 
     public BusinessUserHotelVo getHotelInfo(long hotelPk){
