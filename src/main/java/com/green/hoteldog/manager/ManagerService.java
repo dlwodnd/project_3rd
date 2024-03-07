@@ -1,5 +1,7 @@
 package com.green.hoteldog.manager;
 
+import com.green.hoteldog.business_user.model.*;
+import com.green.hoteldog.common.RoomDiscountInfo;
 import com.green.hoteldog.common.entity.*;
 
 import com.green.hoteldog.common.entity.jpa_enum.UserRoleEnum;
@@ -11,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,6 +29,8 @@ public class ManagerService {
     private final PaymentAdRepository paymentAdRepository;
     private final HotelAdvertiseRepository hotelAdvertiseEntityRepository;
     private final HotelSuspendedRepository hotelSuspendedRepository;
+    private final HotelRoomRepository hotelRoomRepository;
+    private final HotelOptionInfoRepository hotelOptionInfoRepository;
 
     // 모든유저
 //    public List <UserEntity> allUsers(List<UserEntity> nomalUsers){
@@ -132,6 +138,82 @@ public class ManagerService {
         return hotelEntities.stream()
                 .map(hotelEntity -> HotelListVo.hotelListVo(hotelEntity))
                 .collect(Collectors.toList());
+    }
+
+    public BusinessUserHotelVo getHotelInfo(long hotelPk){
+        Optional<HotelEntity> optionalHotelEntity = hotelRepository.findById(hotelPk);
+
+        BusinessUserHotelVo businessUserHotelVo = new BusinessUserHotelVo();
+        RoomDiscountInfo roomDiscountInfo = new RoomDiscountInfo();
+
+        if (optionalHotelEntity.isPresent()) {
+            HotelEntity hotelEntity = optionalHotelEntity.get();
+            List<HotelOptionInfoEntity> hotelOptionInfoEntityList = hotelOptionInfoRepository.findAllByHotelEntity(hotelEntity);
+            List<Long> hotelOptionPkList = new ArrayList<>();
+
+            List<HotelOptionInfoVo> hotelOptionInfoVoList = new ArrayList<>();
+            /*List<HotelOptionInfoVo> hotelOptionInfoVoList1 = hotelOptionInfoRepository.getHotelOptionInfoList(hotelEntity.getHotelOptionInfoEntity());*/
+
+            for (HotelOptionInfoEntity hotelOptionInfoEntity : hotelOptionInfoEntityList) {
+                HotelOptionInfoVo vo = HotelOptionInfoVo.builder()
+                        .optionPk(hotelOptionInfoEntity.getHotelOptionEntity().getOptionPk())
+                        .optionNm(hotelOptionInfoEntity.getHotelOptionEntity().getOptionNm())
+                        .build();
+                hotelOptionInfoVoList.add(vo);
+            }
+            List<HotelRoomInfoEntity> hotelRoomInfoEntityList = hotelRoomRepository.findHotelRoomInfoEntitiesByHotelEntity(hotelEntity);
+            Optional<HotelAdvertiseEntity> optionalHotelAdvertiseEntity = hotelAdvertiseRepository.findByHotelEntity(hotelEntity);
+            if (optionalHotelAdvertiseEntity.isPresent()) {
+                HotelAdvertiseEntity hotelAdvertiseEntity = optionalHotelAdvertiseEntity.get();
+                businessUserHotelVo.setHotelAdvertiseToDate(hotelAdvertiseEntity.getHotelAdvertiseToDate().toString());
+                businessUserHotelVo.setHotelAdvertiseEndDate(hotelAdvertiseEntity.getHotelAdvertiseEndDate().toString());
+            }
+            businessUserHotelVo = BusinessUserHotelVo.builder()
+                    .businessName(hotelEntity.getBusinessEntity().getBusinessName())
+                    .hotelPk(hotelEntity.getHotelPk())
+                    .hotelNm(hotelEntity.getHotelNm())
+                    .approval(hotelEntity.getApproval())
+                    .hotelDetailInfo(hotelEntity.getHotelDetailInfo())
+                    .businessNum(hotelEntity.getBusinessNum())
+                    .hotelCall(hotelEntity.getHotelCall())
+                    .businessCertificate(hotelEntity.getBusinessCertificate())
+                    .hotelNum(hotelEntity.getHotelNum())
+                    .advertise(hotelEntity.getAdvertise())
+                    .createdAt(hotelEntity.getCreatedAt().toString())
+                    .hotelFullAddress(hotelEntity.getHotelWhereEntity().getAddressName() + " " + hotelEntity.getHotelWhereEntity().getDetailAddress())
+                    .hotelPics(hotelEntity.getHotelPicEntity().stream().map(item -> PicsInfo.builder()
+                            .hotelPicPk(item.getHotelPicPk())
+                            .hotelPic(item.getPic()).build()).collect(Collectors.toList()))
+                    .optionList(hotelOptionInfoVoList)
+                    .businessCertificate(hotelEntity.getBusinessCertificate())
+                    .hotelAddressInfo(HotelAddressInfo.builder()
+                            .hotelPk(hotelEntity.getHotelPk())
+                            .x(hotelEntity.getHotelWhereEntity().getX())
+                            .y(hotelEntity.getHotelWhereEntity().getY())
+                            .addressName(hotelEntity.getHotelWhereEntity().getAddressName())
+                            .zoneNum(hotelEntity.getHotelWhereEntity().getZoneNum())
+                            .detailAddress(hotelEntity.getHotelWhereEntity().getDetailAddress())
+                            .region1DepthName(hotelEntity.getHotelWhereEntity().getRegion1DepthName())
+                            .region2DepthName(hotelEntity.getHotelWhereEntity().getRegion2DepthName())
+                            .region3DepthName(hotelEntity.getHotelWhereEntity().getRegion3DepthName())
+                            .build())
+                    .hotelRoomInfoList(hotelRoomInfoEntityList.stream().map(hotelRoomInfoEntity -> HotelRoomInfo.builder()
+                            .hotelRoomPk(hotelRoomInfoEntity.getHotelRoomPk())
+                            .sizePk(hotelRoomInfoEntity.getDogSizeEntity().getSizePk())
+                            .hotelRoomNm(hotelRoomInfoEntity.getHotelRoomNm())
+                            .roomAble(hotelRoomInfoEntity.getRoomAble())
+                            .hotelRoomCost(roomDiscountInfo.setDiscountCost(hotelRoomInfoEntity.getHotelRoomCost(),
+                                    hotelRoomInfoEntity.getDiscountPer()).getRoomCost())
+                            .hotelRoomEa(hotelRoomInfoEntity.getHotelRoomEa())
+                            .roomPic(hotelRoomInfoEntity.getRoomPic())
+                            .maximum(hotelRoomInfoEntity.getMaximum())
+                            .discountPer(hotelRoomInfoEntity.getDiscountPer())
+                            .createdAt(hotelRoomInfoEntity.getCreatedAt().toString())
+                            .build()).collect(Collectors.toList())
+                    ).build();
+        }
+        log.info("businessUserHotelVo : " + businessUserHotelVo);
+        return null;
     }
 
 //    // 광고 승인 목록

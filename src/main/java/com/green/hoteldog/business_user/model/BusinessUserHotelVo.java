@@ -27,6 +27,8 @@ public class BusinessUserHotelVo {
     private HotelAddressInfo hotelAddressInfo;
     private long approval;
     private List<HotelOptionInfoVo> optionList;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String businessCertificate;
 
     private List<HotelRoomInfo> hotelRoomInfoList;

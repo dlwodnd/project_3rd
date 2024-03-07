@@ -98,10 +98,18 @@ public class UserController {
     @Operation(summary = "사업자 회원가입", description = "사업자 회원가입 처리")
     public ResVo postBusinessUser(@RequestPart BusinessUserSignupDto businessUserDto,
                                   @RequestPart HotelInsDto hotelDto,
-                                  @RequestPart MultipartFile businessCertificationFile,
-                                  @RequestPart List<MultipartFile> hotelPics){
+                                  @RequestPart(required = false) MultipartFile businessCertificationFile,
+                                  @RequestPart(required = false) List<MultipartFile> hotelPics){
         hotelDto.setBusinessCertificationFile(businessCertificationFile);
         hotelDto.setHotelPics(hotelPics);
+        log.info("businessCertificationFile : {}", businessCertificationFile);
+        log.info("hotelPics : {}", hotelPics);
+        log.info("businessUserDto : {}", businessUserDto);
+        log.info("hotelDto : {}", hotelDto);
+        /*if (hotelPics.size() >5){
+            throw new CustomException(UserErrorCode.HOTEL_PICS_SIZE_ERROR);
+        }*/
+
         return service.insBusinessUser(businessUserDto, hotelDto);
     }
     // 유저 회원 탈퇴

@@ -57,7 +57,7 @@ public class SecurityConfiguration {
                                         ,"/api/manager/**").hasRole("ADMIN")
                                 .requestMatchers(
                                         "/api/business/**"
-                                        ,"/api/business").hasRole("BUSINESS_USER")
+                                        ,"/api/business").hasAnyRole("BUSINESS_USER")
                                 .anyRequest().permitAll()
 
                 ).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

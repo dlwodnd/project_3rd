@@ -1,5 +1,6 @@
 package com.green.hoteldog.manager;
 
+import com.green.hoteldog.business_user.model.BusinessUserHotelVo;
 import com.green.hoteldog.manager.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +64,11 @@ public class ManagerController {
     @Operation(summary = "유저 목록", description = "일반 유저 목록")
     public UserInfoVo getUserList(@PageableDefault(page = 1, size = 15) Pageable pageable) {
         return service.getUsers(pageable);
+    }
+    @GetMapping("/hotel/info")
+    @Operation(summary = "호텔 정보", description = "호텔 정보")
+    public BusinessUserHotelVo getHotelInfo(long hotelPk) {
+        return service.getHotelInfo(hotelPk);
     }
     @GetMapping("/businessUserList")
     @Operation(summary = "사업자 유저 목록", description = "사업자 유저 목록")

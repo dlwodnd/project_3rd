@@ -33,6 +33,7 @@ public interface HotelAdvertiseRepository extends JpaRepository<HotelAdvertiseEn
 
     //재웅
     Optional<HotelAdvertiseEntity> findByHotelEntity(HotelEntity hotelEntity);
+
     //재웅
 
 }

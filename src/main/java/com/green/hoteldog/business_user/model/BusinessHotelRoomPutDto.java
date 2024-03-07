@@ -25,6 +25,6 @@ public class BusinessHotelRoomPutDto {
     private long hotelRoomCost;
 
     @NotBlank
-    private String discountPer;
+    private long discountPer;
 
 }

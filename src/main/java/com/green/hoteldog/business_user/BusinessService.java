@@ -12,6 +12,7 @@ import com.green.hoteldog.common.utils.RandomCodeUtils;
 import com.green.hoteldog.exceptions.*;
 import com.green.hoteldog.security.AuthenticationFacade;
 import com.green.hoteldog.user.models.HotelRoomDateProcDto;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -52,6 +53,7 @@ public class BusinessService {
     private final ResPaymentRepository resPaymentRepository;
     private final HotelPicRepository hotelPicRepository;
     private final RefundRepository refundRepository;
+    private final EntityManager entityManager;
 
 
     // 호텔 상태 전환
@@ -135,11 +137,16 @@ public class BusinessService {
                 .orElseThrow(() -> new CustomException(UserErrorCode.NOT_BUSINESS_USER));
         HotelEntity hotelEntity = hotelRepository.findHotelEntityByBusinessEntity(businessEntity)
                 .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_EXIST_HOTEL));
+        Optional<HotelAdvertiseEntity> hotelAdvertiseEntity = hotelAdvertiseRepository.findByHotelEntity(hotelEntity);
+        if (hotelAdvertiseEntity.isPresent() && hotelAdvertiseEntity.get().getAdStatus() == 2){
+            hotelAdvertiseEntity.get().setAdStatus(1L);
+            return new ResVo(2);
+        }
         LocalDateTime today = LocalDateTime.now();
         if (hotelEntity.getAdvertise() == 1) {
             throw new CustomException(HotelErrorCode.ALREADY_SUBSCRIBE_ADVERTISE);
         }
-        HotelAdvertiseEntity hotelAdvertiseEntity = HotelAdvertiseEntity.builder()
+        HotelAdvertiseEntity newHotelAdvertiseEntity = HotelAdvertiseEntity.builder()
                 .hotelEntity(hotelEntity)
                 .hotelAdvertiseToDate(today)
                 .hotelAdvertiseEndDate(today.plusDays(30L))
@@ -147,9 +154,9 @@ public class BusinessService {
                 .adStatus(1L)
                 .hotelAdvertiseNum("A" + RandomCodeUtils.getRandomCode(5))
                 .build();
-        hotelAdvertiseRepository.save(hotelAdvertiseEntity);
+        hotelAdvertiseRepository.save(newHotelAdvertiseEntity);
         PaymentAdEntity paymentAdEntity = PaymentAdEntity.builder()
-                .hotelAdvertiseEntity(hotelAdvertiseEntity)
+                .hotelAdvertiseEntity(newHotelAdvertiseEntity)
                 .hotelEntity(hotelEntity)
                 .paymentStatus(1L)
                 .paymentDate(LocalDateTime.now())
@@ -177,9 +184,12 @@ public class BusinessService {
         HotelAdvertiseEntity hotelAdvertiseEntity = hotelAdvertiseRepository.findByHotelEntity(hotelEntity)
                 .orElseThrow(() -> new CustomException(HotelErrorCode.NOT_SUBSCRIBE_ADVERTISE));
         if (hotelAdvertiseEntity.getAdStatus() != 1) {
-            throw new CustomException(HotelErrorCode.NOT_SUBSCRIBE_ADVERTISE);
+            throw new CustomException(HotelErrorCode.ALREADY_UNSUBSCRIBE_ADVERTISE);
         }
-        hotelAdvertiseEntity.setAdStatus(2L);
+//        hotelAdvertiseEntity.setAdStatus(2L);
+        hotelEntity.setHotelAdvertiseEntity(null);
+        hotelEntity.setAdvertise(0L);
+
         return new ResVo(1);
     }
 
@@ -369,6 +379,7 @@ public class BusinessService {
                     .businessName(businessEntity.getBusinessName())
                     .hotelPk(hotelEntity.getHotelPk())
                     .hotelNm(hotelEntity.getHotelNm())
+                    .approval(hotelEntity.getApproval())
                     .hotelDetailInfo(hotelEntity.getHotelDetailInfo())
                     .businessNum(hotelEntity.getBusinessNum())
                     .hotelCall(hotelEntity.getHotelCall())
@@ -435,7 +446,7 @@ public class BusinessService {
 
         hotelRoomInfoEntity.setHotelRoomCost(dto.getHotelRoomCost());
         hotelRoomInfoEntity.setHotelRoomEa(dto.getHotelRoomEa());
-        hotelRoomInfoEntity.setDiscountPer(dto.getDiscountPer());
+        hotelRoomInfoEntity.setDiscountPer("" + dto.getDiscountPer());
         hotelResRoomRepository.findAllByHotelRoomInfoEntity(hotelRoomInfoEntity).forEach(hotelResRoomEntity -> {
             if (hotelResRoomEntity.getHotelLeftEa() + changeRoomEa < 0) {
                 hotelResRoomEntity.setHotelLeftEa(0L);
@@ -516,8 +527,7 @@ public class BusinessService {
         if (hotelEntity.getApproval() == 1) {
             throw new CustomException(WithdrawalErrorCode.EXIST_IN_OPERATION_HOTEL);
         }
-        businessEntity.setBusinessStatus(2L);
-        businessEntity.setRole(UserRoleEnum.WITHDRAWAL);
+        businessRepository.delete(businessEntity);
 
 
         return new ResVo(1);

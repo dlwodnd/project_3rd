@@ -300,10 +300,15 @@ public class UserService {
                 .signStatus(0L)
                 .hotelNum("H" + RandomCodeUtils.getRandomCode(5))
                 .build();
-        String target = "/manager/hotel/" + businessEntity.getBusinessPk();
-        String hotelCertificationFile = myFileUtils.transferTo(hotelDto.getBusinessCertificationFile(), target);
-        hotelEntity.setBusinessCertificate(hotelCertificationFile);
         hotelRepository.save(hotelEntity);
+        String hotelCertificationFile = "";
+        if (hotelDto.getBusinessCertificationFile() != null) {
+            String target = "/manager/hotel/" + businessEntity.getBusinessPk();
+            hotelCertificationFile = myFileUtils.transferTo(hotelDto.getBusinessCertificationFile(), target);
+            hotelEntity.setBusinessCertificate(hotelCertificationFile);
+
+        }
+
 
 
         HotelWhereEntity hotelWhereEntity = HotelWhereEntity.builder()
@@ -318,18 +323,21 @@ public class UserService {
                 .hotelEntity(hotelEntity)
                 .build();
         hotelEntity.setHotelWhereEntity(hotelWhereEntity);
-
-        List<HotelPicEntity> hotelPicEntityList = new ArrayList<>();
-        for (MultipartFile file : hotelDto.getHotelPics()) {
-            target = "/hotel/" + hotelEntity.getHotelPk();
-            String hotelPicFile = myFileUtils.transferTo(file, target);
-            HotelPicEntity hotelPicsEntity = HotelPicEntity.builder()
-                    .hotelEntity(hotelEntity)
-                    .pic(hotelPicFile)
-                    .build();
-            hotelPicEntityList.add(hotelPicsEntity);
+        if(hotelDto.getHotelPics() != null){
+            List<HotelPicEntity> hotelPicEntityList = new ArrayList<>();
+            for (MultipartFile file : hotelDto.getHotelPics()) {
+                String target = "/hotel/" + hotelEntity.getHotelPk();
+                String hotelPicFile = myFileUtils.transferTo(file, target);
+                HotelPicEntity hotelPicsEntity = HotelPicEntity.builder()
+                        .hotelEntity(hotelEntity)
+                        .pic(hotelPicFile)
+                        .build();
+                hotelPicEntityList.add(hotelPicsEntity);
+            }
+            hotelEntity.setHotelPicEntity(hotelPicEntityList);
         }
-        hotelEntity.setHotelPicEntity(hotelPicEntityList);
+
+
 
         List<HotelOptionEntity> hotelOptionEntityList = hotelOptionRepository.findAllById(hotelDto.getHotelOption());
 

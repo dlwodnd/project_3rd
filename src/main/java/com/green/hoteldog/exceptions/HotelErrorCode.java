@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 
 public enum HotelErrorCode implements ErrorCode{
+    ALREADY_UNSUBSCRIBE_ADVERTISE
+            (HttpStatus.BAD_REQUEST,"이미 광고 연장 취소를 하였습니다"),
     ALREADY_USED_BUSINESS_NUM
             (HttpStatus.BAD_REQUEST,"이미 사용중인 사업자 번호 입니다"),
     NOT_EXIST_HOTEL_PIC

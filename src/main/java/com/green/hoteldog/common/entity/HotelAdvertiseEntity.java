@@ -52,7 +52,7 @@ public class HotelAdvertiseEntity {
 
     //재웅
     @ToString.Exclude
-    @OneToMany(mappedBy = "hotelAdvertiseEntity",fetch = FetchType.LAZY,cascade = CascadeType.PERSIST,orphanRemoval = true)
+    @OneToMany(mappedBy = "hotelAdvertiseEntity",fetch = FetchType.LAZY,cascade = CascadeType.ALL ,orphanRemoval = true)
     private List<PaymentAdEntity> paymentAdEntityList;
     //재웅
 }
