@@ -122,7 +122,7 @@ public class ManagerService {
         long totalRecords =  hotelRepository.count();
         int maxPage = (int) Math.ceil((double) totalRecords / pageable.getPageSize());
         hotelListVo.setMaxPage(maxPage);
-        List<HotelEntity> hotelEntities = hotelRepository.findAllByOrderByCreatedAtDesc(pageable);
+        List<HotelEntity> hotelEntities = hotelRepository.findAllByApprovalIsNotOrderByCreatedAtDesc(0,pageable);
         return hotelEntities.stream()
                 .map(hotelEntity -> HotelListVo.hotelListVo(hotelEntity))
                 .collect(Collectors.toList());

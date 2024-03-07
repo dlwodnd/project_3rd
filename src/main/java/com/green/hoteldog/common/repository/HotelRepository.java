@@ -17,7 +17,7 @@ public interface HotelRepository extends JpaRepository<HotelEntity, Long> , Hote
     //승민
     //승민
     //전체 호텔 모록 가져옴
-    List<HotelEntity>  findAllByOrderByCreatedAtDesc(Pageable pageable);
+    List<HotelEntity>  findAllByApprovalIsNotOrderByCreatedAtDesc(long approval , Pageable pageable);
 
     List<HotelEntity> findHotelEntityByApprovalOrderByCreatedAtDesc(int Approval, Pageable pageable);
 
