@@ -32,6 +32,7 @@ public class ManagerService {
     private final HotelSuspendedRepository hotelSuspendedRepository;
     private final HotelRoomRepository hotelRoomRepository;
     private final HotelOptionInfoRepository hotelOptionInfoRepository;
+    private final HotelOptionRepository hotelOptionRepository;
 
     // 모든유저
 //    public List <UserEntity> allUsers(List<UserEntity> nomalUsers){
@@ -153,12 +154,13 @@ public class ManagerService {
                         .build()).collect(Collectors.toList()))
                 .build();
     }
-
+    @Transactional
     public BusinessUserHotelVo getHotelInfo(long hotelPk){
         Optional<HotelEntity> optionalHotelEntity = hotelRepository.findById(hotelPk);
 
         BusinessUserHotelVo businessUserHotelVo = new BusinessUserHotelVo();
         RoomDiscountInfo roomDiscountInfo = new RoomDiscountInfo();
+        List<HotelOptionEntity> hotelOptionEntityList = hotelOptionRepository.findAll();
 
         if (optionalHotelEntity.isPresent()) {
             HotelEntity hotelEntity = optionalHotelEntity.get();
@@ -227,7 +229,7 @@ public class ManagerService {
                     ).build();
         }
         log.info("businessUserHotelVo : " + businessUserHotelVo);
-        return null;
+        return businessUserHotelVo;
     }
 
 //    // 광고 승인 목록

@@ -92,7 +92,7 @@ public class ManagerController {
 
     // 승인 대기 호텔목록 가져오는 메서드
     @GetMapping("/hotelAccountStatus")
-    @Operation(summary = "승인 대길 호텔", description = "사이즈 숫자 뒤에, 부분부터 쇼트 ] 대괄호하나 지우셈")
+    @Operation(summary = "승인 대길 호텔", description = "사이즈 숫자 뒤에, 부분부터 쇼트 대괄호하나 지우셈")
 
     public HotelInfoListVo getManagementApprovalHotelList(@PageableDefault(page = 1,size = 15) Pageable pageable) {
         return service.getManagementHotelByBusinessEntity_AccountStatus(pageable);

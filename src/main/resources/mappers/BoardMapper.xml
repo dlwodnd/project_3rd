@@ -23,6 +23,13 @@
         DELETE FROM t_board_pics
         WHERE board_pk = #{boardPk}
     </delete>
+    <delete id="delBoardListPics">
+        DELETE FROM t_board_pics
+        WHERE board_pk IN
+        <foreach collection="boardPkList" item="boardPk" open="(" close=")" separator=",">
+            #{boardPk}
+        </foreach>
+    </delete>
     <update id="putBoard">
         UPDATE t_board
         SET board_category_pk = #{boardCategoryPk}
@@ -67,6 +74,13 @@
             #{commentPk}
         </foreach>
         AND user_pk = #{userPk}
+    </delete>
+    <delete id="delBoardComment">
+        DELETE FROM t_board_comment
+        WHERE board_pk IN
+        <foreach collection="boardPkList" item="boardPk" open="(" close=")" separator=",">
+            #{boardPk}
+        </foreach>
     </delete>
     <!--게시글 리스트-->
     <select id="getBoardList">

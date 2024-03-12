@@ -34,6 +34,7 @@ public interface HotelRepository extends JpaRepository<HotelEntity, Long> , Hote
     //영웅
 
     //재웅
+    Optional<HotelEntity> findHotelEntityByHotelPk(long hotelPk);
     Optional<HotelEntity> findHotelEntityByBusinessEntity(BusinessEntity businessEntity);
     List<HotelEntity> findAllByAdvertiseAndApproval(Long advertise, Long approval);
     Optional<HotelEntity> findByBusinessNum(String businessNum);

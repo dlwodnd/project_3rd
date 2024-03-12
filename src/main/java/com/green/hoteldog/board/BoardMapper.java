@@ -31,4 +31,6 @@ public interface BoardMapper {
     Integer selBoardCommentCount(int boardPk);
     Integer selUserBoardCount(int userPk);
     Integer selUserCommentCount(int userPk);
+    int delBoardComment(List<Integer> boardPkList);
+    int delBoardListPics(List<Integer> boardPkList);
 }

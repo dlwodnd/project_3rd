@@ -118,6 +118,8 @@ public class BoardService {
         if (dto.getUserPk() == 0) {
             throw new CustomException(AuthorizedErrorCode.NOT_AUTHORIZED);
         }
+        boardMapper.delBoardListPics(dto.getBoardPkList());
+        boardMapper.delBoardComment(dto.getBoardPkList());
         int result = boardMapper.delBoard(dto);
         log.info("result : {} , dto.getBoardPkList().size() : {}", result, dto.getBoardPkList().size());
         if (result != dto.getBoardPkList().size()) {
